@@ -1,8 +1,3 @@
-# xkcd
+# xkcdViewer
 
-Another xkcd viewer.
-
-## Getting Started
-
-For help getting started with Flutter, view our online
-[documentation](https://flutter.io/).
+A simple xkcd viewer app written with [Flutter](https://flutter.io/).
