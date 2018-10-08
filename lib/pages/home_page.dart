@@ -170,9 +170,9 @@ class HomePageState extends State<HomePage> {
                   context: context,
                   builder: (BuildContext context) {
                     return AboutDialog(
-                      applicationName: 'XKCD Viewer',
-                      applicationVersion: '0.0.1',
-                      applicationLegalese: 'Built with ❤ and Flutter by Kosta Stoupas',
+                      applicationName: 'xkcdViewer',
+                      applicationVersion: '1.0',
+                      applicationLegalese: 'Built with ❤ and Flutter by Kosta Stoupas. Launcher icon by Papirus Development Team.',
                     );
                   },
                 );
