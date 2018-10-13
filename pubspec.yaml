@@ -15,11 +15,16 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  flutter_localizations:
+    sdk: flutter
 
-  http: ^0.11.3+17
-  photo_view: ^0.0.7
-  shared_preferences: ^0.4.2
+  http: ^0.12.0
+  photo_view: ^0.0.10
+  shared_preferences: ^0.4.3
   url_launcher: ^4.0.1
+  package_info: ^0.3.2
+  share: ^0.5.3
+  vibrate: ^0.0.4
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -46,6 +51,10 @@ flutter:
   #  - images/a_dot_burr.jpeg
   #  - images/a_dot_ham.jpeg
 
+  assets:
+    - assets/locale/en.json
+    - assets/locale/de.json
+
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.io/assets-and-images/#resolution-aware.
 
@@ -71,3 +80,11 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.io/custom-fonts/#from-packages
+
+  fonts:
+    - family: FiraMono
+      fonts:
+        - asset: assets/fonts/FiraMono-Bold.ttf
+          weight: 700
+        - asset: assets/fonts/FiraMono-Medium.ttf
+        - asset: assets/fonts/FiraMono-Regular.ttf

@@ -1,0 +1,15 @@
+{
+  "something_wrong": "Ups... etwas ist schief gelaufen!",
+  "random": "Zufall",
+  "latest_comic": "Neuester Comic",
+  "explain_current": "Aktuellen Comic erklären",
+  "my_favorites": "Meine Favoriten",
+  "settings": "Einstellungen",
+  "favorites": "Favoriten",
+  "nothing_here": "Noch nichts zu sehen",
+  "favorite_removed": "aus den Favoriten entfernt",
+  "clear_favorites": "Favoriten löschen",
+  "about": "Über",
+  "about_this_app": "Über diese App",
+  "built_by": "Mit ❤ und Flutter von Kosta Stoupas gebaut. Launcher icon von Papirus Development Team."
+}

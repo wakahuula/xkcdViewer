@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:xkcd/blocs/comic_bloc.dart';
+import 'package:xkcd/pages/favorites_page.dart';
 import 'package:xkcd/providers/comic_bloc_provider.dart';
 import 'package:xkcd/pages/home_page.dart';
 import 'package:xkcd/pages/settings_page.dart';
 import 'package:xkcd/providers/preferences.dart';
+import 'package:xkcd/utils/app_localizations_delegate.dart';
 
 void main() async {
   Preferences.prefs = await SharedPreferences.getInstance();
@@ -16,6 +19,7 @@ class MyApp extends StatelessWidget {
   final _pageRoutes = <String, WidgetBuilder>{
     HomePage.homePageRoute: (context) => HomePage(),
     SettingsPage.settingsPageRoute: (context) => SettingsPage(),
+    FavoritesPage.favoritesPageRoute: (context) => FavoritesPage(),
   };
 
   final bloc = ComicBloc();
@@ -23,14 +27,40 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return new MaterialApp(
-      title: 'XKCD viewer',
+      title: 'xkcdViewer',
+      debugShowCheckedModeBanner: false,
+      supportedLocales: [
+        const Locale('en', 'US'),
+        const Locale('de', 'DE'),
+      ],
+      localizationsDelegates: [
+        const AppLocalizationsDelegate(),
+        GlobalMaterialLocalizations.delegate,
+        GlobalMaterialLocalizations.delegate
+      ],
+      localeResolutionCallback: (Locale locale, Iterable<Locale> supportedLocales) {
+        for (Locale supportedLocale in supportedLocales) {
+          if (supportedLocale.languageCode == locale.languageCode ||
+              supportedLocale.countryCode == locale.countryCode) {
+            return supportedLocale;
+          }
+        }
+        return supportedLocales.first;
+      },
       theme: ThemeData(
+        fontFamily: 'FiraMono',
+        pageTransitionsTheme: const PageTransitionsTheme(
+          builders: <TargetPlatform, PageTransitionsBuilder>{
+            TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
+            TargetPlatform.android: OpenUpwardsPageTransitionsBuilder(),
+          },
+        ),
         // https://www.materialpalette.com/
         canvasColor: Colors.white,
-        primaryColor: Color(0xFF546e7a),
-        primaryColorLight: Color(0xFF819ca9),
-        primaryColorDark: Color(0xFF29434e),
-        accentColor: Color(0xFF7c4dff),
+        primaryColor: Color(0xFF3e3e3e),
+        primaryColorLight: Color(0xFF3e3e3e),
+        primaryColorDark: Color(0xFF3e3e3e),
+        accentColor: Color(0xFFd0d0d0),
       ),
       routes: _pageRoutes,
       home: ComicBlocProvider(

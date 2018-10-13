@@ -11,7 +11,7 @@ class ComicBloc {
 
   StreamSubscription<Comic> _fetchComicSubscription;
 
-  final _comicController = StreamController.broadcast<ComicBlocState>();
+  final StreamController<ComicBlocState> _comicController = StreamController.broadcast();
 
   Stream<ComicBlocState> get comicStream => _comicController.stream;
 
@@ -61,36 +61,6 @@ class ComicBloc {
     _comicController.add(_currentComicBlocState);
 
     _apiClient.fetchRandomComic().asStream().listen((dynamic comic) {
-      if (comic is Comic) {
-        _currentComicBlocState.comic = comic;
-      }
-      _currentComicBlocState.loading = false;
-      _comicController.add(_currentComicBlocState);
-    });
-  }
-
-  Future<Null> fetchOlder() async {
-    return fetchComic(false);
-  }
-
-  Future<Null> fetchNewer() async {
-    return fetchComic(true);
-  }
-
-  Future<Null> fetchComic(bool newer) async {
-    fetchComicLR(newer);
-    await comicStream.first;
-
-    return null;
-  }
-
-  fetchComicLR(bool newer) {
-    _fetchComicSubscription?.cancel();
-
-    _currentComicBlocState.loading = true;
-    _comicController.add(_currentComicBlocState);
-
-    _apiClient.fetchComic(newer).asStream().listen((dynamic comic) {
       if (comic is Comic) {
         _currentComicBlocState.comic = comic;
       }

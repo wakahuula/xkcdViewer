@@ -1,15 +1,13 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
-import 'package:photo_view/photo_view.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:xkcd/blocs/comic_bloc.dart';
-import 'package:xkcd/providers/comic_bloc_provider.dart';
-import 'package:xkcd/blocs/comic_bloc_state.dart';
 import 'package:xkcd/data/comic.dart';
+import 'package:xkcd/pages/favorites_page.dart';
 import 'package:xkcd/pages/settings_page.dart';
+import 'package:xkcd/providers/comic_bloc_provider.dart';
 import 'package:xkcd/providers/preferences.dart';
-import 'package:xkcd/utils/app_colors.dart';
+import 'package:xkcd/utils/app_localizations.dart';
+import 'package:xkcd/widgets/comic_view.dart';
 
 class HomePage extends StatefulWidget {
   static final String homePageRoute = '/home-page';
@@ -36,75 +34,142 @@ class HomePageState extends State<HomePage> {
       _firstLoad = false;
     }
 
+    return Scaffold(
+      backgroundColor: Colors.white,
+      body: _buildBodyContent(),
+      floatingActionButton: _buildFab(),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      bottomNavigationBar: _buildBottomAppBar(),
+    );
+  }
+
+  StreamBuilder _buildBodyContent() {
+    ComicBloc bloc = ComicBlocProvider.of(context).bloc;
+
     return StreamBuilder(
       initialData: bloc.getCurrentState(),
       stream: bloc.comicStream,
-      builder: _buildBodyContent,
+      builder: (context, snapshot) {
+        if (snapshot.hasError) {
+          return Center(
+            child: Text(AppLocalizations.of(context).get('something_wrong')),
+          );
+        }
+        if (snapshot.data.loading) {
+          return Center();
+        }
+
+        Comic comic = snapshot.data.comic;
+        return ComicView(comic);
+      },
     );
   }
 
-  Widget _buildBodyContent(BuildContext context, AsyncSnapshot<ComicBlocState> snapshot) {
-    if (snapshot.hasError) {
-      return Center(
-        child: Text('Oops... something went wrong!'),
-      );
-    }
-
-    if (snapshot.data.loading) {
-      return Center();
-    }
-
-    Comic comic = snapshot.data.comic;
-
-    var themeData = Theme.of(context);
-    return Scaffold(
-      backgroundColor: AppColors.backgroundColor,
-      appBar: AppBar(
-        title: Text('XKCD Viewer'),
-        actions: <Widget>[
-          _buildFavoriteButton(),
-          _buildExplainButton(),
-          _buildPopupMenuButton(),
-        ],
-        backgroundColor: themeData.primaryColor,
-      ),
-      body: Container(
-        padding: EdgeInsets.all(10.0),
-        child: GestureDetector(
-          onLongPress: () {
-            showDialog(
-              context: context,
-              barrierDismissible: true,
-              builder: (context) {
-                return AlertDialog(
-                  content: SingleChildScrollView(
-                    child: Text(comic.alt),
-                  ),
-                );
-              },
-            );
-          },
-          child: PhotoViewInline(
-            maxScale: 4.0,
-            minScale: PhotoViewScaleBoundary.contained,
-            backgroundColor: AppColors.backgroundColor,
-            imageProvider: NetworkImage(comic.img),
-            loadingChild: Center(child: CircularProgressIndicator()),
-          ),
-        ),
-      ),
-      bottomNavigationBar: BottomAppBar(
-        color: themeData.primaryColor,
-        child: _buildBottomBar(),
-      ),
-    );
-  }
-
-  _buildExplainButton() {
+  StreamBuilder _buildFab() {
     ComicBloc bloc = ComicBlocProvider.of(context).bloc;
-    return IconButton(
-      icon: Icon(Icons.info_outline),
-      onPressed: bloc.explainCurrentComic,
+
+    return StreamBuilder(
+      initialData: bloc.getCurrentState(),
+      stream: bloc.comicStream,
+      builder: (context, snapshot) {
+        return FloatingActionButton.extended(
+          icon: Icon(Icons.autorenew),
+          label: Text(AppLocalizations.of(context).get('random')),
+          onPressed: () {
+            bloc.fetchRandom();
+          },
+        );
+      },
+    );
+  }
+
+  StreamBuilder _buildBottomAppBar() {
+    ComicBloc bloc = ComicBlocProvider.of(context).bloc;
+
+    return StreamBuilder(
+      initialData: bloc.getCurrentState(),
+      stream: bloc.comicStream,
+      builder: (context, snapshot) {
+        bool leftHanded = prefs.getBool('leftHanded') ?? false;
+        List<Widget> buttons = [
+          Row(
+            children: <Widget>[
+              IconButton(
+                icon: Icon(Icons.menu, color: Colors.white),
+                onPressed: () {
+                  showModalBottomSheet(
+                    context: context,
+                    builder: (context) {
+                      return _buildBottomSheet();
+                    },
+                  );
+                },
+              ),
+            ],
+          ),
+          _buildFavoriteButton(),
+        ];
+
+        return BottomAppBar(
+          color: Theme.of(context).primaryColor,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: leftHanded ? buttons.reversed.toList() : buttons,
+          ),
+        );
+      },
+    );
+  }
+
+  _buildBottomSheet() {
+    ComicBloc bloc = ComicBlocProvider.of(context).bloc;
+    var themeData = Theme.of(context);
+    var appLocalizations = AppLocalizations.of(context);
+
+    final widgets = [
+      ListTile(
+        leading: Icon(Icons.home, color: Colors.white),
+        title: Text(appLocalizations.get('latest_comic'), style: TextStyle(color: Colors.white)),
+        onTap: () {
+          Navigator.pop(context);
+          bloc.fetchLatest();
+        },
+      ),
+      ListTile(
+        leading: Icon(Icons.info_outline, color: Colors.white),
+        title: Text(appLocalizations.get('explain_current'), style: TextStyle(color: Colors.white)),
+        onTap: () {
+          Navigator.pop(context);
+          bloc.explainCurrentComic();
+        },
+      ),
+      ListTile(
+        leading: Icon(Icons.favorite, color: Colors.white),
+        title: Text(appLocalizations.get('my_favorites'), style: TextStyle(color: Colors.white)),
+        onTap: () {
+          Navigator.pop(context);
+          Navigator.of(context).pushNamed(FavoritesPage.favoritesPageRoute);
+        },
+      ),
+      ListTile(
+        leading: Icon(Icons.settings, color: Colors.white),
+        title: Text(appLocalizations.get('settings'), style: TextStyle(color: Colors.white)),
+        onTap: () {
+          Navigator.pop(context);
+          Navigator.of(context).pushNamed(SettingsPage.settingsPageRoute);
+        },
+      ),
+    ];
+
+    return Container(
+      color: themeData.primaryColor,
+      child: ListView.builder(
+        shrinkWrap: true,
+        itemCount: widgets.length,
+        itemBuilder: (context, index) {
+          return widgets[index];
+        },
+      ),
     );
   }
 
@@ -118,18 +183,24 @@ class HomePageState extends State<HomePage> {
       isFavorite = favorites?.contains(num) ?? false;
     }
 
-    return IconButton(
-      icon: Icon(
-        isFavorite ? Icons.favorite : Icons.favorite_border,
-        color: Colors.white,
-      ),
-      onPressed: () {
-        _handleFavoriteAction(isFavorite);
+    return GestureDetector(
+      onTap: () {
+        _handleFavoriteAction();
       },
+      onLongPress: () {
+        Navigator.of(context).pushNamed(FavoritesPage.favoritesPageRoute);
+      },
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Icon(
+          isFavorite ? Icons.favorite : Icons.favorite_border,
+          color: Colors.white,
+        ),
+      ),
     );
   }
 
-  _handleFavoriteAction(bool add) {
+  _handleFavoriteAction() {
     Comic comic = _getCurrentComic();
     if (comic == null) {
       return;
@@ -146,83 +217,6 @@ class HomePageState extends State<HomePage> {
     }
     prefs.setStringList('favorites', favorites);
     setState(() {});
-  }
-
-  _buildPopupMenuButton() {
-    return PopupMenuButton(
-      itemBuilder: (BuildContext context) {
-        return [
-          PopupMenuItem(
-            child: GestureDetector(
-              child: Text('Settings'),
-              onTap: () {
-                Navigator.pop(context);
-                Navigator.of(context).pushNamed(SettingsPage.settingsPageRoute);
-              },
-            ),
-          ),
-          PopupMenuItem(
-            child: GestureDetector(
-              child: Text('About'),
-              onTap: () {
-                Navigator.pop(context);
-                showDialog(
-                  context: context,
-                  builder: (BuildContext context) {
-                    return AboutDialog(
-                      applicationName: 'xkcdViewer',
-                      applicationVersion: '1.0',
-                      applicationLegalese: 'Built with ❤ and Flutter by Kosta Stoupas. Launcher icon by Papirus Development Team.',
-                    );
-                  },
-                );
-              },
-            ),
-          ),
-        ];
-      },
-    );
-  }
-
-  _buildBottomBar() {
-    ComicBloc bloc = ComicBlocProvider.of(context).bloc;
-    bool leftHanded = prefs.getBool('leftHanded') ?? false;
-
-    List<Widget> buttons = [
-      FlatButton(
-        onPressed: bloc.fetchLatest,
-        child: Text('LATEST', style: TextStyle(color: Colors.white)),
-      ),
-      _buildRightButtons(),
-    ];
-
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: leftHanded ? buttons.reversed.toList() : buttons,
-    );
-  }
-
-  _buildRightButtons() {
-    ComicBloc bloc = ComicBlocProvider.of(context).bloc;
-
-    return Row(
-      children: <Widget>[
-        IconButton(
-          icon: Icon(Icons.chevron_left),
-          color: Colors.white,
-          onPressed: bloc.fetchOlder,
-        ),
-        FlatButton(
-          onPressed: bloc.fetchRandom,
-          child: Text('RANDOM', style: TextStyle(color: Colors.white)),
-        ),
-        IconButton(
-          icon: Icon(Icons.chevron_right),
-          color: Colors.white,
-          onPressed: bloc.fetchNewer,
-        ),
-      ],
-    );
   }
 
   Comic _getCurrentComic() {

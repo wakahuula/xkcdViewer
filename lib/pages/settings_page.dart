@@ -1,6 +1,8 @@
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:package_info/package_info.dart';
 import 'package:xkcd/providers/preferences.dart';
+import 'package:xkcd/utils/app_localizations.dart';
 
 class SettingsPage extends StatefulWidget {
   static final String settingsPageRoute = '/settings-page';
@@ -11,7 +13,7 @@ class SettingsPage extends StatefulWidget {
 
 class SettingsPageState extends State<SettingsPage> {
   final SharedPreferences prefs = Preferences.prefs;
-  bool _leftHanded = false;
+  PackageInfo packageInfo;
 
   @override
   void initState() {
@@ -20,64 +22,42 @@ class SettingsPageState extends State<SettingsPage> {
   }
 
   _loadValues() async {
-    setState(() {
-      _leftHanded = (prefs.getBool('leftHanded') ?? false);
-    });
+    packageInfo = await PackageInfo.fromPlatform();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text('Settings'),
+        title: Text(AppLocalizations.of(context).get('settings')),
+        elevation: 0.0,
       ),
-      body: ListView(
-        children: <Widget>[
-          _buildTitleWidget('UI'),
-          _buildOrientationTile(context),
-          _buildTitleWidget('Favorites'),
-          _buildClearFavorites(context),
-        ],
+      body: Container(
+        padding: EdgeInsets.all(10.0),
+        child: ListView(
+          children: <Widget>[
+            _buildTitleWidget(AppLocalizations.of(context).get('favorites')),
+            _buildClearFavorites(context),
+            _buildTitleWidget(AppLocalizations.of(context).get('about')),
+            _buildAbout(context),
+          ],
+        ),
       ),
     );
   }
 
   _buildTitleWidget(String title) {
-    var themeData = Theme.of(context);
     return Container(
       padding: EdgeInsets.all(15.0),
-      child: Text(
-        title,
-        style: themeData.textTheme.body1.copyWith(color: themeData.accentColor),
-      ),
+      child: Text(title),
     );
-  }
-
-  _buildOrientationTile(BuildContext context) {
-    return ListTile(
-      leading: Icon(
-        Icons.format_align_left,
-        color: Theme.of(context).accentColor,
-      ),
-      title: Text('Left handed mode'),
-      trailing: Checkbox(value: _leftHanded, onChanged: _saveLeftHanded),
-    );
-  }
-
-  _saveLeftHanded(bool leftHanded) async {
-    setState(() {
-      _leftHanded = !_leftHanded;
-      prefs.setBool('leftHanded', _leftHanded);
-    });
   }
 
   _buildClearFavorites(BuildContext context) {
     return ListTile(
-      leading: Icon(
-        Icons.favorite_border,
-        color: Theme.of(context).accentColor,
-      ),
-      title: Text('Clear favorites'),
+      leading: Icon(Icons.favorite_border),
+      title: Text(AppLocalizations.of(context).get('clear_favorites')),
       onTap: _clearFavorites,
     );
   }
@@ -88,5 +68,28 @@ class SettingsPageState extends State<SettingsPage> {
     if (favorites == null && favorites.isNotEmpty) {
       prefs.remove('favorites');
     }
+  }
+
+  _buildAbout(BuildContext context) {
+    return ListTile(
+      leading: Icon(Icons.info_outline),
+      title: Text(AppLocalizations.of(context).get('about_this_app')),
+      onTap: () {
+        _showAboutDialog();
+      },
+    );
+  }
+
+  _showAboutDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AboutDialog(
+          applicationName: packageInfo.appName,
+          applicationVersion: packageInfo.version,
+          applicationLegalese: AppLocalizations.of(context).get('built_by'),
+        );
+      },
+    );
   }
 }

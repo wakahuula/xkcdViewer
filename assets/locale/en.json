@@ -1,0 +1,15 @@
+{
+  "something_wrong": "Oops... something went wrong!",
+  "random": "RANDOM",
+  "latest_comic": "Latest comic",
+  "explain_current": "Explain current comic",
+  "my_favorites": "My favorites",
+  "settings": "Settings",
+  "favorites": "Favorites",
+  "nothing_here": "Nothin to see here yet",
+  "favorite_removed": "removed from favorites",
+  "clear_favorites": "Clear favorites",
+  "about": "About",
+  "about_this_app": "About this app",
+  "built_by": "Built with ❤ and Flutter by Kosta Stoupas. Launcher icon by Papirus Development Team."
+}
