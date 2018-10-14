@@ -7,6 +7,7 @@ import 'package:xkcd/pages/settings_page.dart';
 import 'package:xkcd/providers/comic_bloc_provider.dart';
 import 'package:xkcd/providers/preferences.dart';
 import 'package:xkcd/utils/app_localizations.dart';
+import 'package:xkcd/utils/constants.dart';
 import 'package:xkcd/widgets/comic_view.dart';
 
 class HomePage extends StatefulWidget {
@@ -43,7 +44,7 @@ class HomePageState extends State<HomePage> {
     );
   }
 
-  StreamBuilder _buildBodyContent() {
+  _buildBodyContent() {
     ComicBloc bloc = ComicBlocProvider.of(context).bloc;
 
     return StreamBuilder(
@@ -65,7 +66,7 @@ class HomePageState extends State<HomePage> {
     );
   }
 
-  StreamBuilder _buildFab() {
+  _buildFab() {
     ComicBloc bloc = ComicBlocProvider.of(context).bloc;
 
     return StreamBuilder(
@@ -83,14 +84,13 @@ class HomePageState extends State<HomePage> {
     );
   }
 
-  StreamBuilder _buildBottomAppBar() {
+  _buildBottomAppBar() {
     ComicBloc bloc = ComicBlocProvider.of(context).bloc;
 
     return StreamBuilder(
       initialData: bloc.getCurrentState(),
       stream: bloc.comicStream,
       builder: (context, snapshot) {
-        bool leftHanded = prefs.getBool('leftHanded') ?? false;
         List<Widget> buttons = [
           Row(
             children: <Widget>[
@@ -114,7 +114,7 @@ class HomePageState extends State<HomePage> {
           color: Theme.of(context).primaryColor,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: leftHanded ? buttons.reversed.toList() : buttons,
+            children: buttons,
           ),
         );
       },
@@ -166,6 +166,7 @@ class HomePageState extends State<HomePage> {
       child: ListView.builder(
         shrinkWrap: true,
         itemCount: widgets.length,
+        physics: ClampingScrollPhysics(),
         itemBuilder: (context, index) {
           return widgets[index];
         },
@@ -178,7 +179,7 @@ class HomePageState extends State<HomePage> {
 
     bool isFavorite = false;
     if (comic != null) {
-      var favorites = prefs.getStringList('favorites');
+      var favorites = prefs.getStringList(Constants.favorites);
       var num = comic.num.toString();
       isFavorite = favorites?.contains(num) ?? false;
     }
@@ -207,7 +208,7 @@ class HomePageState extends State<HomePage> {
     }
 
     var num = comic.num.toString();
-    List<String> favorites = prefs.getStringList('favorites');
+    List<String> favorites = prefs.getStringList(Constants.favorites);
     if (favorites == null || favorites.isEmpty) {
       favorites = [num];
     } else if (favorites.contains(num)) {
@@ -215,11 +216,11 @@ class HomePageState extends State<HomePage> {
     } else {
       favorites.add(num);
     }
-    prefs.setStringList('favorites', favorites);
+    prefs.setStringList(Constants.favorites, favorites);
     setState(() {});
   }
 
-  Comic _getCurrentComic() {
+  _getCurrentComic() {
     ComicBloc bloc = ComicBlocProvider.of(context).bloc;
     return bloc.getCurrentState().comic;
   }

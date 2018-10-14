@@ -3,6 +3,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:package_info/package_info.dart';
 import 'package:xkcd/providers/preferences.dart';
 import 'package:xkcd/utils/app_localizations.dart';
+import 'package:xkcd/utils/constants.dart';
 
 class SettingsPage extends StatefulWidget {
   static final String settingsPageRoute = '/settings-page';
@@ -12,8 +13,8 @@ class SettingsPage extends StatefulWidget {
 }
 
 class SettingsPageState extends State<SettingsPage> {
-  final SharedPreferences prefs = Preferences.prefs;
-  PackageInfo packageInfo;
+  final SharedPreferences _prefs = Preferences.prefs;
+  PackageInfo _packageInfo;
 
   @override
   void initState() {
@@ -22,7 +23,7 @@ class SettingsPageState extends State<SettingsPage> {
   }
 
   _loadValues() async {
-    packageInfo = await PackageInfo.fromPlatform();
+    _packageInfo = await PackageInfo.fromPlatform();
   }
 
   @override
@@ -37,6 +38,8 @@ class SettingsPageState extends State<SettingsPage> {
         padding: EdgeInsets.all(10.0),
         child: ListView(
           children: <Widget>[
+            _buildTitleWidget(AppLocalizations.of(context).get('images')),
+            _buildImagesOptions(context),
             _buildTitleWidget(AppLocalizations.of(context).get('favorites')),
             _buildClearFavorites(context),
             _buildTitleWidget(AppLocalizations.of(context).get('about')),
@@ -54,6 +57,27 @@ class SettingsPageState extends State<SettingsPage> {
     );
   }
 
+  _buildImagesOptions(BuildContext context) {
+    return Column(
+      children: <Widget>[
+        ListTile(
+          leading: Icon(Icons.perm_data_setting),
+          title: Text(AppLocalizations.of(context).get('data_saver')),
+          subtitle: Text(AppLocalizations.of(context).get('data_saver_explain')),
+          trailing: Checkbox(
+            tristate: false,
+            value: _prefs.getBool('data_saver') ?? false,
+            onChanged: (checked) {
+              setState(() {
+                _prefs.setBool('data_saver', checked);
+              });
+            },
+          ),
+        ),
+      ],
+    );
+  }
+
   _buildClearFavorites(BuildContext context) {
     return ListTile(
       leading: Icon(Icons.favorite_border),
@@ -64,9 +88,9 @@ class SettingsPageState extends State<SettingsPage> {
 
   _clearFavorites() {
     final SharedPreferences prefs = Preferences.prefs;
-    final List<String> favorites = prefs.getStringList('favorites');
-    if (favorites == null && favorites.isNotEmpty) {
-      prefs.remove('favorites');
+    final List<String> favorites = prefs.getStringList(Constants.favorites);
+    if (favorites != null && favorites.isNotEmpty) {
+      prefs.remove(Constants.favorites);
     }
   }
 
@@ -85,8 +109,8 @@ class SettingsPageState extends State<SettingsPage> {
       context: context,
       builder: (BuildContext context) {
         return AboutDialog(
-          applicationName: packageInfo.appName,
-          applicationVersion: packageInfo.version,
+          applicationName: _packageInfo.appName,
+          applicationVersion: _packageInfo.version,
           applicationLegalese: AppLocalizations.of(context).get('built_by'),
         );
       },

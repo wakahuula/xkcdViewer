@@ -3,8 +3,10 @@ import 'dart:convert';
 import 'dart:math';
 
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:url_launcher/url_launcher.dart';
+import 'package:flutter_web_browser/flutter_web_browser.dart';
 import 'package:xkcd/data/comic.dart';
 
 class ComicApiClient {
@@ -51,7 +53,7 @@ class ComicApiClient {
   void explainCurrentComic() async {
     final String explainUrl = _explainXkcdUrl + _currentComicNum.toString();
     if (await canLaunch(explainUrl)) {
-      await launch(explainUrl);
+      FlutterWebBrowser.openWebPage(url: explainUrl, androidToolbarColor: Colors.white);
     }
   }
 

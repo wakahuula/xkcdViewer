@@ -5,6 +5,7 @@ import 'package:xkcd/data/comic.dart';
 import 'package:xkcd/pages/comic_page.dart';
 import 'package:xkcd/providers/preferences.dart';
 import 'package:xkcd/utils/app_localizations.dart';
+import 'package:xkcd/utils/constants.dart';
 
 class FavoritesPage extends StatefulWidget {
   static final String favoritesPageRoute = '/favorites-page';
@@ -32,7 +33,7 @@ class _FavoritesPageState extends State<FavoritesPage> {
   }
 
   _buildFavoritesList() {
-    final favorites = prefs.getStringList('favorites');
+    final favorites = prefs.getStringList(Constants.favorites);
     if (favorites != null && favorites.isNotEmpty) {
       return FutureBuilder(
         future: ComicApiClient.fetchComics(favorites),
@@ -67,59 +68,48 @@ class _FavoritesPageState extends State<FavoritesPage> {
   }
 
   _buildListTile(int index, BuildContext context, Comic comic) {
-    return Dismissible(
-      key: Key(index.toString()),
-      onDismissed: (direction) {
-        _removeFavorite(context, comic);
-      },
-      background: Container(
-        color: Colors.red,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.only(left: 10.0),
-              child: Icon(Icons.delete_sweep, color: Colors.white),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(right: 10.0),
-              child: Icon(Icons.delete_sweep, color: Colors.white),
-            ),
-          ],
+    return ListTile(
+      contentPadding: EdgeInsets.all(10.0),
+      leading: Hero(
+        tag: 'hero-${comic.num}',
+        child: Image.network(
+          comic.img,
+          width: 50.0,
+          height: 60.0,
         ),
       ),
-      child: ListTile(
-        contentPadding: EdgeInsets.all(10.0),
-        leading: Hero(
-          tag: 'hero-${comic.num}',
-          child: Image.network(
-            comic.img,
-            width: 50.0,
-          ),
-        ),
-        title: Text(comic.title),
-        onTap: () {
-          Navigator.of(context).push(MaterialPageRoute(
-            maintainState: true,
-            builder: (context) {
-              return ComicPage(comic);
-            },
-          ));
+      title: Text('${comic.num}: ${comic.title}'),
+      trailing: IconButton(
+        icon: Icon(Icons.delete),
+        padding: EdgeInsets.all(0.0),
+        alignment: Alignment.centerRight,
+        onPressed: () {
+          setState(() {
+            _removeFavorite(context, comic);
+          });
         },
       ),
+      onTap: () {
+        Navigator.of(context).push(MaterialPageRoute(
+          maintainState: true,
+          builder: (context) {
+            return ComicPage(comic);
+          },
+        ));
+      },
     );
   }
 
   _removeFavorite(BuildContext context, Comic comic) {
     var num = comic.num.toString();
-    List<String> favorites = prefs.getStringList('favorites');
+    List<String> favorites = prefs.getStringList(Constants.favorites);
     if (favorites == null || favorites.isEmpty) {
       return;
     }
     if (favorites.contains(num)) {
       favorites.remove(num);
     }
-    prefs.setStringList('favorites', favorites);
+    prefs.setStringList(Constants.favorites, favorites);
 
     Scaffold.of(context).showSnackBar(
       SnackBar(
