@@ -54,8 +54,9 @@ flutter:
   #  - images/a_dot_ham.jpeg
 
   assets:
-    - assets/locale/en.json
-    - assets/locale/de.json
+    - assets/locale/en-US.json
+    - assets/locale/de-DE.json
+    - assets/locale/pt-BR.json
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.io/assets-and-images/#resolution-aware.
