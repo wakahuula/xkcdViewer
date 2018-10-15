@@ -1,0 +1,22 @@
+{
+  "yes": "Sim",
+  "no": "Não",
+  "something_wrong": "Oops... ocorreu algo de errado!",
+  "random": "ALEATÓRIO",
+  "latest_comic": "Última história em quadrinho",
+  "explain_current": "Explicar histórias em quadrinhos atuais",
+  "my_favorites": "Meus favoritos",
+  "settings": "Configurações",
+  "images": "Imagens",
+  "data_saver": "Economizador de dados",
+  "data_saver_explain": "Busca histórias em quadrinho em baixa resolução",
+  "auto_download": "Baixar imagens automaticamente",
+  "high_res": "Baixar imagens de alta resolução",
+  "favorites": "Favoritos",
+  "nothing_here": "Nada para ver aqui ainda",
+  "favorite_removed": "removido dos favoritos",
+  "clear_favorites": "Limpar favoritos",
+  "about": "Sobre",
+  "about_this_app": "Sobre esta aplicação",
+  "built_by": "Desenvolvido com ❤ e Flutter por Kosta Stoupas. Ícone de inicialização feito por Papirus Development Team."
+}
