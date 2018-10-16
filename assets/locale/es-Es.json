@@ -1,0 +1,22 @@
+{
+  "yes": "Si",
+  "no": "No",
+  "something_wrong": "¡Ups... algo anda mal!",
+  "random": "ALEATORIO",
+  "latest_comic": "Último comic",
+  "explain_current": "Explicar comic actual",
+  "my_favorites": "Mis favoritos",
+  "settings": "Ajustes",
+  "images": "Imágenes",
+  "data_saver": "Protector de datos",
+  "data_saver_explain": "Obtener cómics en una resolución más baja.",
+  "auto_download": "Descargar imágenes automáticamente",
+  "high_res": "Descargar imágenes de alta resolución",
+  "favorites": "Favoritos",
+  "nothing_here": "No hay nada que ver aquí todavía.",
+  "favorite_removed": "Eliminado de favoritos.",
+  "clear_favorites": "Limbar de favoritos",
+  "about": "Acerca de",
+  "about_this_app": "Acerca de esta aplicación",
+  "built_by": "Construido con ❤ y Flutter por Kosta Stoupas. Icono de lanzador por el equipo de Papirus Development."
+}
