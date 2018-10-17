@@ -18,5 +18,12 @@
   "clear_favorites": "Favoriten löschen",
   "about": "Über",
   "about_this_app": "Über diese App",
-  "built_by": "Mit ❤ und Flutter von Kosta Stoupas gebaut. Launcher icon von Papirus Development Team."
+  "built_by": "Mit ❤ und Flutter von Kosta Stoupas gebaut.",
+  "xkcd_license": "The comics displayed in this app are licensed under a Creative Commons Attribution-NonCommercial 2.5 License. Visit https://xkcd.com for additional information.",
+  "launcher_icon": "Launcher icon von Papirus Development Team.",
+  "cache_images": "Bilder cachen",
+  "cache_images_explain": "Bilder werden gecacht um Daten zu sparen",
+  "clear_image_cache": "Bildcache leeren",
+  "contributors": "MITWIRKENDE",
+  "contributors_title": "Mitwirkende"
 }

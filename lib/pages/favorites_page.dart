@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:outline_material_icons/outline_material_icons.dart';
 import 'package:xkcd/api/comic_api_client.dart';
 import 'package:xkcd/data/comic.dart';
 import 'package:xkcd/pages/comic_page.dart';
@@ -8,7 +9,7 @@ import 'package:xkcd/utils/app_localizations.dart';
 import 'package:xkcd/utils/constants.dart';
 
 class FavoritesPage extends StatefulWidget {
-  static final String favoritesPageRoute = '/favorites-page';
+  static final String pageRoute = '/favorites-page';
 
   @override
   _FavoritesPageState createState() => _FavoritesPageState();
@@ -80,7 +81,7 @@ class _FavoritesPageState extends State<FavoritesPage> {
       ),
       title: Text('${comic.num}: ${comic.title}'),
       trailing: IconButton(
-        icon: Icon(Icons.delete),
+        icon: Icon(OMIcons.delete),
         padding: EdgeInsets.all(0.0),
         alignment: Alignment.centerRight,
         onPressed: () {

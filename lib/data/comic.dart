@@ -39,7 +39,7 @@ class Comic {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = Map<String, dynamic>();
     data['month'] = this.month;
     data['num'] = this.num;
     data['link'] = this.link;

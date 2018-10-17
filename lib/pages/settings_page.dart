@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:outline_material_icons/outline_material_icons.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:package_info/package_info.dart';
+import 'package:xkcd/pages/contributors_page.dart';
 import 'package:xkcd/providers/preferences.dart';
 import 'package:xkcd/utils/app_localizations.dart';
 import 'package:xkcd/utils/constants.dart';
 
 class SettingsPage extends StatefulWidget {
-  static final String settingsPageRoute = '/settings-page';
+  static final String pageRoute = '/settings-page';
 
   @override
   State<StatefulWidget> createState() => SettingsPageState();
@@ -60,8 +62,9 @@ class SettingsPageState extends State<SettingsPage> {
   _buildImagesOptions(BuildContext context) {
     return Column(
       children: <Widget>[
+        // data saver
         ListTile(
-          leading: Icon(Icons.perm_data_setting),
+          leading: Icon(OMIcons.permDataSetting),
           title: Text(AppLocalizations.of(context).get('data_saver')),
           subtitle: Text(AppLocalizations.of(context).get('data_saver_explain')),
           trailing: Checkbox(
@@ -74,44 +77,103 @@ class SettingsPageState extends State<SettingsPage> {
             },
           ),
         ),
+        // clear cache
+        ListTile(
+          leading: Icon(OMIcons.clear),
+          title: Text(AppLocalizations.of(context).get('clear_image_cache')),
+          subtitle: Text(
+            '${imageCache.currentSize.toString()} Bilder, ${_getMegabytes()}MB',
+          ),
+          onTap: () {
+            setState(() {
+              imageCache.clear();
+            });
+          },
+        ),
       ],
     );
   }
 
+  _getMegabytes() {
+    var megabytes = imageCache.currentSizeBytes / (1024 * 1024);
+    return megabytes.toStringAsFixed(2);
+  }
+
   _buildClearFavorites(BuildContext context) {
     return ListTile(
-      leading: Icon(Icons.favorite_border),
+      leading: Icon(OMIcons.favoriteBorder),
       title: Text(AppLocalizations.of(context).get('clear_favorites')),
-      onTap: _clearFavorites,
-    );
-  }
-
-  _clearFavorites() {
-    final SharedPreferences prefs = Preferences.prefs;
-    final List<String> favorites = prefs.getStringList(Constants.favorites);
-    if (favorites != null && favorites.isNotEmpty) {
-      prefs.remove(Constants.favorites);
-    }
-  }
-
-  _buildAbout(BuildContext context) {
-    return ListTile(
-      leading: Icon(Icons.info_outline),
-      title: Text(AppLocalizations.of(context).get('about_this_app')),
       onTap: () {
-        _showAboutDialog();
+        final SharedPreferences prefs = Preferences.prefs;
+        final List<String> favorites = prefs.getStringList(Constants.favorites);
+        if (favorites != null && favorites.isNotEmpty) {
+          prefs.remove(Constants.favorites);
+        }
       },
     );
   }
 
-  _showAboutDialog() {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AboutDialog(
-          applicationName: _packageInfo.appName,
-          applicationVersion: _packageInfo.version,
-          applicationLegalese: AppLocalizations.of(context).get('built_by'),
+  _buildAbout(BuildContext context) {
+    return ListTile(
+      leading: Icon(OMIcons.info),
+      title: Text(AppLocalizations.of(context).get('about_this_app')),
+      onTap: () {
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return SimpleDialog(
+              titlePadding: EdgeInsets.all(10.0),
+              title: Text(AppLocalizations.of(context).get('about')),
+              children: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.only(right: 10.0, left: 10.0),
+                  child: Column(
+                    children: <Widget>[
+                      Text(AppLocalizations.of(context).get('built_by')),
+                      Divider(),
+                      Text(AppLocalizations.of(context).get('xkcd_license')),
+                      Divider(),
+                      Text(AppLocalizations.of(context).get('launcher_icon')),
+                      Align(
+                        alignment: Alignment.bottomRight,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: <Widget>[
+                            FlatButton(
+                              padding: EdgeInsets.only(left: 0.0),
+                              child: Text(AppLocalizations.of(context).get('contributors')),
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                                Navigator.of(context).pushNamed(ContributorsPage.pageRoute);
+                              },
+                            ),
+                            FlatButton(
+                              padding: EdgeInsets.only(right: 0.0),
+                              child:
+                                  Text(MaterialLocalizations.of(context).viewLicensesButtonLabel),
+                              onPressed: () {
+                                Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                    builder: (BuildContext context) {
+                                      return LicensePage(
+                                        applicationName: _packageInfo.appName,
+                                        applicationVersion:
+                                            _packageInfo.version + '.' + _packageInfo.buildNumber,
+                                      );
+                                    },
+                                  ),
+                                );
+                              },
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                )
+              ],
+            );
+          },
         );
       },
     );

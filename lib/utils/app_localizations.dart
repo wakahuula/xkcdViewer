@@ -22,7 +22,7 @@ class AppLocalizations {
     }
     Map<String, dynamic> _result = json.decode(data);
 
-    this._sentences = new Map();
+    this._sentences = Map();
     _result.forEach((String key, dynamic value) {
       this._sentences[key] = value.toString();
     });

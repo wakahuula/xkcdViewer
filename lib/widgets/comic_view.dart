@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:outline_material_icons/outline_material_icons.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:share/share.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:vibrate/vibrate.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:xkcd/api/comic_api_client.dart';
 import 'package:xkcd/data/comic.dart';
 import 'package:xkcd/providers/preferences.dart';
@@ -23,7 +25,7 @@ class ComicView extends StatelessWidget {
     return Stack(
       children: <Widget>[
         Padding(
-          padding: EdgeInsets.only(top: 90.0, right: 20.0, bottom: 40.0, left: 20.0),
+          padding: EdgeInsets.only(top: 80.0, right: 20.0, bottom: 40.0, left: 20.0),
           child: GestureDetector(
             onLongPress: () {
               _vibrate();
@@ -49,17 +51,17 @@ class ComicView extends StatelessWidget {
                 minScale: PhotoViewComputedScale.contained * 0.5,
                 backgroundColor: Colors.white,
                 gaplessPlayback: true,
-                imageProvider: NetworkImage(_getImageUrl()),
+                imageProvider: CachedNetworkImageProvider(_getImageUrl()),
                 loadingChild: Center(child: CircularProgressIndicator()),
               ),
             ),
           ),
         ),
         ConstrainedBox(
-          constraints: BoxConstraints.tightFor(height: 81.0),
+          constraints: BoxConstraints.tightFor(height: 86.0),
           child: Container(
             color: Colors.white,
-            padding: EdgeInsets.only(right: 10.0, bottom: 10.0, left: 10.0),
+            padding: EdgeInsets.only(right: 15.0, bottom: 10.0, left: 15.0),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.end,
@@ -74,14 +76,14 @@ class ComicView extends StatelessWidget {
                     ),
                     Text(
                       '${comic.year}-${comic.month}-${comic.day}',
-                      style: themeData.textTheme.caption.copyWith(fontSize: 14.0),
+                      style: themeData.textTheme.subhead.copyWith(color: Colors.black54),
                     )
                   ],
                 ),
                 IconButton(
-                  alignment: Alignment.centerRight,
-                  padding: EdgeInsets.all(0.0),
-                  icon: Icon(Icons.share),
+                  alignment: Alignment.topRight,
+                  padding: EdgeInsets.only(top: 10.0),
+                  icon: Icon(OMIcons.share),
                   onPressed: () {
                     _shareComic();
                   },

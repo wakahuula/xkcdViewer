@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:outline_material_icons/outline_material_icons.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:xkcd/blocs/comic_bloc.dart';
 import 'package:xkcd/data/comic.dart';
@@ -11,10 +12,10 @@ import 'package:xkcd/utils/constants.dart';
 import 'package:xkcd/widgets/comic_view.dart';
 
 class HomePage extends StatefulWidget {
-  static final String homePageRoute = '/home-page';
+  static final String pageRoute = '/home-page';
 
   @override
-  HomePageState createState() => new HomePageState();
+  HomePageState createState() => HomePageState();
 }
 
 class HomePageState extends State<HomePage> {
@@ -74,7 +75,7 @@ class HomePageState extends State<HomePage> {
       stream: bloc.comicStream,
       builder: (context, snapshot) {
         return FloatingActionButton.extended(
-          icon: Icon(Icons.autorenew),
+          icon: Icon(OMIcons.autorenew),
           label: Text(AppLocalizations.of(context).get('random')),
           onPressed: () {
             bloc.fetchRandom();
@@ -95,7 +96,7 @@ class HomePageState extends State<HomePage> {
           Row(
             children: <Widget>[
               IconButton(
-                icon: Icon(Icons.menu, color: Colors.white),
+                icon: Icon(OMIcons.menu, color: Colors.white),
                 onPressed: () {
                   showModalBottomSheet(
                     context: context,
@@ -128,7 +129,7 @@ class HomePageState extends State<HomePage> {
 
     final widgets = [
       ListTile(
-        leading: Icon(Icons.home, color: Colors.white),
+        leading: Icon(OMIcons.home, color: Colors.white),
         title: Text(appLocalizations.get('latest_comic'), style: TextStyle(color: Colors.white)),
         onTap: () {
           Navigator.pop(context);
@@ -136,7 +137,7 @@ class HomePageState extends State<HomePage> {
         },
       ),
       ListTile(
-        leading: Icon(Icons.info_outline, color: Colors.white),
+        leading: Icon(OMIcons.info, color: Colors.white),
         title: Text(appLocalizations.get('explain_current'), style: TextStyle(color: Colors.white)),
         onTap: () {
           Navigator.pop(context);
@@ -144,19 +145,19 @@ class HomePageState extends State<HomePage> {
         },
       ),
       ListTile(
-        leading: Icon(Icons.favorite, color: Colors.white),
+        leading: Icon(OMIcons.favorite, color: Colors.white),
         title: Text(appLocalizations.get('my_favorites'), style: TextStyle(color: Colors.white)),
         onTap: () {
           Navigator.pop(context);
-          Navigator.of(context).pushNamed(FavoritesPage.favoritesPageRoute);
+          Navigator.of(context).pushNamed(FavoritesPage.pageRoute);
         },
       ),
       ListTile(
-        leading: Icon(Icons.settings, color: Colors.white),
+        leading: Icon(OMIcons.settings, color: Colors.white),
         title: Text(appLocalizations.get('settings'), style: TextStyle(color: Colors.white)),
         onTap: () {
           Navigator.pop(context);
-          Navigator.of(context).pushNamed(SettingsPage.settingsPageRoute);
+          Navigator.of(context).pushNamed(SettingsPage.pageRoute);
         },
       ),
     ];
@@ -189,12 +190,12 @@ class HomePageState extends State<HomePage> {
         _handleFavoriteAction();
       },
       onLongPress: () {
-        Navigator.of(context).pushNamed(FavoritesPage.favoritesPageRoute);
+        Navigator.of(context).pushNamed(FavoritesPage.pageRoute);
       },
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Icon(
-          isFavorite ? Icons.favorite : Icons.favorite_border,
+          isFavorite ? OMIcons.favorite : OMIcons.favoriteBorder,
           color: Colors.white,
         ),
       ),

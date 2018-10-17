@@ -36,6 +36,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.4"
+  cached_network_image:
+    dependency: "direct main"
+    description:
+      name: cached_network_image
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.5.0"
   charcode:
     dependency: transitive
     description:
@@ -83,6 +90,13 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_cache_manager:
+    dependency: transitive
+    description:
+      name: flutter_cache_manager
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.2.0"
   flutter_localizations:
     dependency: "direct main"
     description: flutter
@@ -219,6 +233,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.4.4"
+  outline_material_icons:
+    dependency: "direct main"
+    description:
+      name: outline_material_icons
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.1.0"
   package_config:
     dependency: transitive
     description:
@@ -247,6 +268,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.6.2"
+  path_provider:
+    dependency: transitive
+    description:
+      name: path_provider
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.4.1"
   photo_view:
     dependency: "direct main"
     description:
@@ -378,6 +406,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.4"
+  synchronized:
+    dependency: transitive
+    description:
+      name: synchronized
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.5.3"
   term_glyph:
     dependency: transitive
     description:
@@ -413,6 +448,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.9.0+5"
+  uuid:
+    dependency: transitive
+    description:
+      name: uuid
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.3"
   vector_math:
     dependency: transitive
     description:

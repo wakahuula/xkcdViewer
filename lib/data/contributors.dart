@@ -5,15 +5,15 @@ class Contributors {
 
   Contributors.fromJson(Map<String, dynamic> json) {
     if (json['contributors'] != null) {
-      contributors = new List<Contributor>();
+      contributors = List<Contributor>();
       json['contributors'].forEach((v) {
-        contributors.add(new Contributor.fromJson(v));
+        contributors.add(Contributor.fromJson(v));
       });
     }
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = Map<String, dynamic>();
     if (this.contributors != null) {
       data['contributors'] = this.contributors.map((v) => v.toJson()).toList();
     }
@@ -33,7 +33,7 @@ class Contributor {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = Map<String, dynamic>();
     data['name'] = this.name;
     data['profile'] = this.profile;
     return data;
