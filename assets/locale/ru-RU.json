@@ -1,0 +1,22 @@
+{
+    "yes": "да",
+    "no": "нет",
+    "something_wrong": "Упс... Что-то пошло не так!",
+    "random": "случайный",
+    "latest_comic": "Последний комикс",
+    "explain_current": "Объясните текущий комикс",
+    "my_favorites": "Мои любимые",
+    "settings": "настройки",
+    "images": "Изображений",
+    "data_saver": "сохраняет данные",
+    "data_saver_explain": "получить комиксы в более низком разрешении",
+    "auto_download": "Автоматическое скачивание изображений",
+    "high_res": "Загрузите изображения с высоким разрешением",
+    "favorites": "Избранные",
+    "nothing_here": "Здесь ничего не видно",
+    "favorite_removed": "удалено из избранного",
+    "clear_favorites": "Очистить избранное",
+    "about": "Около",
+    "about_this_app": "Об этом приложении",
+    "built_by": "Построен с ❤ и Flutter от Kosta Stoupas. пусковая установка значок от Papirus Development Team."
+  }
