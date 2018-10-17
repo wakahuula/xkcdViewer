@@ -122,11 +122,11 @@ class SettingsPageState extends State<SettingsPage> {
           context: context,
           builder: (BuildContext context) {
             return SimpleDialog(
-              titlePadding: EdgeInsets.all(10.0),
+              titlePadding: EdgeInsets.all(20.0),
               title: Text(AppLocalizations.of(context).get('about')),
               children: <Widget>[
                 Padding(
-                  padding: const EdgeInsets.only(right: 10.0, left: 10.0),
+                  padding: const EdgeInsets.only(left: 20.0, right: 20.0),
                   child: Column(
                     children: <Widget>[
                       Text(AppLocalizations.of(context).get('built_by')),
@@ -137,10 +137,9 @@ class SettingsPageState extends State<SettingsPage> {
                       Align(
                         alignment: Alignment.bottomRight,
                         child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          mainAxisAlignment: MainAxisAlignment.end,
                           children: <Widget>[
                             FlatButton(
-                              padding: EdgeInsets.only(left: 0.0),
                               child: Text(AppLocalizations.of(context).get('contributors')),
                               onPressed: () {
                                 Navigator.of(context).pop();
