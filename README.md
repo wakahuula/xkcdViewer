@@ -1,17 +1,20 @@
 # xkcdViewer
 
-A simple xkcd viewer app written with [Flutter](https://flutter.io/).
+xkcdViewer is a simple comic viewer for the infamous xkcd webcomic built with [Flutter 🐦](https://flutter.io/) and [ScopedModel](https://pub.dartlang.org/packages/scoped_model) for state management.
 
-InheritedWidget and the [BLoC](https://medium.com/flutter-io/build-reactive-mobile-apps-in-flutter-companion-article-13950959e381) pattern are (mostly) used throughout the app.
+![Screenshot](screen1.png)![Screenshot](screen2.png)![Screenshot](screen3.png)
 
-![Screenshot](screenshot.png)
-
-## Features
-- The newest xkcd comic always on the main page
-- View a random comic or navigate to the previous/next comic
-- Save comics as favorites
-- Open the current comic in explainxkcd.com
+## Features:
+- View the latest xkcd comic
+- Browse for random comics
+- Add comics to your favorites
+- Long press on images to view the alt text
+- Share comics via link
+- Open an explanation of the current comic on explainxkcd.com
+- Data saver option
 
 <a href='https://play.google.com/store/apps/details?id=de.stoupas.xkcd&pcampaignid=MKT-Other-global-all-co-prtnr-py-PartBadge-Mar2515-1'><img alt='Get it on Google Play' src='https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png' height=90px/></a>
 
 Google Play and the Google Play logo are trademarks of Google LLC.
+
+The comics displayed in this app are licensed under a Creative Commons Attribution-NonCommercial 2.5 License. Visit [xkcd](https://xkcd.com) for additional information.
