@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:collection';
 import 'dart:convert';
 import 'dart:math';
 
@@ -18,7 +19,14 @@ class ComicApiClient {
   int _latestComicNum = -1;
   int _currentComicNum = -1;
 
+  HashMap<int, Comic> _cachedComics = HashMap();
+
   Future<Comic> fetchLatestComic() async {
+    if (_latestComicNum >= 0 && _cachedComics.containsKey(_latestComicNum)) {
+      _currentComicNum = _latestComicNum;
+      return _cachedComics[_latestComicNum];
+    }
+
     final response = await http.get(_baseApiUrl);
     if (response.statusCode == 200) {
       var comic = Comic.fromJson(json.decode(response.body));
@@ -26,6 +34,7 @@ class ComicApiClient {
         _latestComicNum = comic.num;
       }
       _currentComicNum = _latestComicNum;
+      _cachedComics.putIfAbsent(_latestComicNum, () => comic);
       return comic;
     } else {
       debugPrint('${response.statusCode}: ${response.toString()}');
@@ -36,12 +45,18 @@ class ComicApiClient {
   Future<Comic> fetchRandomComic() async {
     if (_latestComicNum > 0) {
       final randomNumber = Random().nextInt(_latestComicNum);
+      if (_cachedComics.containsKey(randomNumber)) {
+        _currentComicNum = randomNumber;
+        return _cachedComics[randomNumber];
+      }
+
       String randomUrl = _subApiUrl.replaceAll('{0}', randomNumber.toString());
 
       final response = await http.get(randomUrl);
       if (response.statusCode == 200) {
         var comic = Comic.fromJson(json.decode(response.body));
         _currentComicNum = comic.num;
+        _cachedComics.putIfAbsent(_currentComicNum, () => comic);
         return comic;
       } else {
         debugPrint('${response.statusCode}: ${response.toString()}');
