@@ -13,16 +13,10 @@ class ContributorsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        elevation: 0.0,
         title: Text(AppLocalizations.of(context).get('contributors_title')),
       ),
-      body: _buildContribitorsList(),
-    );
-  }
-
-  _buildContribitorsList() {
-    return Padding(
-      padding: const EdgeInsets.all(10.0),
-      child: FutureBuilder(
+      body: FutureBuilder(
         future: _getContributors(),
         builder: (context, snapshot) {
           if (snapshot == null || !snapshot.hasData) {

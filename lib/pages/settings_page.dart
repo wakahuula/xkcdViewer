@@ -3,7 +3,7 @@ import 'package:outline_material_icons/outline_material_icons.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:package_info/package_info.dart';
 import 'package:xkcd/pages/contributors_page.dart';
-import 'package:xkcd/providers/preferences.dart';
+import 'package:xkcd/utils/preferences.dart';
 import 'package:xkcd/utils/app_localizations.dart';
 import 'package:xkcd/utils/constants.dart';
 
@@ -52,14 +52,14 @@ class SettingsPageState extends State<SettingsPage> {
     );
   }
 
-  _buildTitleWidget(String title) {
+  Widget _buildTitleWidget(String title) {
     return Container(
       padding: EdgeInsets.all(15.0),
       child: Text(title),
     );
   }
 
-  _buildImagesOptions(BuildContext context) {
+  Widget _buildImagesOptions(BuildContext context) {
     return Column(
       children: <Widget>[
         // data saver
@@ -94,12 +94,12 @@ class SettingsPageState extends State<SettingsPage> {
     );
   }
 
-  _getMegabytes() {
+  String _getMegabytes() {
     var megabytes = imageCache.currentSizeBytes / (1024 * 1024);
     return megabytes.toStringAsFixed(2);
   }
 
-  _buildClearFavorites(BuildContext context) {
+  Widget _buildClearFavorites(BuildContext context) {
     return ListTile(
       leading: Icon(OMIcons.favoriteBorder),
       title: Text(AppLocalizations.of(context).get('clear_favorites')),
@@ -113,7 +113,7 @@ class SettingsPageState extends State<SettingsPage> {
     );
   }
 
-  _buildAbout(BuildContext context) {
+  Widget _buildAbout(BuildContext context) {
     return ListTile(
       leading: Icon(OMIcons.info),
       title: Text(AppLocalizations.of(context).get('about_this_app')),

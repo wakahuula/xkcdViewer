@@ -4,7 +4,7 @@ import 'package:outline_material_icons/outline_material_icons.dart';
 import 'package:xkcd/api/comic_api_client.dart';
 import 'package:xkcd/data/comic.dart';
 import 'package:xkcd/pages/comic_page.dart';
-import 'package:xkcd/providers/preferences.dart';
+import 'package:xkcd/utils/preferences.dart';
 import 'package:xkcd/utils/app_localizations.dart';
 import 'package:xkcd/utils/constants.dart';
 
@@ -26,14 +26,14 @@ class _FavoritesPageState extends State<FavoritesPage> {
         title: Text(AppLocalizations.of(context).get('favorites')),
         elevation: 0.0,
       ),
-      body: Container(
-        padding: EdgeInsets.all(10.0),
+      body: Padding(
+        padding: EdgeInsets.all(4.0),
         child: _buildFavoritesList(),
       ),
     );
   }
 
-  _buildFavoritesList() {
+  Widget _buildFavoritesList() {
     final favorites = prefs.getStringList(Constants.favorites);
     if (favorites != null && favorites.isNotEmpty) {
       return FutureBuilder(
@@ -68,7 +68,7 @@ class _FavoritesPageState extends State<FavoritesPage> {
     );
   }
 
-  _buildListTile(int index, BuildContext context, Comic comic) {
+  Widget _buildListTile(int index, BuildContext context, Comic comic) {
     return ListTile(
       contentPadding: EdgeInsets.all(10.0),
       leading: Hero(
@@ -101,7 +101,7 @@ class _FavoritesPageState extends State<FavoritesPage> {
     );
   }
 
-  _removeFavorite(BuildContext context, Comic comic) {
+  void _removeFavorite(BuildContext context, Comic comic) {
     var num = comic.num.toString();
     List<String> favorites = prefs.getStringList(Constants.favorites);
     if (favorites == null || favorites.isEmpty) {
