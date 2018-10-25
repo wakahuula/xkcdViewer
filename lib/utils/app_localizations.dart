@@ -16,8 +16,10 @@ class AppLocalizations {
   Map<String, String> _sentences;
 
   Future<bool> load() async {
-    String data = await rootBundle.loadString('assets/locale/${this.locale.languageCode}-${this.locale.countryCode}.json');
-    if (data == null) {
+    String data;
+    try {
+      data = await rootBundle.loadString('assets/locale/${this.locale.languageCode}-${this.locale.countryCode}.json');
+    } catch (e) {
       data = await rootBundle.loadString('assets/locale/en-US.json');
     }
     Map<String, dynamic> _result = json.decode(data);
