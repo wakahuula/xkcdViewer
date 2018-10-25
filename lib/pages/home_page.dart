@@ -13,7 +13,6 @@ import 'package:xkcd/widgets/comic_view.dart';
 
 class HomePage extends StatelessWidget {
   static final String pageRoute = '/home-page';
-  final ComicModel model = ComicModel();
   final SharedPreferences prefs = Preferences.prefs;
 
   @override
@@ -65,7 +64,7 @@ class HomePage extends StatelessWidget {
         IconButton(
           icon: Icon(OMIcons.share, color: themeData.primaryColor),
           onPressed: () {
-            model.shareComic();
+            ScopedModel.of<ComicModel>(context).shareComic();
           },
         ),
       ],
