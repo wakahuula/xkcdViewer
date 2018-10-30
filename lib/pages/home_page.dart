@@ -49,13 +49,11 @@ class HomePage extends StatelessWidget {
               children: <Widget>[
                 Text(
                   '${comic.num}: ${comic.title}',
-                  style: themeData.textTheme.title
-                      .copyWith(color: themeData.primaryColor),
+                  style: themeData.textTheme.title.copyWith(color: themeData.primaryColor),
                 ),
                 Text(
                   '${comic.year}-${comic.month}-${comic.day}',
-                  style: themeData.textTheme.subhead
-                      .copyWith(color: themeData.primaryColor),
+                  style: themeData.textTheme.subhead.copyWith(color: themeData.primaryColor),
                 )
               ],
             ),
@@ -81,11 +79,11 @@ class HomePage extends StatelessWidget {
         }
         return Dismissible(
             key: ValueKey(model.hashCode),
-//            resizeDuration: null,
+            resizeDuration: null,
             onDismissed: (DismissDirection direction) {
               var directionValue =
                   direction == DismissDirection.endToStart ? 1 : -1;
-              model.fetchNext(directionValue);
+              ScopedModel.of<ComicModel>(context).fetchNext(directionValue);
             },
             child: ComicView(model.comic));
       },
@@ -153,8 +151,7 @@ class HomePage extends StatelessWidget {
     var widgets = [
       ListTile(
         leading: Icon(OMIcons.home, color: Colors.white),
-        title: Text(appLocalizations.get('latest_comic'),
-            style: TextStyle(color: Colors.white)),
+        title: Text(appLocalizations.get('latest_comic'), style: TextStyle(color: Colors.white)),
         onTap: () {
           Navigator.pop(context);
           ScopedModel.of<ComicModel>(context).fetchLatest();
@@ -162,8 +159,7 @@ class HomePage extends StatelessWidget {
       ),
       ListTile(
         leading: Icon(OMIcons.info, color: Colors.white),
-        title: Text(appLocalizations.get('explain_current'),
-            style: TextStyle(color: Colors.white)),
+        title: Text(appLocalizations.get('explain_current'), style: TextStyle(color: Colors.white)),
         onTap: () {
           Navigator.pop(context);
           ScopedModel.of<ComicModel>(context).explainCurrent();
@@ -171,8 +167,7 @@ class HomePage extends StatelessWidget {
       ),
       ListTile(
         leading: Icon(OMIcons.favorite, color: Colors.white),
-        title: Text(appLocalizations.get('my_favorites'),
-            style: TextStyle(color: Colors.white)),
+        title: Text(appLocalizations.get('my_favorites'), style: TextStyle(color: Colors.white)),
         onTap: () {
           Navigator.pop(context);
           Navigator.of(context).pushNamed(FavoritesPage.pageRoute);
@@ -180,8 +175,7 @@ class HomePage extends StatelessWidget {
       ),
       ListTile(
         leading: Icon(OMIcons.settings, color: Colors.white),
-        title: Text(appLocalizations.get('settings'),
-            style: TextStyle(color: Colors.white)),
+        title: Text(appLocalizations.get('settings'), style: TextStyle(color: Colors.white)),
         onTap: () {
           Navigator.pop(context);
           Navigator.of(context).pushNamed(SettingsPage.pageRoute);
