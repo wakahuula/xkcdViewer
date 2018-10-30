@@ -25,6 +25,12 @@ class ComicModel extends Model {
     setLoading(false);
   }
 
+  void fetchNext(int incrementValue) async {
+    setLoading(true);
+    comic = await apiClient.fetchNextComic(comic.num, incrementValue);
+    setLoading(false);
+  }
+
   void fetchRandom() async {
     setLoading(true);
     comic = await apiClient.fetchRandomComic();

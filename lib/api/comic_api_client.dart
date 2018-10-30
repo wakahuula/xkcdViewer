@@ -42,6 +42,32 @@ class ComicApiClient {
     return null;
   }
 
+  Future<Comic> fetchNextComic(int currentComicNum, int incrementValue) async {
+    // Increment Value will be +ve for next comic, -ve for previous comic
+    var nextComicNum = currentComicNum + incrementValue;
+
+    if (nextComicNum >= 0 && _cachedComics.containsKey(nextComicNum)) {
+      _currentComicNum = nextComicNum;
+      return _cachedComics[nextComicNum];
+    }
+
+    if (nextComicNum > 0) {
+
+      String nextComicUrl = _subApiUrl.replaceAll('{0}', nextComicNum.toString());
+
+      final response = await http.get(nextComicUrl);
+      if (response.statusCode == 200) {
+        var comic = Comic.fromJson(json.decode(response.body));
+        _currentComicNum = nextComicNum;
+        _cachedComics.putIfAbsent(_currentComicNum, () => comic);
+        return comic;
+      } else {
+        debugPrint('${response.statusCode}: ${response.toString()}');
+      }
+    }
+    return fetchRandomComic();
+  }
+
   Future<Comic> fetchRandomComic() async {
     if (_latestComicNum > 0) {
       final randomNumber = Random().nextInt(_latestComicNum);
