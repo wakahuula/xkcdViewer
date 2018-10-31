@@ -46,11 +46,6 @@ class ComicApiClient {
     // Increment Value will be +ve for next comic, -ve for previous comic
     var nextComicNum = currentComicNum + incrementValue;
 
-    if (nextComicNum >= 0 && _cachedComics.containsKey(nextComicNum)) {
-      _currentComicNum = nextComicNum;
-      return _cachedComics[nextComicNum];
-    }
-
     if (nextComicNum > 0) {
 
       String nextComicUrl = _subApiUrl.replaceAll('{0}', nextComicNum.toString());
