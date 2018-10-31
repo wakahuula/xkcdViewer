@@ -89,8 +89,7 @@ class HomePage extends StatelessWidget {
             key: ValueKey(model.hashCode),
             resizeDuration: null,
             onDismissed: (DismissDirection direction) {
-              var directionValue =
-                  direction == DismissDirection.endToStart ? 1 : -1;
+              var directionValue = direction == DismissDirection.endToStart ? 1 : -1;
               ScopedModel.of<ComicModel>(context).fetchNext(directionValue);
             },
             child: ComicView(model.comic));
@@ -114,16 +113,18 @@ class HomePage extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          IconButton(
-            icon: Icon(OMIcons.menu, color: Colors.white),
-            onPressed: () {
-              showModalBottomSheet(
-                context: context,
-                builder: (context) {
-                  return _buildBottomSheet(context);
-                },
-              );
+          GestureDetector(
+            onVerticalDragUpdate: (details) {
+              if (details.delta.dy < 0) {
+                _showBottomSheet(context);
+              }
             },
+            child: IconButton(
+              icon: Icon(OMIcons.menu, color: Colors.white),
+              onPressed: () {
+                _showBottomSheet(context);
+              },
+            ),
           ),
           ScopedModelDescendant<ComicModel>(
             builder: (context, widget, model) {
@@ -152,55 +153,63 @@ class HomePage extends StatelessWidget {
     );
   }
 
-  Widget _buildBottomSheet(BuildContext context) {
-    var themeData = Theme.of(context);
-    var appLocalizations = AppLocalizations.of(context);
+  void _showBottomSheet(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      builder: (context) {
+        var themeData = Theme.of(context);
+        var appLocalizations = AppLocalizations.of(context);
 
-    var widgets = [
-      ListTile(
-        leading: Icon(OMIcons.home, color: Colors.white),
-        title: Text(appLocalizations.get('latest_comic'), style: TextStyle(color: Colors.white)),
-        onTap: () {
-          Navigator.pop(context);
-          ScopedModel.of<ComicModel>(context).fetchLatest();
-        },
-      ),
-      ListTile(
-        leading: Icon(OMIcons.info, color: Colors.white),
-        title: Text(appLocalizations.get('explain_current'), style: TextStyle(color: Colors.white)),
-        onTap: () {
-          Navigator.pop(context);
-          ScopedModel.of<ComicModel>(context).explainCurrent();
-        },
-      ),
-      ListTile(
-        leading: Icon(OMIcons.favorite, color: Colors.white),
-        title: Text(appLocalizations.get('my_favorites'), style: TextStyle(color: Colors.white)),
-        onTap: () {
-          Navigator.pop(context);
-          Navigator.of(context).pushNamed(FavoritesPage.pageRoute);
-        },
-      ),
-      ListTile(
-        leading: Icon(OMIcons.settings, color: Colors.white),
-        title: Text(appLocalizations.get('settings'), style: TextStyle(color: Colors.white)),
-        onTap: () {
-          Navigator.pop(context);
-          Navigator.of(context).pushNamed(SettingsPage.pageRoute);
-        },
-      ),
-    ];
+        var widgets = [
+          ListTile(
+            leading: Icon(OMIcons.home, color: Colors.white),
+            title:
+                Text(appLocalizations.get('latest_comic'), style: TextStyle(color: Colors.white)),
+            onTap: () {
+              Navigator.pop(context);
+              ScopedModel.of<ComicModel>(context).fetchLatest();
+            },
+          ),
+          ListTile(
+            leading: Icon(OMIcons.info, color: Colors.white),
+            title: Text(appLocalizations.get('explain_current'),
+                style: TextStyle(color: Colors.white)),
+            onTap: () {
+              Navigator.pop(context);
+              ScopedModel.of<ComicModel>(context).explainCurrent();
+            },
+          ),
+          ListTile(
+            leading: Icon(OMIcons.favorite, color: Colors.white),
+            title:
+                Text(appLocalizations.get('my_favorites'), style: TextStyle(color: Colors.white)),
+            onTap: () {
+              Navigator.pop(context);
+              Navigator.of(context).pushNamed(FavoritesPage.pageRoute);
+            },
+          ),
+          ListTile(
+            leading: Icon(OMIcons.settings, color: Colors.white),
+            title: Text(appLocalizations.get('settings'), style: TextStyle(color: Colors.white)),
+            onTap: () {
+              Navigator.pop(context);
+              Navigator.of(context).pushNamed(SettingsPage.pageRoute);
+            },
+          ),
+        ];
 
-    return Container(
-      color: themeData.primaryColor,
-      child: ListView.builder(
-        itemCount: widgets.length,
-        shrinkWrap: true,
-        physics: ClampingScrollPhysics(),
-        itemBuilder: (context, index) {
-          return widgets[index];
-        },
-      ),
+        return Container(
+          color: themeData.primaryColor,
+          child: ListView.builder(
+            itemCount: widgets.length,
+            shrinkWrap: true,
+            physics: ClampingScrollPhysics(),
+            itemBuilder: (context, index) {
+              return widgets[index];
+            },
+          ),
+        );
+      },
     );
   }
 }
