@@ -44,6 +44,7 @@ class ComicView extends StatelessWidget {
             minScale: PhotoViewComputedScale.contained * 0.5,
             backgroundColor: Colors.white,
             gaplessPlayback: true,
+            loadingChild: Center(child: CircularProgressIndicator()),
             imageProvider: CachedNetworkImageProvider(_getImageUrl()),
           ),
         ),

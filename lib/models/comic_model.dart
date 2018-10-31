@@ -1,5 +1,12 @@
+import 'dart:io';
+
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
+import 'package:image/image.dart' as img;
+import 'package:path_provider/path_provider.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:share/share.dart';
+import 'package:simple_permissions/simple_permissions.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:xkcd/api/comic_api_client.dart';
 import 'package:xkcd/data/comic.dart';
 import 'package:xkcd/utils/constants.dart';
@@ -12,6 +19,11 @@ class ComicModel extends Model {
   Comic comic;
 
   bool isLoading = false;
+
+  Future<String> get _appDir async {
+    final directory = await getExternalStorageDirectory();
+    return directory.path;
+  }
 
   void loadFirstComic() async {
     setLoading(true);
@@ -62,6 +74,39 @@ class ComicModel extends Model {
       return favorites?.contains(num) ?? false;
     }
     return false;
+  }
+
+  Future<void> saveComic() async {
+    bool res = await SimplePermissions.checkPermission(Permission.WriteExternalStorage);
+    if (!res) {
+      PermissionStatus status =
+          await SimplePermissions.requestPermission(Permission.WriteExternalStorage);
+      if (status != PermissionStatus.authorized) {
+        return;
+      }
+    }
+    if (comic.img == null) {
+      return;
+    }
+    final image = await getImageFromNetwork(comic.img);
+    var path = await _appDir;
+    img.Image dImage = img.decodeImage(image.readAsBytesSync());
+    // todo iOS: needs to be adapted due to no external storage
+    var file = File('$path/Download/${comic.num}.png');
+    file..writeAsBytesSync(img.encodePng(dImage));
+    Fluttertoast.showToast(
+      msg: '${comic.num}: ${comic.title} saved',
+      bgcolor: '#d0d0d0',
+      textcolor: '#000000',
+      toastLength: Toast.LENGTH_SHORT,
+      gravity: ToastGravity.CENTER,
+    );
+  }
+
+  Future<File> getImageFromNetwork(String url) async {
+    var cacheManager = await CacheManager.getInstance();
+    File file = await cacheManager.getFile(url);
+    return file;
   }
 
   void shareComic() {

@@ -13,11 +13,13 @@ import 'package:xkcd/widgets/comic_view.dart';
 
 class HomePage extends StatelessWidget {
   static final String pageRoute = '/home-page';
+  static final scaffoldKey = GlobalKey<ScaffoldState>();
   final SharedPreferences prefs = Preferences.prefs;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: scaffoldKey,
       backgroundColor: Colors.white,
       appBar: _buildAppBar(context),
       body: _buildBodyContent(),
@@ -62,6 +64,12 @@ class HomePage extends StatelessWidget {
       ),
       actions: <Widget>[
         IconButton(
+          icon: Icon(OMIcons.saveAlt, color: themeData.primaryColor),
+          onPressed: () {
+            ScopedModel.of<ComicModel>(context).saveComic();
+          },
+        ),
+        IconButton(
           icon: Icon(OMIcons.share, color: themeData.primaryColor),
           onPressed: () {
             ScopedModel.of<ComicModel>(context).shareComic();
@@ -75,7 +83,7 @@ class HomePage extends StatelessWidget {
     return ScopedModelDescendant<ComicModel>(
       builder: (context, child, model) {
         if (model.comic == null || model.isLoading) {
-          return Center(child: CircularProgressIndicator());
+          return Container();
         }
         return Dismissible(
             key: ValueKey(model.hashCode),

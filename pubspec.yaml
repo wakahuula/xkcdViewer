@@ -29,6 +29,10 @@ dependencies:
   cached_network_image: ^0.5.0
   outline_material_icons: ^0.1.0
   scoped_model: ^0.3.0
+  image: ^2.0.4
+  path_provider: ^0.4.1
+  simple_permissions: ^0.1.9
+  fluttertoast: ^2.0.9
   pimp_my_button:
     git:
       url: git://github.com/Norbert515/pimp_my_button.git
