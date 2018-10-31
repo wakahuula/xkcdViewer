@@ -39,7 +39,7 @@ class ComicModel extends Model {
 
   void fetchNext(int incrementValue) async {
     setLoading(true);
-    comic = await apiClient.fetchNextComic(comic.num, incrementValue);
+    comic = await apiClient.fetchNextComic(incrementValue);
     setLoading(false);
   }
 

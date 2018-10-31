@@ -42,9 +42,10 @@ class ComicApiClient {
     return null;
   }
 
-  Future<Comic> fetchNextComic(int currentComicNum, int incrementValue) async {
-    // Increment Value will be +ve for next comic, -ve for previous comic
-    var nextComicNum = currentComicNum + incrementValue;
+  Future<Comic> fetchNextComic(int incrementValue) async {
+    // todo: add bounce animation or toast(?) for nonexistent comics
+    var nextComicNum = _currentComicNum + incrementValue;
+    nextComicNum = nextComicNum > _latestComicNum ? _latestComicNum : nextComicNum;
 
     if (nextComicNum > 0) {
 
