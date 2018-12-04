@@ -5,9 +5,9 @@ import 'dart:math';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_web_browser/flutter_web_browser.dart';
 import 'package:http/http.dart' as http;
 import 'package:url_launcher/url_launcher.dart';
-import 'package:flutter_web_browser/flutter_web_browser.dart';
 import 'package:xkcd/data/comic.dart';
 
 class ComicApiClient {
@@ -48,7 +48,6 @@ class ComicApiClient {
     nextComicNum = nextComicNum > _latestComicNum ? _latestComicNum : nextComicNum;
 
     if (nextComicNum > 0) {
-
       String nextComicUrl = _subApiUrl.replaceAll('{0}', nextComicNum.toString());
 
       final response = await http.get(nextComicUrl);

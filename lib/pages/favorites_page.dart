@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:outline_material_icons/outline_material_icons.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:xkcd/api/comic_api_client.dart';
 import 'package:xkcd/data/comic.dart';
-import 'package:xkcd/pages/comic_page.dart';
-import 'package:xkcd/utils/preferences.dart';
 import 'package:xkcd/utils/app_localizations.dart';
 import 'package:xkcd/utils/constants.dart';
+import 'package:xkcd/utils/preferences.dart';
+import 'package:xkcd/widgets/comic_view.dart';
 
 class FavoritesPage extends StatefulWidget {
   static final String pageRoute = '/favorites-page';
@@ -70,7 +70,7 @@ class _FavoritesPageState extends State<FavoritesPage> {
 
   Widget _buildListTile(int index, BuildContext context, Comic comic) {
     return ListTile(
-      contentPadding: EdgeInsets.all(10.0),
+      contentPadding: EdgeInsets.all(12.0),
       leading: Hero(
         tag: 'hero-${comic.num}',
         child: Image.network(
@@ -94,7 +94,7 @@ class _FavoritesPageState extends State<FavoritesPage> {
         Navigator.of(context).push(MaterialPageRoute(
           maintainState: true,
           builder: (context) {
-            return ComicPage(comic);
+            return ComicView(comic);
           },
         ));
       },

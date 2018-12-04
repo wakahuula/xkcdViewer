@@ -1,8 +1,8 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:vibrate/vibrate.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:xkcd/data/comic.dart';
 import 'package:xkcd/utils/preferences.dart';
 
@@ -18,7 +18,7 @@ class ComicView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.only(top: 10.0, right: 20.0, bottom: 26.0, left: 20.0),
+      padding: EdgeInsets.only(top: 12.0, right: 20.0, bottom: 24.0, left: 20.0),
       child: GestureDetector(
         onLongPress: () {
           _vibrate();
@@ -26,10 +26,18 @@ class ComicView extends StatelessWidget {
             context: context,
             barrierDismissible: true,
             builder: (context) {
+              var primaryColor = Theme.of(context).primaryColor;
               return AlertDialog(
+                titlePadding: EdgeInsets.all(0.0),
                 contentPadding: EdgeInsets.all(0.0),
+                title: Container(
+                  padding: EdgeInsets.all(16.0),
+                  color: primaryColor,
+                  child:
+                      Text('${comic.num}: ${comic.title}', style: TextStyle(color: Colors.white)),
+                ),
                 content: Container(
-                  color: Theme.of(context).primaryColor,
+                  color: primaryColor,
                   padding: EdgeInsets.all(20.0),
                   child: Text(comic.alt, style: TextStyle(color: Colors.white)),
                 ),
@@ -39,10 +47,12 @@ class ComicView extends StatelessWidget {
         },
         child: Hero(
           tag: 'hero-${comic.num}',
-          child: PhotoViewInline(
-            maxScale: PhotoViewComputedScale.covered * 1.5,
-            minScale: PhotoViewComputedScale.contained * 0.5,
-            backgroundColor: Colors.white,
+          child: PhotoView(
+            maxScale: PhotoViewComputedScale.covered,
+            minScale: PhotoViewComputedScale.contained,
+            backgroundDecoration: BoxDecoration(
+              color: Colors.white,
+            ),
             gaplessPlayback: true,
             loadingChild: Center(child: CircularProgressIndicator()),
             imageProvider: CachedNetworkImageProvider(_getImageUrl()),

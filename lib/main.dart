@@ -7,8 +7,8 @@ import 'package:xkcd/pages/contributors_page.dart';
 import 'package:xkcd/pages/favorites_page.dart';
 import 'package:xkcd/pages/home_page.dart';
 import 'package:xkcd/pages/settings_page.dart';
-import 'package:xkcd/utils/preferences.dart';
 import 'package:xkcd/utils/app_localizations_delegate.dart';
+import 'package:xkcd/utils/preferences.dart';
 
 void main() async {
   Preferences.prefs = await SharedPreferences.getInstance();

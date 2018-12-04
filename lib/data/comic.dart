@@ -53,4 +53,19 @@ class Comic {
     data['day'] = this.day;
     return data;
   }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is Comic &&
+          runtimeType == other.runtimeType &&
+          num == other.num &&
+          title == other.title &&
+          img == other.img;
+
+  @override
+  int get hashCode => num.hashCode ^ title.hashCode ^ img.hashCode;
+
+  @override
+  String toString() => 'Comic { num: $num, title: $title, img: $img }';
 }

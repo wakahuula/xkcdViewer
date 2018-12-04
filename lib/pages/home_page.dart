@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:outline_material_icons/outline_material_icons.dart';
+import 'package:pimp_my_button/pimp_my_button.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:pimp_my_button/pimp_my_button.dart';
 import 'package:xkcd/models/comic_model.dart';
 import 'package:xkcd/pages/favorites_page.dart';
 import 'package:xkcd/pages/settings_page.dart';
@@ -44,7 +44,7 @@ class HomePage extends StatelessWidget {
           var comic = model.comic;
 
           return Padding(
-            padding: EdgeInsets.only(left: 10.0, top: 8.0),
+            padding: EdgeInsets.only(left: 12.0, top: 8.0),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -85,14 +85,16 @@ class HomePage extends StatelessWidget {
         if (model.comic == null || model.isLoading) {
           return Container();
         }
-        return Dismissible(
-            key: ValueKey(model.hashCode),
-            resizeDuration: null,
-            onDismissed: (DismissDirection direction) {
-              var directionValue = direction == DismissDirection.endToStart ? 1 : -1;
-              ScopedModel.of<ComicModel>(context).fetchNext(directionValue);
-            },
-            child: ComicView(model.comic));
+        return ComicView(model.comic);
+//        return Dismissible(
+//          key: ValueKey(model.hashCode),
+//          resizeDuration: null,
+//          onDismissed: (DismissDirection direction) {
+//            var directionValue = direction == DismissDirection.endToStart ? 1 : -1;
+//            ScopedModel.of<ComicModel>(context).fetchNext(directionValue);
+//          },
+//          child: ComicView(model.comic),
+//        );
       },
     );
   }

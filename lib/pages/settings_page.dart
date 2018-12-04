@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:outline_material_icons/outline_material_icons.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:package_info/package_info.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:xkcd/pages/contributors_page.dart';
-import 'package:xkcd/utils/preferences.dart';
 import 'package:xkcd/utils/app_localizations.dart';
 import 'package:xkcd/utils/constants.dart';
+import 'package:xkcd/utils/preferences.dart';
 
 class SettingsPage extends StatefulWidget {
   static final String pageRoute = '/settings-page';
@@ -15,6 +15,7 @@ class SettingsPage extends StatefulWidget {
 }
 
 class SettingsPageState extends State<SettingsPage> {
+  GlobalKey<ScaffoldState> _settingsScaffoldKey = GlobalKey();
   final SharedPreferences _prefs = Preferences.prefs;
   PackageInfo _packageInfo;
 
@@ -31,13 +32,14 @@ class SettingsPageState extends State<SettingsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _settingsScaffoldKey,
       backgroundColor: Colors.white,
       appBar: AppBar(
         title: Text(AppLocalizations.of(context).get('settings')),
         elevation: 0.0,
       ),
       body: Container(
-        padding: EdgeInsets.all(10.0),
+        padding: EdgeInsets.all(12.0),
         child: ListView(
           children: <Widget>[
             _buildTitleWidget(AppLocalizations.of(context).get('images')),
@@ -54,7 +56,7 @@ class SettingsPageState extends State<SettingsPage> {
 
   Widget _buildTitleWidget(String title) {
     return Container(
-      padding: EdgeInsets.all(15.0),
+      padding: EdgeInsets.all(16.0),
       child: Text(title),
     );
   }
@@ -103,11 +105,14 @@ class SettingsPageState extends State<SettingsPage> {
     return ListTile(
       leading: Icon(OMIcons.favoriteBorder),
       title: Text(AppLocalizations.of(context).get('clear_favorites')),
-      onTap: () {
+      onTap: () async {
         final SharedPreferences prefs = Preferences.prefs;
         final List<String> favorites = prefs.getStringList(Constants.favorites);
         if (favorites != null && favorites.isNotEmpty) {
           prefs.remove(Constants.favorites);
+          _settingsScaffoldKey.currentState.showSnackBar(
+            SnackBar(content: Text(AppLocalizations.of(context).get('favorites_cleared'))),
+          );
         }
       },
     );
