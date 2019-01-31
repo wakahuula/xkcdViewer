@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flutter/material.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image/image.dart' as img;
@@ -96,8 +97,8 @@ class ComicModel extends Model {
     file..writeAsBytesSync(img.encodePng(dImage));
     Fluttertoast.showToast(
       msg: '${comic.num}: ${comic.title} saved',
-      bgcolor: '#d0d0d0',
-      textcolor: '#000000',
+      backgroundColor: Color(0xFFD0D0D0),
+      textColor: Color(0xFF000000),
       toastLength: Toast.LENGTH_SHORT,
       gravity: ToastGravity.CENTER,
     );

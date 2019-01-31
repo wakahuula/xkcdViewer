@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:outline_material_icons/outline_material_icons.dart';
 import 'package:pimp_my_button/pimp_my_button.dart';
+import 'package:rounded_modal/rounded_modal.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:xkcd/models/comic_model.dart';
@@ -33,18 +34,18 @@ class HomePage extends StatelessWidget {
     var themeData = Theme.of(context);
 
     return AppBar(
-      titleSpacing: 0.0,
+      titleSpacing: 0,
       backgroundColor: Colors.white,
-      elevation: 0.0,
+      elevation: 0,
       title: ScopedModelDescendant<ComicModel>(
         builder: (_, child, model) {
           if (model.comic == null || model.isLoading) {
-            return Container(width: 0.0, height: 0.0);
+            return SizedBox(width: 0, height: 0);
           }
           var comic = model.comic;
 
           return Padding(
-            padding: EdgeInsets.only(left: 12.0, top: 8.0),
+            padding: const EdgeInsets.only(left: 12, top: 8),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -85,16 +86,35 @@ class HomePage extends StatelessWidget {
         if (model.comic == null || model.isLoading) {
           return Container();
         }
-        return ComicView(model.comic);
-//        return Dismissible(
-//          key: ValueKey(model.hashCode),
-//          resizeDuration: null,
-//          onDismissed: (DismissDirection direction) {
-//            var directionValue = direction == DismissDirection.endToStart ? 1 : -1;
-//            ScopedModel.of<ComicModel>(context).fetchNext(directionValue);
-//          },
-//          child: ComicView(model.comic),
-//        );
+        return Dismissible(
+          key: ValueKey(model.hashCode),
+          resizeDuration: Duration(milliseconds: 300),
+          secondaryBackground: Container(
+            color: Theme.of(context).primaryColor,
+            child: Center(
+              child: Icon(
+                OMIcons.keyboardArrowRight,
+                color: Colors.white,
+                size: 92,
+              ),
+            ),
+          ),
+          background: Container(
+            color: Theme.of(context).primaryColor,
+            child: Center(
+              child: Icon(
+                OMIcons.keyboardArrowLeft,
+                color: Colors.white,
+                size: 92,
+              ),
+            ),
+          ),
+          onDismissed: (DismissDirection direction) {
+            var directionValue = direction == DismissDirection.endToStart ? 1 : -1;
+            ScopedModel.of<ComicModel>(context).fetchNext(directionValue);
+          },
+          child: ComicView(model.comic),
+        );
       },
     );
   }
@@ -110,63 +130,66 @@ class HomePage extends StatelessWidget {
   }
 
   Widget _buildBottomAppBar(BuildContext context) {
-    return BottomAppBar(
-      color: Theme.of(context).primaryColor,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          GestureDetector(
-            onVerticalDragUpdate: (details) {
-              if (details.delta.dy < 0) {
-                _showBottomSheet(context);
-              }
-            },
-            child: IconButton(
-              icon: Icon(OMIcons.menu, color: Colors.white),
-              onPressed: () {
-                _showBottomSheet(context);
+    return SizedBox(
+      height: 56,
+      child: BottomAppBar(
+        color: Theme.of(context).primaryColor,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            GestureDetector(
+              onVerticalDragUpdate: (details) {
+                if (details.delta.dy < 0) {
+                  _showBottomSheet(context);
+                }
+              },
+              child: IconButton(
+                icon: Icon(OMIcons.menu, color: Colors.white),
+                onPressed: () {
+                  _showBottomSheet(context);
+                },
+              ),
+            ),
+            ScopedModelDescendant<ComicModel>(
+              builder: (context, widget, model) {
+                bool isFavorite = model.isFavorite() ?? false;
+
+                return PimpedButton(
+                  duration: Duration(milliseconds: 200),
+                  particle: FavoriteParticle(),
+                  pimpedWidgetBuilder: (context, controller) {
+                    return IconButton(
+                      icon: Icon(
+                        isFavorite ? OMIcons.favorite : OMIcons.favoriteBorder,
+                        color: Colors.white,
+                      ),
+                      onPressed: () {
+                        controller.forward(from: 0);
+                        model.onFavorite();
+                      },
+                    );
+                  },
+                );
               },
             ),
-          ),
-          ScopedModelDescendant<ComicModel>(
-            builder: (context, widget, model) {
-              bool isFavorite = model.isFavorite() ?? false;
-
-              return PimpedButton(
-                duration: Duration(milliseconds: 200),
-                particle: FavoriteParticle(),
-                pimpedWidgetBuilder: (context, controller) {
-                  return IconButton(
-                    icon: Icon(
-                      isFavorite ? OMIcons.favorite : OMIcons.favoriteBorder,
-                      color: Colors.white,
-                    ),
-                    onPressed: () {
-                      controller.forward(from: 0.0);
-                      model.onFavorite();
-                    },
-                  );
-                },
-              );
-            },
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
 
   void _showBottomSheet(BuildContext context) {
-    showModalBottomSheet(
+    showRoundedModalBottomSheet(
       context: context,
+      color: Theme.of(context).primaryColor,
       builder: (context) {
-        var themeData = Theme.of(context);
         var appLocalizations = AppLocalizations.of(context);
 
         var widgets = [
           ListTile(
             leading: Icon(OMIcons.home, color: Colors.white),
-            title:
-                Text(appLocalizations.get('latest_comic'), style: TextStyle(color: Colors.white)),
+            title: Text(appLocalizations.get('latest_comic'),
+                style: const TextStyle(color: Colors.white)),
             onTap: () {
               Navigator.pop(context);
               ScopedModel.of<ComicModel>(context).fetchLatest();
@@ -175,7 +198,7 @@ class HomePage extends StatelessWidget {
           ListTile(
             leading: Icon(OMIcons.info, color: Colors.white),
             title: Text(appLocalizations.get('explain_current'),
-                style: TextStyle(color: Colors.white)),
+                style: const TextStyle(color: Colors.white)),
             onTap: () {
               Navigator.pop(context);
               ScopedModel.of<ComicModel>(context).explainCurrent();
@@ -183,8 +206,8 @@ class HomePage extends StatelessWidget {
           ),
           ListTile(
             leading: Icon(OMIcons.favorite, color: Colors.white),
-            title:
-                Text(appLocalizations.get('my_favorites'), style: TextStyle(color: Colors.white)),
+            title: Text(appLocalizations.get('my_favorites'),
+                style: const TextStyle(color: Colors.white)),
             onTap: () {
               Navigator.pop(context);
               Navigator.of(context).pushNamed(FavoritesPage.pageRoute);
@@ -192,7 +215,8 @@ class HomePage extends StatelessWidget {
           ),
           ListTile(
             leading: Icon(OMIcons.settings, color: Colors.white),
-            title: Text(appLocalizations.get('settings'), style: TextStyle(color: Colors.white)),
+            title:
+                Text(appLocalizations.get('settings'), style: const TextStyle(color: Colors.white)),
             onTap: () {
               Navigator.pop(context);
               Navigator.of(context).pushNamed(SettingsPage.pageRoute);
@@ -200,16 +224,13 @@ class HomePage extends StatelessWidget {
           ),
         ];
 
-        return Container(
-          color: themeData.primaryColor,
-          child: ListView.builder(
-            itemCount: widgets.length,
-            shrinkWrap: true,
-            physics: ClampingScrollPhysics(),
-            itemBuilder: (context, index) {
-              return widgets[index];
-            },
-          ),
+        return ListView.builder(
+          itemCount: widgets.length,
+          shrinkWrap: true,
+          physics: ClampingScrollPhysics(),
+          itemBuilder: (context, index) {
+            return widgets[index];
+          },
         );
       },
     );

@@ -23,11 +23,22 @@ class _FavoritesPageState extends State<FavoritesPage> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
+        brightness: Brightness.light,
+        backgroundColor: Colors.white,
+        iconTheme: IconThemeData(color: Colors.black87),
+        textTheme: Theme.of(context).textTheme.copyWith(
+          title: TextStyle(
+            color: Colors.black87,
+            fontFamily: 'FiraMono',
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
         title: Text(AppLocalizations.of(context).get('favorites')),
-        elevation: 0.0,
+        elevation: 0,
       ),
       body: Padding(
-        padding: EdgeInsets.all(4.0),
+        padding: const EdgeInsets.all(8),
         child: _buildFavoritesList(),
       ),
     );
@@ -46,7 +57,7 @@ class _FavoritesPageState extends State<FavoritesPage> {
             default:
               if (snapshot.hasError) {
                 debugPrint(snapshot.toString());
-                return Container(width: 0.0, height: 0.0);
+                return SizedBox(width: 0, height: 0);
               } else {
                 var data = snapshot.data;
                 if (data != null && data is List) {
@@ -70,19 +81,19 @@ class _FavoritesPageState extends State<FavoritesPage> {
 
   Widget _buildListTile(int index, BuildContext context, Comic comic) {
     return ListTile(
-      contentPadding: EdgeInsets.all(12.0),
+      contentPadding: const EdgeInsets.all(12),
       leading: Hero(
         tag: 'hero-${comic.num}',
         child: Image.network(
           comic.img,
-          width: 50.0,
-          height: 60.0,
+          width: 50,
+          height: 60,
         ),
       ),
       title: Text('${comic.num}: ${comic.title}'),
       trailing: IconButton(
         icon: Icon(OMIcons.delete),
-        padding: EdgeInsets.all(0.0),
+        padding: const EdgeInsets.all(0),
         alignment: Alignment.centerRight,
         onPressed: () {
           setState(() {
@@ -117,7 +128,7 @@ class _FavoritesPageState extends State<FavoritesPage> {
         content: Text.rich(TextSpan(children: [
           TextSpan(
             text: '${comic.title}',
-            style: TextStyle(fontWeight: FontWeight.bold),
+            style: const TextStyle(fontWeight: FontWeight.bold),
           ),
           TextSpan(text: ' ${AppLocalizations.of(context).get('favorite_removed')}'),
         ])),

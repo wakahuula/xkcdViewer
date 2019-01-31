@@ -14,9 +14,9 @@ class FavoriteParticle extends Particle {
         CircleMirror(
           numberOfParticles: 6,
           child: AnimatedPositionedParticle(
-            begin: Offset(0.0, 10.0),
-            end: Offset(0.0, 20.0),
-            child: FadingRect(width: 4.0, height: 14.0, color: Colors.white),
+            begin: Offset(0, 10),
+            end: Offset(0, 20),
+            child: FadingRect(width: 4, height: 14, color: Colors.white),
           ),
           initialRotation: -pi / randomMirrorOffset,
         ),
@@ -25,15 +25,15 @@ class FavoriteParticle extends Particle {
           particleBuilder: (index) {
             return IntervalParticle(
                 child: AnimatedPositionedParticle(
-                  begin: Offset(0.0, 14.0),
-                  end: Offset(0.0, 30.0),
+                  begin: Offset(0, 14),
+                  end: Offset(0, 30),
                   child: FadingTriangle(
-                      baseSize: 6.0 + random.nextDouble() * 2.0,
-                      heightToBaseFactor: 1.0 + random.nextDouble(),
+                      baseSize: 6 + random.nextDouble() * 2,
+                      heightToBaseFactor: 1 + random.nextDouble(),
                       variation: random.nextDouble(),
                       color: Colors.white),
                 ),
-                interval: Interval(0.0, 0.8));
+                interval: Interval(0, 0.8));
           },
           initialRotation: -pi / randomMirrorOffset + 8,
         ),

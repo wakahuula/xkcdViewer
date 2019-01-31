@@ -35,11 +35,22 @@ class SettingsPageState extends State<SettingsPage> {
       key: _settingsScaffoldKey,
       backgroundColor: Colors.white,
       appBar: AppBar(
+        brightness: Brightness.light,
+        backgroundColor: Colors.white,
+        iconTheme: IconThemeData(color: Colors.black87),
+        textTheme: Theme.of(context).textTheme.copyWith(
+              title: TextStyle(
+                color: Colors.black87,
+                fontFamily: 'FiraMono',
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
         title: Text(AppLocalizations.of(context).get('settings')),
-        elevation: 0.0,
+        elevation: 0,
       ),
       body: Container(
-        padding: EdgeInsets.all(12.0),
+        padding: const EdgeInsets.all(8),
         child: ListView(
           children: <Widget>[
             _buildTitleWidget(AppLocalizations.of(context).get('images')),
@@ -56,7 +67,7 @@ class SettingsPageState extends State<SettingsPage> {
 
   Widget _buildTitleWidget(String title) {
     return Container(
-      padding: EdgeInsets.all(16.0),
+      padding: const EdgeInsets.all(16),
       child: Text(title),
     );
   }
@@ -127,11 +138,11 @@ class SettingsPageState extends State<SettingsPage> {
           context: context,
           builder: (BuildContext context) {
             return SimpleDialog(
-              titlePadding: EdgeInsets.all(20.0),
+              titlePadding: const EdgeInsets.all(20),
               title: Text(AppLocalizations.of(context).get('about')),
               children: <Widget>[
                 Padding(
-                  padding: const EdgeInsets.only(left: 20.0, right: 20.0),
+                  padding: const EdgeInsets.only(left: 20, right: 20),
                   child: Column(
                     children: <Widget>[
                       Text(AppLocalizations.of(context).get('built_by')),
@@ -152,7 +163,7 @@ class SettingsPageState extends State<SettingsPage> {
                               },
                             ),
                             FlatButton(
-                              padding: EdgeInsets.only(right: 0.0),
+                              padding: const EdgeInsets.only(right: 0),
                               child:
                                   Text(MaterialLocalizations.of(context).viewLicensesButtonLabel),
                               onPressed: () {

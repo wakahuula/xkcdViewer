@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -12,6 +13,9 @@ import 'package:xkcd/utils/preferences.dart';
 
 void main() async {
   Preferences.prefs = await SharedPreferences.getInstance();
+  SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+    systemNavigationBarColor: Color(0xFF3e3e3e),
+  ));
 
   runApp(XkcdViewer());
 }
