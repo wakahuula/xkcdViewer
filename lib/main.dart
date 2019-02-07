@@ -15,6 +15,7 @@ void main() async {
   Preferences.prefs = await SharedPreferences.getInstance();
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
     systemNavigationBarColor: Color(0xFF3e3e3e),
+    statusBarColor: Color(0xFF3e3e3e),
   ));
 
   runApp(XkcdViewer());

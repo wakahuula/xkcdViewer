@@ -77,7 +77,7 @@ class ComicModel extends Model {
     return false;
   }
 
-  Future<void> saveComic() async {
+  Future<void> saveComic({comic}) async {
     bool res = await SimplePermissions.checkPermission(Permission.WriteExternalStorage);
     if (!res) {
       PermissionStatus status =
@@ -86,17 +86,18 @@ class ComicModel extends Model {
         return;
       }
     }
-    if (comic.img == null) {
+    var comicToSave = comic ?? this.comic;
+    if (comicToSave.img == null) {
       return;
     }
-    final image = await getImageFromNetwork(comic.img);
+    final image = await getImageFromNetwork(comicToSave.img);
     var path = await _appDir;
     img.Image dImage = img.decodeImage(image.readAsBytesSync());
     // todo iOS: needs to be adapted due to no external storage
-    var file = File('$path/Download/${comic.num}.png');
+    var file = File('$path/Download/${comicToSave.num}.png');
     file..writeAsBytesSync(img.encodePng(dImage));
     Fluttertoast.showToast(
-      msg: '${comic.num}: ${comic.title} saved',
+      msg: '${comicToSave.num}: ${comicToSave.title} saved',
       backgroundColor: Color(0xFFD0D0D0),
       textColor: Color(0xFF000000),
       toastLength: Toast.LENGTH_SHORT,
@@ -110,8 +111,9 @@ class ComicModel extends Model {
     return file;
   }
 
-  void shareComic() {
-    String url = '${ComicApiClient.baseUrl}${comic.num}/';
+  void shareComic({comic}) {
+    var comicToShare = comic ?? this.comic;
+    String url = '${ComicApiClient.baseUrl}${comicToShare.num}/';
     Share.share(url);
   }
 

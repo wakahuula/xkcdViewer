@@ -35,8 +35,9 @@ class SettingsPageState extends State<SettingsPage> {
       key: _settingsScaffoldKey,
       backgroundColor: Colors.white,
       appBar: AppBar(
-        brightness: Brightness.light,
+        titleSpacing: 0,
         backgroundColor: Colors.white,
+        elevation: 0,
         iconTheme: IconThemeData(color: Colors.black87),
         textTheme: Theme.of(context).textTheme.copyWith(
               title: TextStyle(
@@ -47,7 +48,6 @@ class SettingsPageState extends State<SettingsPage> {
               ),
             ),
         title: Text(AppLocalizations.of(context).get('settings')),
-        elevation: 0,
       ),
       body: Container(
         padding: const EdgeInsets.all(8),

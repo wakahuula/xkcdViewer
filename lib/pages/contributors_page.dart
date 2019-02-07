@@ -13,6 +13,8 @@ class ContributorsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        titleSpacing: 0,
+        backgroundColor: Colors.white,
         elevation: 0,
         title: Text(AppLocalizations.of(context).get('contributors_title')),
       ),
