@@ -2,7 +2,7 @@
 
 xkcdViewer is a simple comic viewer for the infamous xkcd webcomic built with [Flutter 🐦](https://flutter.io/) and [ScopedModel](https://pub.dartlang.org/packages/scoped_model) for state management.
 
-<img width="200" src="screen1.png"> <img width="200" src="screen2.png"> <img width="200" src="screen3.png">
+<img width="180" src="screen1.png"> <img width="180" src="screen2.png"> <img width="180" src="screen3.png"> <img width="180" src="screen4.png">
 
 ## Features:
 - View the latest xkcd comic
