@@ -26,5 +26,6 @@
   "cache_images_explain": "Imágenes en caché para guardar datos",
   "clear_image_cache": "Borrar caché de imagen",
   "contributors": "CONTRIBUYENTES",
-  "contributors_title": "Contribuyentes"
+  "contributors_title": "Contribuyentes",
+  "theme": "Tema"
 }

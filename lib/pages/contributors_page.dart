@@ -14,7 +14,6 @@ class ContributorsPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         titleSpacing: 0,
-        backgroundColor: Colors.white,
         elevation: 0,
         title: Text(AppLocalizations.of(context).get('contributors_title')),
       ),

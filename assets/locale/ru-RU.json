@@ -26,5 +26,6 @@
   "cache_images_explain": "Кэшировать изображения для экономии данных",
   "clear_image_cache": "Очистить кэш изображений",
   "contributors": "РАЗРАБОТЧИКИ",
-  "contributors_title": "Разработчики"
+  "contributors_title": "Разработчики",
+  "theme": "Tема"
 }

@@ -2,9 +2,9 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:vibrate/vibrate.dart';
 import 'package:xkcd/data/comic.dart';
 import 'package:xkcd/utils/preferences.dart';
+import 'package:flutter_fadein/flutter_fadein.dart';
 
 class ComicView extends StatelessWidget {
   final Comic comic;
@@ -22,18 +22,19 @@ class ComicView extends StatelessWidget {
         _showAltDialog(context);
       },
       child: Container(
-        color: Colors.white,
         padding: const EdgeInsets.only(top: 0, right: 16, bottom: 32, left: 16),
         child: Hero(
           tag: 'hero-${comic.num}',
-          child: PhotoView(
-            maxScale: PhotoViewComputedScale.covered,
-            minScale: PhotoViewComputedScale.contained,
-            backgroundDecoration: const BoxDecoration(
-              color: Colors.white,
+          child: FadeIn(
+            child: PhotoView(
+              maxScale: PhotoViewComputedScale.covered,
+              minScale: PhotoViewComputedScale.contained,
+              backgroundDecoration: const BoxDecoration(
+                color: Colors.white,
+              ),
+              loadingChild: Center(child: CircularProgressIndicator()),
+              imageProvider: CachedNetworkImageProvider(_getImageUrl()),
             ),
-            loadingChild: Center(child: CircularProgressIndicator()),
-            imageProvider: CachedNetworkImageProvider(_getImageUrl()),
           ),
         ),
       ),
@@ -59,18 +60,15 @@ class ComicView extends StatelessWidget {
       context: context,
       barrierDismissible: true,
       builder: (context) {
-        var primaryColor = Theme.of(context).primaryColor;
         return AlertDialog(
           titlePadding: const EdgeInsets.all(0),
           contentPadding: const EdgeInsets.all(0),
           title: Container(
             padding: const EdgeInsets.all(16),
-            color: primaryColor,
             child:
                 Text('${comic.num}: ${comic.title}', style: const TextStyle(color: Colors.white)),
           ),
           content: Container(
-            color: primaryColor,
             padding: const EdgeInsets.all(20),
             child: Text(comic.alt, style: const TextStyle(color: Colors.white)),
           ),
@@ -80,8 +78,8 @@ class ComicView extends StatelessWidget {
   }
 
   void _vibrate() async {
-    if (await Vibrate.canVibrate) {
-      Vibrate.feedback(FeedbackType.light);
-    }
+//    if (await Vibration.hasVibrator()) {
+//      Vibration.vibrate();
+//    }
   }
 }

@@ -26,5 +26,6 @@
   "cache_images_explain": "Cache images to save data",
   "clear_image_cache": "Clear image cache",
   "contributors": "CONTRIBUTORS",
-  "contributors_title": "Contributors"
+  "contributors_title": "Contributors",
+  "theme": "Theme"
 }

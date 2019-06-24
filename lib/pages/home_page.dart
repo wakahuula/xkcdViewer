@@ -1,4 +1,6 @@
+import 'package:dynamic_theme/dynamic_theme.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_fadein/flutter_fadein.dart';
 import 'package:outline_material_icons/outline_material_icons.dart';
 import 'package:pimp_my_button/pimp_my_button.dart';
 import 'package:rounded_modal/rounded_modal.dart';
@@ -20,15 +22,11 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var themeData = Theme.of(context);
-
     return SafeArea(
       child: Scaffold(
         key: scaffoldKey,
-        backgroundColor: Colors.white,
         appBar: AppBar(
           titleSpacing: 0,
-          backgroundColor: Colors.white,
           elevation: 0,
           title: ScopedModelDescendant<ComicModel>(
             builder: (_, child, model) {
@@ -39,32 +37,28 @@ class HomePage extends StatelessWidget {
 
               return Padding(
                 padding: const EdgeInsets.only(left: 12, top: 8),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Text(
-                      '${comic.num}: ${comic.title}',
-                      style: themeData.textTheme.title.copyWith(color: themeData.primaryColor),
-                    ),
-                    Text(
-                      '${comic.year}-${comic.month}-${comic.day}',
-                      style: themeData.textTheme.subhead.copyWith(color: themeData.primaryColor),
-                    )
-                  ],
+                child: FadeIn(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Text('${comic.num}: ${comic.title}'),
+                      Text('${comic.year}-${comic.month}-${comic.day}')
+                    ],
+                  ),
                 ),
               );
             },
           ),
           actions: <Widget>[
             IconButton(
-              icon: Icon(OMIcons.saveAlt, color: themeData.primaryColor),
+              icon: Icon(OMIcons.saveAlt),
               onPressed: () {
                 ScopedModel.of<ComicModel>(context).saveComic();
               },
             ),
             IconButton(
-              icon: Icon(OMIcons.share, color: themeData.primaryColor),
+              icon: Icon(OMIcons.share),
               onPressed: () {
                 ScopedModel.of<ComicModel>(context).shareComic();
               },
@@ -90,14 +84,13 @@ class HomePage extends StatelessWidget {
         bottomNavigationBar: SizedBox(
           height: 56,
           child: BottomAppBar(
-            color: Theme.of(context).primaryColor,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Row(
                   children: <Widget>[
                     IconButton(
-                      icon: Icon(OMIcons.menu, color: Colors.white),
+                      icon: Icon(OMIcons.menu),
                       onPressed: () {
                         _showBottomSheet(context);
                       },
@@ -110,10 +103,7 @@ class HomePage extends StatelessWidget {
                           particle: FavoriteParticle(),
                           pimpedWidgetBuilder: (context, controller) {
                             return IconButton(
-                              icon: Icon(
-                                isFavorite ? OMIcons.favorite : OMIcons.favoriteBorder,
-                                color: Colors.white,
-                              ),
+                              icon: Icon(isFavorite ? OMIcons.favorite : OMIcons.favoriteBorder),
                               onPressed: () {
                                 controller.forward(from: 0);
                                 model.onFavorite();
@@ -128,13 +118,13 @@ class HomePage extends StatelessWidget {
                 Row(
                   children: <Widget>[
                     IconButton(
-                      icon: Icon(OMIcons.chevronLeft, color: Colors.white, size: 32),
+                      icon: Icon(OMIcons.chevronLeft, size: 32),
                       onPressed: () {
                         ScopedModel.of<ComicModel>(context).fetchNext(-1);
                       },
                     ),
                     IconButton(
-                      icon: Icon(OMIcons.chevronRight, color: Colors.white, size: 32),
+                      icon: Icon(OMIcons.chevronRight, size: 32),
                       onPressed: () {
                         ScopedModel.of<ComicModel>(context).fetchNext(1);
                       },
@@ -151,43 +141,39 @@ class HomePage extends StatelessWidget {
 
   void _showBottomSheet(BuildContext context) {
     showRoundedModalBottomSheet(
-      context: context,
       color: Theme.of(context).primaryColor,
+      context: context,
       builder: (context) {
         var appLocalizations = AppLocalizations.of(context);
 
         var widgets = [
           ListTile(
-            leading: Icon(OMIcons.home, color: Colors.white),
-            title: Text(appLocalizations.get('latest_comic'),
-                style: const TextStyle(color: Colors.white)),
+            leading: Icon(OMIcons.home),
+            title: Text(appLocalizations.get('latest_comic')),
             onTap: () {
               Navigator.pop(context);
               ScopedModel.of<ComicModel>(context).fetchLatest();
             },
           ),
           ListTile(
-            leading: Icon(OMIcons.info, color: Colors.white),
-            title: Text(appLocalizations.get('explain_current'),
-                style: const TextStyle(color: Colors.white)),
+            leading: Icon(OMIcons.info),
+            title: Text(appLocalizations.get('explain_current')),
             onTap: () {
               Navigator.pop(context);
               ScopedModel.of<ComicModel>(context).explainCurrent();
             },
           ),
           ListTile(
-            leading: Icon(OMIcons.favorite, color: Colors.white),
-            title: Text(appLocalizations.get('my_favorites'),
-                style: const TextStyle(color: Colors.white)),
+            leading: Icon(OMIcons.favorite),
+            title: Text(appLocalizations.get('my_favorites')),
             onTap: () {
               Navigator.pop(context);
               Navigator.of(context).pushNamed(FavoritesPage.pageRoute);
             },
           ),
           ListTile(
-            leading: Icon(OMIcons.settings, color: Colors.white),
-            title:
-                Text(appLocalizations.get('settings'), style: const TextStyle(color: Colors.white)),
+            leading: Icon(OMIcons.settings),
+            title: Text(appLocalizations.get('settings')),
             onTap: () {
               Navigator.pop(context);
               Navigator.of(context).pushNamed(SettingsPage.pageRoute);

@@ -26,20 +26,9 @@ class _FavoritesPageState extends State<FavoritesPage> {
 
     return SafeArea(
       child: Scaffold(
-        backgroundColor: Colors.white,
         appBar: AppBar(
           titleSpacing: 0,
-          backgroundColor: Colors.white,
           elevation: 0,
-          iconTheme: IconThemeData(color: Colors.black87),
-          textTheme: Theme.of(context).textTheme.copyWith(
-                title: TextStyle(
-                  color: Colors.black87,
-                  fontFamily: 'FiraMono',
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
           title: Text(AppLocalizations.of(context).get('favorites')),
         ),
         body: Padding(
@@ -91,51 +80,40 @@ class _FavoritesPageState extends State<FavoritesPage> {
                                     Navigator.of(context).push(MaterialPageRoute(
                                       maintainState: true,
                                       builder: (context) {
-                                        var themeData = Theme.of(context);
                                         return SafeArea(
                                           child: Scaffold(
-                                            backgroundColor: Colors.white,
                                             appBar: AppBar(
                                               titleSpacing: 0,
-                                              backgroundColor: Colors.white,
                                               elevation: 0,
-                                              iconTheme: IconThemeData(color: Colors.black87),
-                                              textTheme: Theme.of(context).textTheme.copyWith(
-                                                title: TextStyle(
-                                                  color: Colors.black87,
-                                                  fontFamily: 'FiraMono',
-                                                  fontSize: 20,
-                                                  fontWeight: FontWeight.bold,
-                                                ),
-                                              ),
                                               title: Padding(
                                                 padding: const EdgeInsets.only(left: 12, top: 8),
                                                 child: Column(
                                                   mainAxisAlignment: MainAxisAlignment.start,
                                                   crossAxisAlignment: CrossAxisAlignment.start,
                                                   children: <Widget>[
+                                                    Text('${comic.num}: ${comic.title}'),
                                                     Text(
-                                                      '${comic.num}: ${comic.title}',
-                                                      style: themeData.textTheme.title.copyWith(color: themeData.primaryColor),
-                                                    ),
-                                                    Text(
-                                                      '${comic.year}-${comic.month}-${comic.day}',
-                                                      style: themeData.textTheme.subhead.copyWith(color: themeData.primaryColor),
-                                                    )
+                                                        '${comic.year}-${comic.month}-${comic.day}')
                                                   ],
                                                 ),
                                               ),
                                               actions: <Widget>[
                                                 IconButton(
-                                                  icon: Icon(OMIcons.saveAlt, color: themeData.primaryColor),
+                                                  icon: Icon(
+                                                    OMIcons.saveAlt,
+                                                  ),
                                                   onPressed: () {
-                                                    ScopedModel.of<ComicModel>(context).saveComic(comic: comic);
+                                                    ScopedModel.of<ComicModel>(context)
+                                                        .saveComic(comic: comic);
                                                   },
                                                 ),
                                                 IconButton(
-                                                  icon: Icon(OMIcons.share, color: themeData.primaryColor),
+                                                  icon: Icon(
+                                                    OMIcons.share,
+                                                  ),
                                                   onPressed: () {
-                                                    ScopedModel.of<ComicModel>(context).shareComic(comic: comic);
+                                                    ScopedModel.of<ComicModel>(context)
+                                                        .shareComic(comic: comic);
                                                   },
                                                 ),
                                               ],

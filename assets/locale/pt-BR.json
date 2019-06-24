@@ -26,5 +26,6 @@
   "cache_images_explain": "Armazenar imagens em cache para salvar dados",
   "clear_image_cache": "Limpar cache de imagem",
   "contributors": "CONTRIBUIDORES",
-  "contributors_title": "Contribuidores"
+  "contributors_title": "Contribuidores",
+  "theme": "Tema"
 }

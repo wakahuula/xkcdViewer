@@ -106,9 +106,8 @@ class ComicModel extends Model {
   }
 
   Future<File> getImageFromNetwork(String url) async {
-    var cacheManager = await CacheManager.getInstance();
-    File file = await cacheManager.getFile(url);
-    return file;
+    var fileInfo = await DefaultCacheManager().getFileFromCache(url);
+    return fileInfo.file;
   }
 
   void shareComic({comic}) {

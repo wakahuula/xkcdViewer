@@ -26,5 +26,6 @@
   "cache_images_explain": "Bilder werden gecacht um Daten zu sparen",
   "clear_image_cache": "Bildcache leeren",
   "contributors": "MITWIRKENDE",
-  "contributors_title": "Mitwirkende"
+  "contributors_title": "Mitwirkende",
+  "theme": "Thema"
 }

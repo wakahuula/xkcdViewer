@@ -1,3 +1,5 @@
+import 'package:dynamic_theme/dynamic_theme.dart';
+import 'package:dynamic_theme/theme_switcher_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:outline_material_icons/outline_material_icons.dart';
 import 'package:package_info/package_info.dart';
@@ -33,26 +35,16 @@ class SettingsPageState extends State<SettingsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: _settingsScaffoldKey,
-      backgroundColor: Colors.white,
       appBar: AppBar(
         titleSpacing: 0,
-        backgroundColor: Colors.white,
         elevation: 0,
-        iconTheme: IconThemeData(color: Colors.black87),
-        textTheme: Theme.of(context).textTheme.copyWith(
-              title: TextStyle(
-                color: Colors.black87,
-                fontFamily: 'FiraMono',
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
         title: Text(AppLocalizations.of(context).get('settings')),
       ),
       body: Container(
         padding: const EdgeInsets.all(8),
         child: ListView(
           children: <Widget>[
+            _buildThemeButton(context),
             _buildTitleWidget(AppLocalizations.of(context).get('images')),
             _buildImagesOptions(context),
             _buildTitleWidget(AppLocalizations.of(context).get('favorites')),
@@ -69,6 +61,25 @@ class SettingsPageState extends State<SettingsPage> {
     return Container(
       padding: const EdgeInsets.all(16),
       child: Text(title),
+    );
+  }
+
+  Widget _buildThemeButton(BuildContext context) {
+    return ListTile(
+      leading: Icon(OMIcons.colorize),
+      title: Text(AppLocalizations.of(context).get("theme")),
+      onTap: () {
+        showDialog(
+          context: context,
+          builder: (context) {
+            return BrightnessSwitcherDialog(
+              onSelectedTheme: (brightness) {
+                DynamicTheme.of(context).setBrightness(brightness);
+              },
+            );
+          },
+        );
+      },
     );
   }
 
