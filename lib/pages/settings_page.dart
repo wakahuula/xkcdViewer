@@ -2,7 +2,6 @@ import 'package:dynamic_theme/dynamic_theme.dart';
 import 'package:dynamic_theme/theme_switcher_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:outline_material_icons/outline_material_icons.dart';
-import 'package:package_info/package_info.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:xkcd/pages/contributors_page.dart';
 import 'package:xkcd/utils/app_localizations.dart';
@@ -19,16 +18,10 @@ class SettingsPage extends StatefulWidget {
 class SettingsPageState extends State<SettingsPage> {
   GlobalKey<ScaffoldState> _settingsScaffoldKey = GlobalKey();
   final SharedPreferences _prefs = Preferences.prefs;
-  PackageInfo _packageInfo;
 
   @override
   void initState() {
     super.initState();
-    _loadValues();
-  }
-
-  _loadValues() async {
-    _packageInfo = await PackageInfo.fromPlatform();
   }
 
   @override
@@ -182,9 +175,7 @@ class SettingsPageState extends State<SettingsPage> {
                                   MaterialPageRoute(
                                     builder: (BuildContext context) {
                                       return LicensePage(
-                                        applicationName: _packageInfo.appName,
-                                        applicationVersion:
-                                            _packageInfo.version + '.' + _packageInfo.buildNumber,
+                                        applicationName: 'xkcdViewer',
                                       );
                                     },
                                   ),

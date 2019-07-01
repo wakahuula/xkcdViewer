@@ -7,7 +7,7 @@ import 'package:image/image.dart' as img;
 import 'package:path_provider/path_provider.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:share/share.dart';
-import 'package:simple_permissions/simple_permissions.dart';
+import 'package:permission/permission.dart';
 import 'package:xkcd/api/comic_api_client.dart';
 import 'package:xkcd/data/comic.dart';
 import 'package:xkcd/utils/constants.dart';
@@ -78,11 +78,10 @@ class ComicModel extends Model {
   }
 
   Future<void> saveComic({comic}) async {
-    bool res = await SimplePermissions.checkPermission(Permission.WriteExternalStorage);
-    if (!res) {
-      PermissionStatus status =
-          await SimplePermissions.requestPermission(Permission.WriteExternalStorage);
-      if (status != PermissionStatus.authorized) {
+    var permissionStatus = await Permission.getSinglePermissionStatus(PermissionName.Storage);
+    if (permissionStatus == PermissionStatus.deny || permissionStatus == PermissionStatus.notDecided) {
+      var permission = await Permission.requestSinglePermission(PermissionName.Storage);
+      if (permission != PermissionStatus.allow) {
         return;
       }
     }
