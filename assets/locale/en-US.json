@@ -27,5 +27,8 @@
   "clear_image_cache": "Clear image cache",
   "contributors": "CONTRIBUTORS",
   "contributors_title": "Contributors",
-  "theme": "Theme"
+  "theme": "Theme",
+  "share": "Share",
+  "download": "Download",
+  "accent_color": "Accent color"
 }

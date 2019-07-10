@@ -27,5 +27,8 @@
   "clear_image_cache": "Borrar caché de imagen",
   "contributors": "CONTRIBUYENTES",
   "contributors_title": "Contribuyentes",
-  "theme": "Tema"
+  "theme": "Tema",
+  "share": "Compartir",
+  "download": "Descargar",
+  "accent_color": "Acentuar el color"
 }

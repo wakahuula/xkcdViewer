@@ -59,11 +59,7 @@ class _FavoritesPageState extends State<FavoritesPage> {
                                   contentPadding: const EdgeInsets.all(12),
                                   leading: Hero(
                                     tag: 'hero-${comic.num}',
-                                    child: Image.network(
-                                      comic.img,
-                                      width: 50,
-                                      height: 60,
-                                    ),
+                                    child: Image.network(comic.img, width: 50, height: 60),
                                   ),
                                   title: Text('${comic.num}: ${comic.title}'),
                                   trailing: IconButton(
@@ -91,26 +87,27 @@ class _FavoritesPageState extends State<FavoritesPage> {
                                                   mainAxisAlignment: MainAxisAlignment.start,
                                                   crossAxisAlignment: CrossAxisAlignment.start,
                                                   children: <Widget>[
-                                                    Text('${comic.num}: ${comic.title}'),
                                                     Text(
-                                                        '${comic.year}-${comic.month}-${comic.day}')
+                                                      '${comic.num}: ${comic.title}',
+                                                      style: TextStyle(fontSize: 16),
+                                                    ),
+                                                    Text(
+                                                      '${comic.year}-${comic.month}-${comic.day}',
+                                                      style: TextStyle(fontSize: 16),
+                                                    )
                                                   ],
                                                 ),
                                               ),
                                               actions: <Widget>[
                                                 IconButton(
-                                                  icon: Icon(
-                                                    OMIcons.saveAlt,
-                                                  ),
+                                                  icon: Icon(OMIcons.saveAlt),
                                                   onPressed: () {
                                                     ScopedModel.of<ComicModel>(context)
                                                         .saveComic(comic: comic);
                                                   },
                                                 ),
                                                 IconButton(
-                                                  icon: Icon(
-                                                    OMIcons.share,
-                                                  ),
+                                                  icon: Icon(OMIcons.share),
                                                   onPressed: () {
                                                     ScopedModel.of<ComicModel>(context)
                                                         .shareComic(comic: comic);
@@ -129,6 +126,9 @@ class _FavoritesPageState extends State<FavoritesPage> {
                             );
                           }
                         }
+                        return Center(
+                          child: Text(AppLocalizations.of(context).get('nothing_here')),
+                        );
                     }
                   },
                 ),

@@ -27,5 +27,8 @@
   "clear_image_cache": "Bildcache leeren",
   "contributors": "MITWIRKENDE",
   "contributors_title": "Mitwirkende",
-  "theme": "Thema"
+  "theme": "Thema",
+  "share": "Teilen",
+  "download": "Herunterladen",
+  "accent_color": "Akzentfarbe"
 }

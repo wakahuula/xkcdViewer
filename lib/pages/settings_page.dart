@@ -1,9 +1,10 @@
 import 'package:dynamic_theme/dynamic_theme.dart';
-import 'package:dynamic_theme/theme_switcher_widgets.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_material_color_picker/flutter_material_color_picker.dart';
 import 'package:outline_material_icons/outline_material_icons.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:xkcd/pages/contributors_page.dart';
+import 'package:xkcd/utils/app_colors.dart';
 import 'package:xkcd/utils/app_localizations.dart';
 import 'package:xkcd/utils/constants.dart';
 import 'package:xkcd/utils/preferences.dart';
@@ -17,6 +18,7 @@ class SettingsPage extends StatefulWidget {
 
 class SettingsPageState extends State<SettingsPage> {
   GlobalKey<ScaffoldState> _settingsScaffoldKey = GlobalKey();
+  final GlobalKey _menuKey = new GlobalKey();
   final SharedPreferences _prefs = Preferences.prefs;
 
   @override
@@ -38,6 +40,7 @@ class SettingsPageState extends State<SettingsPage> {
         child: ListView(
           children: <Widget>[
             _buildThemeButton(context),
+            _buildAccentColorButton(context),
             _buildTitleWidget(AppLocalizations.of(context).get('images')),
             _buildImagesOptions(context),
             _buildTitleWidget(AppLocalizations.of(context).get('favorites')),
@@ -57,22 +60,79 @@ class SettingsPageState extends State<SettingsPage> {
     );
   }
 
+  Widget _buildAccentColorButton(BuildContext context) {
+    var accentColor = AppColors.getAccentColor(context);
+    var accentColorText = AppLocalizations.of(context).get('accent_color');
+    return ListTile(
+        leading: Icon(OMIcons.colorLens),
+        title: Text(accentColorText),
+        trailing: CircleColor(
+          color: accentColor,
+          circleSize: 24,
+        ),
+        onTap: () async {
+          int color = await showDialog(
+            context: context,
+            barrierDismissible: true,
+            builder: (context) {
+              return SimpleDialog(
+                title: Text(accentColorText),
+                children: <Widget>[
+                  MaterialColorPicker(
+                    allowShades: false,
+                    selectedColor: accentColor,
+                    onMainColorChange: (color) {
+                      Navigator.of(context).pop(color.value);
+                    },
+                  )
+                ],
+              );
+            },
+          );
+          setState(() {
+            Preferences.prefs.setInt('accentColor', color);
+            DynamicTheme.of(context).setState(() {});
+          });
+        });
+  }
+
   Widget _buildThemeButton(BuildContext context) {
     return ListTile(
       leading: Icon(OMIcons.colorize),
-      title: Text(AppLocalizations.of(context).get("theme")),
+      title: Text(AppLocalizations.of(context).get('theme')),
       onTap: () {
-        showDialog(
-          context: context,
-          builder: (context) {
-            return BrightnessSwitcherDialog(
-              onSelectedTheme: (brightness) {
-                DynamicTheme.of(context).setBrightness(brightness);
-              },
-            );
-          },
-        );
+        dynamic popUpMenustate = _menuKey.currentState;
+        popUpMenustate.showButtonMenu();
       },
+      trailing: PopupMenuButton<int>(
+        key: _menuKey,
+        icon: Icon(OMIcons.arrowDropDown),
+        initialValue: DynamicTheme.of(context).brightness == Brightness.light ? 0 : 1,
+        itemBuilder: (context) => [
+          PopupMenuItem(
+            value: 0,
+            child: ListTile(
+              title: Text('Light'),
+            ),
+          ),
+          PopupMenuItem(
+            value: 1,
+            child: ListTile(
+              title: Text('Dark'),
+            ),
+          ),
+        ],
+        onSelected: (val) {
+          switch (val) {
+            case 0:
+              DynamicTheme.of(context).setBrightness(Brightness.light);
+              break;
+            case 1:
+              DynamicTheme.of(context).setBrightness(Brightness.dark);
+              break;
+          }
+        },
+      ),
     );
   }
 

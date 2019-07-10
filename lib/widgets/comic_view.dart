@@ -1,10 +1,10 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_fadein/flutter_fadein.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:xkcd/data/comic.dart';
 import 'package:xkcd/utils/preferences.dart';
-import 'package:flutter_fadein/flutter_fadein.dart';
 
 class ComicView extends StatelessWidget {
   final Comic comic;
@@ -29,8 +29,8 @@ class ComicView extends StatelessWidget {
             child: PhotoView(
               maxScale: PhotoViewComputedScale.covered,
               minScale: PhotoViewComputedScale.contained,
-              backgroundDecoration: const BoxDecoration(
-                color: Colors.white,
+              backgroundDecoration: BoxDecoration(
+                color: Color(Theme.of(context).primaryColor.value),
               ),
               loadingChild: Center(child: CircularProgressIndicator()),
               imageProvider: CachedNetworkImageProvider(_getImageUrl()),
@@ -55,6 +55,9 @@ class ComicView extends StatelessWidget {
   }
 
   void _showAltDialog(BuildContext context) {
+    if (comic.alt.isEmpty) {
+      return;
+    }
     _vibrate();
     showDialog(
       context: context,
@@ -65,21 +68,20 @@ class ComicView extends StatelessWidget {
           contentPadding: const EdgeInsets.all(0),
           title: Container(
             padding: const EdgeInsets.all(16),
-            child:
-                Text('${comic.num}: ${comic.title}', style: const TextStyle(color: Colors.white)),
+            child: Text('${comic.num}: ${comic.title}'),
           ),
           content: Container(
             padding: const EdgeInsets.all(20),
-            child: Text(comic.alt, style: const TextStyle(color: Colors.white)),
+            child: Text(comic.alt),
           ),
         );
       },
     );
   }
+}
 
-  void _vibrate() async {
+void _vibrate() async {
 //    if (await Vibration.hasVibrator()) {
 //      Vibration.vibrate();
 //    }
-  }
 }

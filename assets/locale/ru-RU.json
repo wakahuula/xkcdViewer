@@ -27,5 +27,8 @@
   "clear_image_cache": "Очистить кэш изображений",
   "contributors": "РАЗРАБОТЧИКИ",
   "contributors_title": "Разработчики",
-  "theme": "Tема"
+  "theme": "Tема",
+  "share": "Изображением",
+  "download": "Скачать",
+  "accent_color": "Акцент цвет"
 }

@@ -47,7 +47,7 @@ class _XkcdViewerState extends State<XkcdViewer> {
         defaultBrightness: Brightness.dark,
         data: (brightness) {
           switchSystemChromeTheme(brightness);
-          return brightness == Brightness.dark ? AppColors.darkTheme : AppColors.lightTheme;
+          return brightness == Brightness.dark ? AppColors.getDarkTheme(context) : AppColors.getLightTheme(context);
         },
         themedWidgetBuilder: (context, theme) {
           return MaterialApp(
@@ -86,8 +86,8 @@ class _XkcdViewerState extends State<XkcdViewer> {
   void switchSystemChromeTheme(Brightness brightness) {
     if (brightness == Brightness.dark) {
       SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-        systemNavigationBarColor: Color(0xFF3e3e3e),
-        statusBarColor: Color(0xFF3e3e3e),
+        systemNavigationBarColor: Color(0xFF040405),
+        statusBarColor: Color(0xFF040405),
         statusBarBrightness: Brightness.dark,
         systemNavigationBarIconBrightness: Brightness.light,
       ));

@@ -9,6 +9,7 @@ import 'package:flutter_web_browser/flutter_web_browser.dart';
 import 'package:http/http.dart' as http;
 import 'package:url_launcher/url_launcher.dart';
 import 'package:xkcd/data/comic.dart';
+import 'package:xkcd/pages/home_page.dart';
 
 class ComicApiClient {
   static final baseUrl = 'https://www.xkcd.com/';
@@ -63,6 +64,26 @@ class ComicApiClient {
     return fetchRandomComic();
   }
 
+  Future<Comic> fetchComic(int num) async {
+    if (num < 0 || num > _latestComicNum) {
+      HomePage.scaffoldKey.currentState.showSnackBar(SnackBar(content: Text('NOPE')));
+      return _cachedComics[num];
+    }
+
+    String nextComicUrl = _subApiUrl.replaceAll('{0}', num.toString());
+
+    final response = await http.get(nextComicUrl);
+    if (response.statusCode == 200) {
+      var comic = Comic.fromJson(json.decode(response.body));
+      _currentComicNum = num;
+      _cachedComics.putIfAbsent(_currentComicNum, () => comic);
+      return comic;
+    } else {
+      debugPrint('${response.statusCode}: ${response.toString()}');
+    }
+    return _cachedComics[_latestComicNum];
+  }
+
   Future<Comic> fetchRandomComic() async {
     if (_latestComicNum > 0) {
       final randomNumber = Random().nextInt(_latestComicNum);
@@ -84,6 +105,11 @@ class ComicApiClient {
       }
     }
     return fetchLatestComic();
+  }
+
+  void selectComic(Comic comic) {
+    _currentComicNum = comic.num;
+    _cachedComics.putIfAbsent(_currentComicNum, () => comic);
   }
 
   void explainCurrentComic() async {

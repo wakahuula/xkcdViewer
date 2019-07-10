@@ -50,6 +50,17 @@ class ComicModel extends Model {
     setLoading(false);
   }
 
+  Future<Comic> fetchComic(String num) async {
+    return await apiClient.fetchComic(int.parse(num));
+  }
+
+  void selectComic(Comic comic) {
+    setLoading(true);
+    apiClient.selectComic(comic);
+    this.comic = comic;
+    setLoading(false);
+  }
+
   void explainCurrent() {
     apiClient.explainCurrentComic();
   }

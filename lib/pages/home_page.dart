@@ -1,4 +1,3 @@
-import 'package:dynamic_theme/dynamic_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_fadein/flutter_fadein.dart';
 import 'package:outline_material_icons/outline_material_icons.dart';
@@ -10,8 +9,10 @@ import 'package:xkcd/models/comic_model.dart';
 import 'package:xkcd/pages/favorites_page.dart';
 import 'package:xkcd/pages/settings_page.dart';
 import 'package:xkcd/utils/FavoriteParticle.dart';
+import 'package:xkcd/utils/app_colors.dart';
 import 'package:xkcd/utils/app_localizations.dart';
 import 'package:xkcd/utils/preferences.dart';
+import 'package:xkcd/widgets/comic_search_delegate.dart';
 import 'package:xkcd/widgets/comic_view.dart';
 
 class HomePage extends StatelessWidget {
@@ -22,6 +23,7 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    int accentColor = Preferences.prefs.getInt('accentColor') ?? Colors.deepPurple.value;
     return SafeArea(
       child: Scaffold(
         key: scaffoldKey,
@@ -42,8 +44,14 @@ class HomePage extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
-                      Text('${comic.num}: ${comic.title}'),
-                      Text('${comic.year}-${comic.month}-${comic.day}')
+                      Text(
+                        '${comic.num}: ${comic.title}',
+                        style: TextStyle(fontSize: 16),
+                      ),
+                      Text(
+                        '${comic.year}-${comic.month}-${comic.day}',
+                        style: TextStyle(fontSize: 12),
+                      )
                     ],
                   ),
                 ),
@@ -52,15 +60,37 @@ class HomePage extends StatelessWidget {
           ),
           actions: <Widget>[
             IconButton(
-              icon: Icon(OMIcons.saveAlt),
+              icon: Icon(OMIcons.search),
               onPressed: () {
-                ScopedModel.of<ComicModel>(context).saveComic();
+                showSearch(context: context, delegate: ComicSearchDelegate());
               },
             ),
-            IconButton(
-              icon: Icon(OMIcons.share),
-              onPressed: () {
-                ScopedModel.of<ComicModel>(context).shareComic();
+            PopupMenuButton<int>(
+              itemBuilder: (context) => [
+                PopupMenuItem(
+                  value: 0,
+                  child: ListTile(
+                    leading: Icon(OMIcons.saveAlt),
+                    title: Text(AppLocalizations.of(context).get('download')),
+                  ),
+                ),
+                PopupMenuItem(
+                  value: 1,
+                  child: ListTile(
+                    leading: Icon(OMIcons.share),
+                    title: Text(AppLocalizations.of(context).get('share')),
+                  ),
+                ),
+              ],
+              onSelected: (val) {
+                switch (val) {
+                  case 0:
+                    ScopedModel.of<ComicModel>(context).saveComic();
+                    break;
+                  case 1:
+                    ScopedModel.of<ComicModel>(context).shareComic();
+                    break;
+                }
               },
             ),
           ],
@@ -76,62 +106,69 @@ class HomePage extends StatelessWidget {
         floatingActionButton: FloatingActionButton.extended(
           icon: Icon(OMIcons.autorenew),
           label: Text(AppLocalizations.of(context).get('random')),
+          backgroundColor: Color(accentColor),
+          elevation: 4,
           onPressed: () {
             ScopedModel.of<ComicModel>(context).fetchRandom();
           },
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-        bottomNavigationBar: SizedBox(
-          height: 56,
-          child: BottomAppBar(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Row(
-                  children: <Widget>[
-                    IconButton(
-                      icon: Icon(OMIcons.menu),
-                      onPressed: () {
-                        _showBottomSheet(context);
-                      },
-                    ),
-                    ScopedModelDescendant<ComicModel>(
-                      builder: (context, widget, model) {
-                        bool isFavorite = model.isFavorite() ?? false;
-                        return PimpedButton(
-                          duration: Duration(milliseconds: 200),
-                          particle: FavoriteParticle(),
-                          pimpedWidgetBuilder: (context, controller) {
-                            return IconButton(
-                              icon: Icon(isFavorite ? OMIcons.favorite : OMIcons.favoriteBorder),
-                              onPressed: () {
-                                controller.forward(from: 0);
-                                model.onFavorite();
-                              },
-                            );
-                          },
-                        );
-                      },
-                    ),
-                  ],
-                ),
-                Row(
-                  children: <Widget>[
-                    IconButton(
-                      icon: Icon(OMIcons.chevronLeft, size: 32),
-                      onPressed: () {
-                        ScopedModel.of<ComicModel>(context).fetchNext(-1);
-                      },
-                    ),
-                    IconButton(
-                      icon: Icon(OMIcons.chevronRight, size: 32),
-                      onPressed: () {
-                        ScopedModel.of<ComicModel>(context).fetchNext(1);
-                      },
-                    ),
-                  ],
-                ),
-              ],
+        bottomNavigationBar: Container(
+          decoration: BoxDecoration(
+              border: Border(
+                  top: BorderSide(color: AppColors.getBottomSeparatorColor(context), width: 1))),
+          child: SizedBox(
+            height: 56,
+            child: BottomAppBar(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Row(
+                    children: <Widget>[
+                      IconButton(
+                        icon: Icon(OMIcons.menu),
+                        onPressed: () {
+                          _showBottomSheet(context);
+                        },
+                      ),
+                      ScopedModelDescendant<ComicModel>(
+                        builder: (context, widget, model) {
+                          bool isFavorite = model.isFavorite() ?? false;
+                          return PimpedButton(
+                            duration: Duration(milliseconds: 200),
+                            particle: FavoriteParticle(),
+                            pimpedWidgetBuilder: (context, controller) {
+                              return IconButton(
+                                icon: Icon(isFavorite ? OMIcons.favorite : OMIcons.favoriteBorder),
+                                onPressed: () {
+                                  controller.forward(from: 0);
+                                  model.onFavorite();
+                                },
+                              );
+                            },
+                          );
+                        },
+                      ),
+                    ],
+                  ),
+                  Row(
+                    children: <Widget>[
+                      IconButton(
+                        icon: Icon(OMIcons.chevronLeft, size: 32),
+                        onPressed: () {
+                          ScopedModel.of<ComicModel>(context).fetchNext(-1);
+                        },
+                      ),
+                      IconButton(
+                        icon: Icon(OMIcons.chevronRight, size: 32),
+                        onPressed: () {
+                          ScopedModel.of<ComicModel>(context).fetchNext(1);
+                        },
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
         ),
