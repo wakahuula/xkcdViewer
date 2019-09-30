@@ -60,6 +60,7 @@ class _XkcdViewerState extends State<XkcdViewer> {
               const Locale('pt', 'BR'),
               const Locale('es', 'ES'),
               const Locale('ru', 'RU'),
+              const Locale('uk', 'UA'),
             ],
             localizationsDelegates: [
               const AppLocalizationsDelegate(),
