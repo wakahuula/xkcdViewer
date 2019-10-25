@@ -79,6 +79,7 @@ class SettingsPageState extends State<SettingsPage> {
                 title: Text(accentColorText),
                 children: <Widget>[
                   MaterialColorPicker(
+                    shrinkWrap: true,
                     allowShades: false,
                     selectedColor: accentColor,
                     onMainColorChange: (color) {

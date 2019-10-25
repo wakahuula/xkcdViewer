@@ -14,6 +14,7 @@ import 'package:xkcd/utils/app_localizations_delegate.dart';
 import 'package:xkcd/utils/preferences.dart';
 
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   Preferences.prefs = await SharedPreferences.getInstance();
   runApp(XkcdViewer());
 }

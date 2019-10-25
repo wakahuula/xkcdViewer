@@ -8,14 +8,14 @@ import 'package:xkcd/utils/preferences.dart';
 
 class ComicView extends StatefulWidget {
   final Comic comic;
+
   ComicView(this.comic);
 
   @override
   _ComicViewState createState() => _ComicViewState();
 }
 
-class _ComicViewState extends State<ComicView>
-    with SingleTickerProviderStateMixin {
+class _ComicViewState extends State<ComicView> with SingleTickerProviderStateMixin {
   final SharedPreferences _prefs = Preferences.prefs;
 
   final no2xVersion = [1193, 1446, 1667, 1735, 1739, 1744, 1778];
@@ -25,19 +25,20 @@ class _ComicViewState extends State<ComicView>
   @override
   void initState() {
     super.initState();
-    controller =
-        AnimationController(vsync: this, duration: Duration(milliseconds: 500));
-    slideup = Tween<Offset>(begin: Offset(0, 0), end: Offset(0, -0.22)).animate(
-        CurvedAnimation(curve: Curves.easeInOutQuad, parent: controller));
+    controller = AnimationController(vsync: this, duration: Duration(milliseconds: 500));
+    slideup = Tween<Offset>(begin: Offset(0, 0), end: Offset(0, -0.22))
+        .animate(CurvedAnimation(curve: Curves.easeInOutQuad, parent: controller));
     slideup.addListener(() {
       setState(() {});
     });
   }
+
   @override
   void dispose() {
     controller?.dispose();
     super.dispose();
   }
+
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -45,8 +46,7 @@ class _ComicViewState extends State<ComicView>
         Align(
           alignment: Alignment.bottomCenter,
           child: Container(
-            padding:
-                const EdgeInsets.only(bottom: 30, right: 20, left: 20, top: 20),
+            padding: const EdgeInsets.only(bottom: 30, right: 20, left: 20, top: 20),
             child: Text(widget.comic.alt),
           ),
         ),
@@ -70,8 +70,7 @@ class _ComicViewState extends State<ComicView>
                     backgroundDecoration: BoxDecoration(
                       color: Color(Theme.of(context).primaryColor.value),
                     ),
-                    loadingChild: Container(
-                        child: Center(child: CircularProgressIndicator())),
+                    loadingChild: Container(child: Center(child: CircularProgressIndicator())),
                     imageProvider: CachedNetworkImageProvider(_getImageUrl()),
                   ),
                 ),
@@ -95,35 +94,4 @@ class _ComicViewState extends State<ComicView>
     }
     return widget.comic.img;
   }
-
-  void _showAltDialog(BuildContext context) {
-    if (widget.comic.alt.isEmpty) {
-      return;
-    }
-    _vibrate();
-    showDialog(
-      context: context,
-      barrierDismissible: true,
-      builder: (context) {
-        return AlertDialog(
-          titlePadding: const EdgeInsets.all(0),
-          contentPadding: const EdgeInsets.all(0),
-          title: Container(
-            padding: const EdgeInsets.all(16),
-            child: Text('${widget.comic.num}: ${widget.comic.title}'),
-          ),
-          content: Container(
-            padding: const EdgeInsets.all(20),
-            child: Text(widget.comic.alt),
-          ),
-        );
-      },
-    );
-  }
-}
-
-void _vibrate() async {
-//    if (await Vibration.hasVibrator()) {
-//      Vibration.vibrate();
-//    }
 }

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_fadein/flutter_fadein.dart';
 import 'package:outline_material_icons/outline_material_icons.dart';
 import 'package:pimp_my_button/pimp_my_button.dart';
-import 'package:rounded_modal/rounded_modal.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:xkcd/models/comic_model.dart';
@@ -177,8 +176,14 @@ class HomePage extends StatelessWidget {
   }
 
   void _showBottomSheet(BuildContext context) {
-    showRoundedModalBottomSheet(
-      color: Theme.of(context).primaryColor,
+    showModalBottomSheet(
+      backgroundColor: Theme.of(context).primaryColor,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(10),
+          topRight: Radius.circular(10),
+        ),
+      ),
       context: context,
       builder: (context) {
         var appLocalizations = AppLocalizations.of(context);
