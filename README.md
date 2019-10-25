@@ -1,5 +1,11 @@
 # xkcdViewer
 
+![Build Status](https://api.codemagic.io/apps/5c07aa8ab7a79b000dd8ac99/5c07aa8ab7a79b000dd8ac98/status_badge.svg)
+[![Stargazers](https://img.shields.io/github/stars/wakahuula/xkcdViewer.svg?branch=master)](https://github.com/wakahuula/xkcdViewer/stargazers)
+[![Forks](https://img.shields.io/github/forks/wakahuula/xkcdViewer.svg?branch=master)](https://github.com/wakahuula/xkcdViewer/network)
+[![Issues](https://img.shields.io/github/issues/wakahuula/xkcdViewer.svg?branch=master)](https://github.com/wakahuula/xkcdViewer/issues)
+[![License](https://img.shields.io/github/license/wakahuula/xkcdViewer.svg?branch=master)](https://github.com/wakahuula/xkcdViewer/blob/master/LICENSE)
+
 xkcdViewer is a simple comic viewer for the infamous xkcd webcomic built with [Flutter 🐦](https://flutter.io/) and [ScopedModel](https://pub.dartlang.org/packages/scoped_model) for state management.
 
 <img width="180" src="screen1.png"> <img width="180" src="screen2.png"> <img width="180" src="screen3.png"> <img width="180" src="screen4.png">
