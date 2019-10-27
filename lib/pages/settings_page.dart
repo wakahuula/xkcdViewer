@@ -2,6 +2,8 @@ import 'package:dynamic_theme/dynamic_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_material_color_picker/flutter_material_color_picker.dart';
 import 'package:outline_material_icons/outline_material_icons.dart';
+import 'package:scoped_model/scoped_model.dart';
+import 'package:xkcd/models/favorites_model.dart';
 import 'package:xkcd/pages/contributors_page.dart';
 import 'package:xkcd/services/persistence_service.dart';
 import 'package:xkcd/utils/app_colors.dart';
@@ -183,16 +185,12 @@ class SettingsPageState extends State<SettingsPage> {
       leading: Icon(OMIcons.favoriteBorder),
       title: Text(AppLocalizations.of(context).get('clear_favorites')),
       onTap: () async {
-        final PersistenceService prefs = sl<PersistenceService>();
-        final List<String> favorites = prefs.getValue(Constants.favorites);
-        if (favorites != null && favorites.isNotEmpty) {
-          prefs.removeValue(Constants.favorites);
-          _settingsScaffoldKey.currentState.showSnackBar(
-            SnackBar(
-                content: Text(
-                    AppLocalizations.of(context).get('favorites_cleared'))),
-          );
-        }
+        await ScopedModel.of<FavoritesModel>(context).clearFavorites();
+        _settingsScaffoldKey.currentState.showSnackBar(
+          SnackBar(
+              content:
+                  Text(AppLocalizations.of(context).get('favorites_cleared'))),
+        );
       },
     );
   }
