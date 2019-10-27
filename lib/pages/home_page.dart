@@ -3,14 +3,14 @@ import 'package:flutter_fadein/flutter_fadein.dart';
 import 'package:outline_material_icons/outline_material_icons.dart';
 import 'package:pimp_my_button/pimp_my_button.dart';
 import 'package:scoped_model/scoped_model.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:xkcd/models/comic_model.dart';
 import 'package:xkcd/pages/favorites_page.dart';
 import 'package:xkcd/pages/settings_page.dart';
+import 'package:xkcd/services/persistence_service.dart';
 import 'package:xkcd/utils/FavoriteParticle.dart';
 import 'package:xkcd/utils/app_colors.dart';
 import 'package:xkcd/utils/app_localizations.dart';
-import 'package:xkcd/utils/preferences.dart';
+import 'package:xkcd/utils/service_locator.dart';
 import 'package:xkcd/widgets/comic_search_delegate.dart';
 import 'package:xkcd/widgets/comic_view.dart';
 
@@ -18,11 +18,13 @@ class HomePage extends StatelessWidget {
   static final String pageRoute = '/home-page';
   static final scaffoldKey = GlobalKey<ScaffoldState>();
   final fabKey = GlobalKey();
-  final SharedPreferences prefs = Preferences.prefs;
+
+  final PersistenceService prefs = sl<PersistenceService>();
 
   @override
   Widget build(BuildContext context) {
-    int accentColor = Preferences.prefs.getInt('accentColor') ?? Colors.deepPurple.value;
+    final int accentColor =
+        prefs.getValue('accentColor') ?? Colors.deepPurple.value;
     return SafeArea(
       child: Scaffold(
         key: scaffoldKey,
@@ -115,7 +117,9 @@ class HomePage extends StatelessWidget {
         bottomNavigationBar: Container(
           decoration: BoxDecoration(
               border: Border(
-                  top: BorderSide(color: AppColors.getBottomSeparatorColor(context), width: 1))),
+                  top: BorderSide(
+                      color: AppColors.getBottomSeparatorColor(context),
+                      width: 1))),
           child: SizedBox(
             height: 56,
             child: BottomAppBar(
@@ -138,7 +142,9 @@ class HomePage extends StatelessWidget {
                             particle: FavoriteParticle(),
                             pimpedWidgetBuilder: (context, controller) {
                               return IconButton(
-                                icon: Icon(isFavorite ? OMIcons.favorite : OMIcons.favoriteBorder),
+                                icon: Icon(isFavorite
+                                    ? OMIcons.favorite
+                                    : OMIcons.favoriteBorder),
                                 onPressed: () {
                                   controller.forward(from: 0);
                                   model.onFavorite();

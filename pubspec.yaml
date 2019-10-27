@@ -27,8 +27,10 @@ dependencies:
         url: git://github.com/Norbert515/pimp_my_button.git
   scoped_model: ^1.0.1
   share: ^0.6.3
-  shared_preferences: ^0.5.4
+  hive: ^1.1.1
   url_launcher: ^5.2.4
+  # Service Locator
+  get_it: ^3.0.3
 
 dev_dependencies:
   flutter_test:

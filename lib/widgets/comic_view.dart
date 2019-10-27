@@ -2,9 +2,9 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_fadein/flutter_fadein.dart';
 import 'package:photo_view/photo_view.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:xkcd/data/comic.dart';
-import 'package:xkcd/utils/preferences.dart';
+import 'package:xkcd/services/persistence_service.dart';
+import 'package:xkcd/utils/service_locator.dart';
 
 class ComicView extends StatefulWidget {
   final Comic comic;
@@ -15,8 +15,9 @@ class ComicView extends StatefulWidget {
   _ComicViewState createState() => _ComicViewState();
 }
 
-class _ComicViewState extends State<ComicView> with SingleTickerProviderStateMixin {
-  final SharedPreferences _prefs = Preferences.prefs;
+class _ComicViewState extends State<ComicView>
+    with SingleTickerProviderStateMixin {
+  final PersistenceService prefs = sl<PersistenceService>();
 
   final no2xVersion = [1193, 1446, 1667, 1735, 1739, 1744, 1778];
   Animation<Offset> slideup;
@@ -25,9 +26,10 @@ class _ComicViewState extends State<ComicView> with SingleTickerProviderStateMix
   @override
   void initState() {
     super.initState();
-    controller = AnimationController(vsync: this, duration: Duration(milliseconds: 500));
-    slideup = Tween<Offset>(begin: Offset(0, 0), end: Offset(0, -0.22))
-        .animate(CurvedAnimation(curve: Curves.easeInOutQuad, parent: controller));
+    controller =
+        AnimationController(vsync: this, duration: Duration(milliseconds: 500));
+    slideup = Tween<Offset>(begin: Offset(0, 0), end: Offset(0, -0.22)).animate(
+        CurvedAnimation(curve: Curves.easeInOutQuad, parent: controller));
     slideup.addListener(() {
       setState(() {});
     });
@@ -46,7 +48,8 @@ class _ComicViewState extends State<ComicView> with SingleTickerProviderStateMix
         Align(
           alignment: Alignment.bottomCenter,
           child: Container(
-            padding: const EdgeInsets.only(bottom: 30, right: 20, left: 20, top: 20),
+            padding:
+                const EdgeInsets.only(bottom: 30, right: 20, left: 20, top: 20),
             child: Text(widget.comic.alt),
           ),
         ),
@@ -70,7 +73,8 @@ class _ComicViewState extends State<ComicView> with SingleTickerProviderStateMix
                     backgroundDecoration: BoxDecoration(
                       color: Color(Theme.of(context).primaryColor.value),
                     ),
-                    loadingChild: Container(child: Center(child: CircularProgressIndicator())),
+                    loadingChild: Container(
+                        child: Center(child: CircularProgressIndicator())),
                     imageProvider: CachedNetworkImageProvider(_getImageUrl()),
                   ),
                 ),
@@ -84,7 +88,7 @@ class _ComicViewState extends State<ComicView> with SingleTickerProviderStateMix
 
   String _getImageUrl() {
     final num = widget.comic.num;
-    final dataSaver = _prefs.getBool('data_saver') ?? false;
+    final bool dataSaver = prefs.getValue('data_saver') ?? false;
     if (dataSaver || no2xVersion.contains(num)) {
       return widget.comic.img;
     }

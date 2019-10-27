@@ -1,17 +1,25 @@
 import 'package:flutter/material.dart';
-import 'package:xkcd/utils/preferences.dart';
+import 'package:xkcd/services/persistence_service.dart';
+import 'package:xkcd/utils/service_locator.dart';
 
 class AppColors {
   static const Color backgroundColor = Color(0xFFECEFF1);
 
   static Color getBottomSeparatorColor(BuildContext context) =>
-      Theme.of(context).brightness == Brightness.light ? Colors.black12 : Color(0xFF2E2E31);
+      Theme.of(context).brightness == Brightness.light
+          ? Colors.black12
+          : Color(0xFF2E2E31);
 
-  static Color getAccentColor(BuildContext context) =>
-      Color(Preferences.prefs.getInt('accentColor') ?? Theme.of(context).accentColor.value);
+  static Color getAccentColor(BuildContext context) {
+    final PersistenceService prefs = sl<PersistenceService>();
+    return Color(
+      prefs.getValue('accentColor') ?? Theme.of(context).accentColor.value,
+    );
+  }
 
   static ThemeData getDarkTheme(BuildContext context) {
-    print(Preferences.prefs.getInt('accentColor'));
+    final PersistenceService prefs = sl<PersistenceService>();
+    print(prefs.getValue('accentColor'));
     return ThemeData(
       brightness: Brightness.dark,
       fontFamily: 'FiraMono',

@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:scoped_model/scoped_model.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:xkcd/models/comic_model.dart';
 import 'package:xkcd/pages/contributors_page.dart';
 import 'package:xkcd/pages/favorites_page.dart';
@@ -11,11 +10,11 @@ import 'package:xkcd/pages/home_page.dart';
 import 'package:xkcd/pages/settings_page.dart';
 import 'package:xkcd/utils/app_colors.dart';
 import 'package:xkcd/utils/app_localizations_delegate.dart';
-import 'package:xkcd/utils/preferences.dart';
+import 'package:xkcd/utils/service_locator.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  Preferences.prefs = await SharedPreferences.getInstance();
+  await registerServices();
   runApp(XkcdViewer());
 }
 
@@ -48,7 +47,9 @@ class _XkcdViewerState extends State<XkcdViewer> {
         defaultBrightness: Brightness.dark,
         data: (brightness) {
           switchSystemChromeTheme(brightness);
-          return brightness == Brightness.dark ? AppColors.getDarkTheme(context) : AppColors.getLightTheme(context);
+          return brightness == Brightness.dark
+              ? AppColors.getDarkTheme(context)
+              : AppColors.getLightTheme(context);
         },
         themedWidgetBuilder: (context, theme) {
           return MaterialApp(
@@ -69,7 +70,8 @@ class _XkcdViewerState extends State<XkcdViewer> {
               GlobalMaterialLocalizations.delegate,
               GlobalMaterialLocalizations.delegate
             ],
-            localeResolutionCallback: (Locale locale, Iterable<Locale> supportedLocales) {
+            localeResolutionCallback:
+                (Locale locale, Iterable<Locale> supportedLocales) {
               for (Locale supportedLocale in supportedLocales) {
                 if (supportedLocale.languageCode == locale.languageCode ||
                     supportedLocale.countryCode == locale.countryCode) {

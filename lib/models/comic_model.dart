@@ -10,12 +10,13 @@ import 'package:share/share.dart';
 import 'package:permission/permission.dart';
 import 'package:xkcd/api/comic_api_client.dart';
 import 'package:xkcd/data/comic.dart';
+import 'package:xkcd/services/persistence_service.dart';
 import 'package:xkcd/utils/constants.dart';
-import 'package:xkcd/utils/preferences.dart';
+import 'package:xkcd/utils/service_locator.dart';
 
 class ComicModel extends Model {
   final apiClient = ComicApiClient();
-  final prefs = Preferences.prefs;
+  final PersistenceService prefs = sl<PersistenceService>();
 
   Comic comic;
 
@@ -65,9 +66,9 @@ class ComicModel extends Model {
     apiClient.explainCurrentComic();
   }
 
-  void onFavorite() async {
+  Future<void> onFavorite() async {
     var num = comic.num.toString();
-    List<String> favorites = prefs.getStringList(Constants.favorites);
+    List<String> favorites = prefs.getValue(Constants.favorites);
     if (favorites == null || favorites.isEmpty) {
       favorites = [num];
     } else if (favorites.contains(num)) {
@@ -75,13 +76,14 @@ class ComicModel extends Model {
     } else {
       favorites.add(num);
     }
-    prefs.setStringList(Constants.favorites, favorites);
+    await prefs.setValue(Constants.favorites, favorites);
     notifyListeners();
   }
 
   bool isFavorite() {
+    final PersistenceService prefs = sl<PersistenceService>();
     if (comic != null) {
-      var favorites = Preferences.prefs.getStringList(Constants.favorites);
+      final List<String> favorites = prefs.getValue(Constants.favorites);
       var num = comic.num.toString();
       return favorites?.contains(num) ?? false;
     }
@@ -89,9 +91,12 @@ class ComicModel extends Model {
   }
 
   Future<void> saveComic({comic}) async {
-    var permissionStatus = await Permission.getSinglePermissionStatus(PermissionName.Storage);
-    if (permissionStatus == PermissionStatus.deny || permissionStatus == PermissionStatus.notDecided) {
-      var permission = await Permission.requestSinglePermission(PermissionName.Storage);
+    var permissionStatus =
+        await Permission.getSinglePermissionStatus(PermissionName.Storage);
+    if (permissionStatus == PermissionStatus.deny ||
+        permissionStatus == PermissionStatus.notDecided) {
+      var permission =
+          await Permission.requestSinglePermission(PermissionName.Storage);
       if (permission != PermissionStatus.allow) {
         return;
       }
