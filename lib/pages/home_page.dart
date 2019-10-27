@@ -3,7 +3,9 @@ import 'package:flutter_fadein/flutter_fadein.dart';
 import 'package:outline_material_icons/outline_material_icons.dart';
 import 'package:pimp_my_button/pimp_my_button.dart';
 import 'package:scoped_model/scoped_model.dart';
+import 'package:xkcd/data/comic.dart';
 import 'package:xkcd/models/comic_model.dart';
+import 'package:xkcd/models/favorites_model.dart';
 import 'package:xkcd/pages/favorites_page.dart';
 import 'package:xkcd/pages/settings_page.dart';
 import 'package:xkcd/services/persistence_service.dart';
@@ -25,6 +27,9 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     final int accentColor =
         prefs.getValue('accentColor') ?? Colors.deepPurple.value;
+
+    final ComicModel comicModel =
+        ScopedModel.of<ComicModel>(context, rebuildOnChange: true);
     return SafeArea(
       child: Scaffold(
         key: scaffoldKey,
@@ -46,7 +51,7 @@ class HomePage extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       Text(
-                        '${comic.num}: ${comic.title}',
+                        '${comic.id}: ${comic.title}',
                         style: TextStyle(fontSize: 16),
                       ),
                       Text(
@@ -114,72 +119,16 @@ class HomePage extends StatelessWidget {
           },
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-        bottomNavigationBar: Container(
-          decoration: BoxDecoration(
-              border: Border(
-                  top: BorderSide(
-                      color: AppColors.getBottomSeparatorColor(context),
-                      width: 1))),
-          child: SizedBox(
-            height: 56,
-            child: BottomAppBar(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Row(
-                    children: <Widget>[
-                      IconButton(
-                        icon: Icon(OMIcons.menu),
-                        onPressed: () {
-                          _showBottomSheet(context);
-                        },
-                      ),
-                      ScopedModelDescendant<ComicModel>(
-                        builder: (context, widget, model) {
-                          bool isFavorite = model.isFavorite() ?? false;
-                          return PimpedButton(
-                            duration: Duration(milliseconds: 200),
-                            particle: FavoriteParticle(),
-                            pimpedWidgetBuilder: (context, controller) {
-                              return IconButton(
-                                icon: Icon(isFavorite
-                                    ? OMIcons.favorite
-                                    : OMIcons.favoriteBorder),
-                                onPressed: () {
-                                  controller.forward(from: 0);
-                                  model.onFavorite();
-                                },
-                              );
-                            },
-                          );
-                        },
-                      ),
-                    ],
-                  ),
-                  Row(
-                    children: <Widget>[
-                      IconButton(
-                        icon: Icon(OMIcons.chevronLeft, size: 32),
-                        onPressed: () {
-                          ScopedModel.of<ComicModel>(context).fetchNext(-1);
-                        },
-                      ),
-                      IconButton(
-                        icon: Icon(OMIcons.chevronRight, size: 32),
-                        onPressed: () {
-                          ScopedModel.of<ComicModel>(context).fetchNext(1);
-                        },
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ),
+        bottomNavigationBar: _BottomAppBar(comic: comicModel.comic),
       ),
     );
   }
+}
+
+class _BottomAppBar extends StatelessWidget {
+  const _BottomAppBar({Key key, @required this.comic}) : super(key: key);
+
+  final Comic comic;
 
   void _showBottomSheet(BuildContext context) {
     showModalBottomSheet(
@@ -238,6 +187,83 @@ class HomePage extends StatelessWidget {
           },
         );
       },
+    );
+  }
+
+  Future<void> toggleFavorite(BuildContext context) {
+    final FavoritesModel model = ScopedModel.of<FavoritesModel>(context);
+    print('Toggle favorite');
+    return model.isFavorite(comic.id)
+        ? model.removeFromFavorites(comic.id)
+        : model.addToFavorites(comic);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        border: Border(
+          top: BorderSide(
+            color: AppColors.getBottomSeparatorColor(context),
+            width: 1,
+          ),
+        ),
+      ),
+      child: SizedBox(
+        height: 56,
+        child: BottomAppBar(
+          child: comic != null
+              ? Row(
+                  children: [
+                    IconButton(
+                      icon: Icon(OMIcons.menu),
+                      onPressed: () => _showBottomSheet(context),
+                    ),
+                    ScopedModelDescendant<FavoritesModel>(
+                      rebuildOnChange: true,
+                      builder: (
+                        BuildContext context,
+                        Widget widget,
+                        FavoritesModel model,
+                      ) {
+                        final bool isFavorite = model.isFavorite(comic.id);
+                        return PimpedButton(
+                          duration: Duration(milliseconds: 200),
+                          particle: FavoriteParticle(),
+                          pimpedWidgetBuilder: (context, controller) {
+                            return IconButton(
+                              icon: Icon(
+                                isFavorite
+                                    ? OMIcons.favorite
+                                    : OMIcons.favoriteBorder,
+                              ),
+                              onPressed: () async {
+                                controller.forward(from: 0);
+                                await toggleFavorite(context);
+                              },
+                            );
+                          },
+                        );
+                      },
+                    ),
+                    Spacer(),
+                    IconButton(
+                      icon: Icon(OMIcons.chevronLeft, size: 32),
+                      onPressed: () {
+                        ScopedModel.of<ComicModel>(context).fetchNext(-1);
+                      },
+                    ),
+                    IconButton(
+                      icon: Icon(OMIcons.chevronRight, size: 32),
+                      onPressed: () {
+                        ScopedModel.of<ComicModel>(context).fetchNext(1);
+                      },
+                    ),
+                  ],
+                )
+              : SizedBox.shrink(),
+        ),
+      ),
     );
   }
 }

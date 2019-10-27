@@ -1,6 +1,6 @@
 class Comic {
   String month;
-  int num;
+  int id;
   String link;
   String year;
   String news;
@@ -13,7 +13,7 @@ class Comic {
 
   Comic(
       {this.month,
-      this.num,
+      this.id,
       this.link,
       this.year,
       this.news,
@@ -26,7 +26,7 @@ class Comic {
 
   Comic.fromJson(Map<String, dynamic> json) {
     month = json['month'];
-    num = json['num'];
+    id = json['num'];
     link = json['link'];
     year = json['year'];
     news = json['news'];
@@ -41,7 +41,7 @@ class Comic {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = Map<String, dynamic>();
     data['month'] = this.month;
-    data['num'] = this.num;
+    data['num'] = this.id;
     data['link'] = this.link;
     data['year'] = this.year;
     data['news'] = this.news;
@@ -59,13 +59,13 @@ class Comic {
       identical(this, other) ||
       other is Comic &&
           runtimeType == other.runtimeType &&
-          num == other.num &&
+          id == other.id &&
           title == other.title &&
           img == other.img;
 
   @override
-  int get hashCode => num.hashCode ^ title.hashCode ^ img.hashCode;
+  int get hashCode => id.hashCode ^ title.hashCode ^ img.hashCode;
 
   @override
-  String toString() => 'Comic { num: $num, title: $title, img: $img }';
+  String toString() => 'Comic { num: $id, title: $title, img: $img }';
 }

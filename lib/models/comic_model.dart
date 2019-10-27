@@ -11,7 +11,6 @@ import 'package:permission/permission.dart';
 import 'package:xkcd/api/comic_api_client.dart';
 import 'package:xkcd/data/comic.dart';
 import 'package:xkcd/services/persistence_service.dart';
-import 'package:xkcd/utils/constants.dart';
 import 'package:xkcd/utils/service_locator.dart';
 
 class ComicModel extends Model {
@@ -66,30 +65,6 @@ class ComicModel extends Model {
     apiClient.explainCurrentComic();
   }
 
-  Future<void> onFavorite() async {
-    var num = comic.num.toString();
-    List<String> favorites = prefs.getValue(Constants.favorites);
-    if (favorites == null || favorites.isEmpty) {
-      favorites = [num];
-    } else if (favorites.contains(num)) {
-      favorites.remove(num);
-    } else {
-      favorites.add(num);
-    }
-    await prefs.setValue(Constants.favorites, favorites);
-    notifyListeners();
-  }
-
-  bool isFavorite() {
-    final PersistenceService prefs = sl<PersistenceService>();
-    if (comic != null) {
-      final List<String> favorites = prefs.getValue(Constants.favorites);
-      var num = comic.num.toString();
-      return favorites?.contains(num) ?? false;
-    }
-    return false;
-  }
-
   Future<void> saveComic({comic}) async {
     var permissionStatus =
         await Permission.getSinglePermissionStatus(PermissionName.Storage);
@@ -109,10 +84,10 @@ class ComicModel extends Model {
     var path = await _appDir;
     img.Image dImage = img.decodeImage(image.readAsBytesSync());
     // todo iOS: needs to be adapted due to no external storage
-    var file = File('$path/Download/${comicToSave.num}.png');
+    var file = File('$path/Download/${comicToSave.id}.png');
     file..writeAsBytesSync(img.encodePng(dImage));
     Fluttertoast.showToast(
-      msg: '${comicToSave.num}: ${comicToSave.title} saved',
+      msg: '${comicToSave.id}: ${comicToSave.title} saved',
       backgroundColor: Color(0xFFD0D0D0),
       textColor: Color(0xFF000000),
       toastLength: Toast.LENGTH_SHORT,
@@ -127,7 +102,7 @@ class ComicModel extends Model {
 
   void shareComic({comic}) {
     var comicToShare = comic ?? this.comic;
-    String url = '${ComicApiClient.baseUrl}${comicToShare.num}/';
+    String url = '${ComicApiClient.baseUrl}${comicToShare.id}/';
     Share.share(url);
   }
 
