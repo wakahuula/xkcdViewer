@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:xkcd/models/comic_model.dart';
+import 'package:xkcd/models/favorites_model.dart';
 import 'package:xkcd/pages/contributors_page.dart';
 import 'package:xkcd/pages/favorites_page.dart';
 import 'package:xkcd/pages/home_page.dart';
@@ -24,7 +25,7 @@ class XkcdViewer extends StatefulWidget {
 }
 
 class _XkcdViewerState extends State<XkcdViewer> {
-  final ComicModel model = ComicModel();
+  final ComicModel comicModel = ComicModel();
 
   final _pageRoutes = <String, WidgetBuilder>{
     HomePage.pageRoute: (context) => HomePage(),
@@ -36,55 +37,61 @@ class _XkcdViewerState extends State<XkcdViewer> {
   @override
   void initState() {
     super.initState();
-    model.loadFirstComic();
+    comicModel.loadFirstComic();
   }
 
   @override
   Widget build(BuildContext context) {
-    return ScopedModel<ComicModel>(
-      model: model,
-      child: DynamicTheme(
-        defaultBrightness: Brightness.dark,
-        data: (brightness) {
-          switchSystemChromeTheme(brightness);
-          return brightness == Brightness.dark
-              ? AppColors.getDarkTheme(context)
-              : AppColors.getLightTheme(context);
-        },
-        themedWidgetBuilder: (context, theme) {
-          return MaterialApp(
-            title: 'xkcdViewer',
-            debugShowCheckedModeBanner: false,
-            theme: theme,
-            supportedLocales: [
-              const Locale('en', 'US'),
-              const Locale('de', 'DE'),
-              const Locale('pt', 'BR'),
-              const Locale('es', 'ES'),
-              const Locale('ru', 'RU'),
-              const Locale('uk', 'UA'),
-              const Locale('fr', 'FR'),
-            ],
-            localizationsDelegates: [
-              const AppLocalizationsDelegate(),
-              GlobalMaterialLocalizations.delegate,
-              GlobalMaterialLocalizations.delegate
-            ],
-            localeResolutionCallback:
-                (Locale locale, Iterable<Locale> supportedLocales) {
-              for (Locale supportedLocale in supportedLocales) {
-                if (supportedLocale.languageCode == locale.languageCode ||
-                    supportedLocale.countryCode == locale.countryCode) {
-                  return supportedLocale;
-                }
+    return DynamicTheme(
+      defaultBrightness: Brightness.dark,
+      data: (brightness) {
+        switchSystemChromeTheme(brightness);
+        return brightness == Brightness.dark
+            ? AppColors.getDarkTheme(context)
+            : AppColors.getLightTheme(context);
+      },
+      themedWidgetBuilder: (context, theme) {
+        return MaterialApp(
+          title: 'xkcdViewer',
+          debugShowCheckedModeBanner: false,
+          theme: theme,
+          supportedLocales: [
+            const Locale('en', 'US'),
+            const Locale('de', 'DE'),
+            const Locale('pt', 'BR'),
+            const Locale('es', 'ES'),
+            const Locale('ru', 'RU'),
+            const Locale('uk', 'UA'),
+            const Locale('fr', 'FR'),
+          ],
+          localizationsDelegates: [
+            const AppLocalizationsDelegate(),
+            GlobalMaterialLocalizations.delegate,
+            GlobalMaterialLocalizations.delegate
+          ],
+          localeResolutionCallback:
+              (Locale locale, Iterable<Locale> supportedLocales) {
+            for (Locale supportedLocale in supportedLocales) {
+              if (supportedLocale.languageCode == locale.languageCode ||
+                  supportedLocale.countryCode == locale.countryCode) {
+                return supportedLocale;
               }
-              return supportedLocales.first;
-            },
-            routes: _pageRoutes,
-            home: HomePage(),
-          );
-        },
-      ),
+            }
+            return supportedLocales.first;
+          },
+          routes: _pageRoutes,
+          home: HomePage(),
+          builder: (BuildContext context, Widget child) {
+            return ScopedModel(
+              model: comicModel,
+              child: ScopedModel(
+                model: FavoritesModel(),
+                child: child,
+              ),
+            );
+          },
+        );
+      },
     );
   }
 

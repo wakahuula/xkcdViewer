@@ -48,10 +48,10 @@ class ComicSearchDelegate extends SearchDelegate<int> {
         return ListTile(
           contentPadding: const EdgeInsets.all(12),
           leading: Hero(
-            tag: 'hero-${comic.num}',
+            tag: 'hero-${comic.id}',
             child: Image.network(comic.img, width: 50, height: 60),
           ),
-          title: Text('${comic.num}: ${comic.title}'),
+          title: Text('${comic.id}: ${comic.title}'),
           trailing: IconButton(
             icon: Icon(OMIcons.chevronRight),
             padding: const EdgeInsets.all(0),

@@ -65,7 +65,7 @@ class _ComicViewState extends State<ComicView>
             child: Material(
               elevation: 4,
               child: Hero(
-                tag: 'hero-${widget.comic.num}',
+                tag: 'hero-${widget.comic.id}',
                 child: FadeIn(
                   child: PhotoView(
                     maxScale: PhotoViewComputedScale.covered,
@@ -87,7 +87,7 @@ class _ComicViewState extends State<ComicView>
   }
 
   String _getImageUrl() {
-    final num = widget.comic.num;
+    final num = widget.comic.id;
     final bool dataSaver = prefs.getValue('data_saver') ?? false;
     if (dataSaver || no2xVersion.contains(num)) {
       return widget.comic.img;

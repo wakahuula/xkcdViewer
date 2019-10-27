@@ -23,8 +23,8 @@ dependencies:
   permission: ^0.1.5
   photo_view: ^0.6.0
   pimp_my_button:
-      git:
-        url: git://github.com/Norbert515/pimp_my_button.git
+    git:
+      url: git://github.com/Norbert515/pimp_my_button.git
   scoped_model: ^1.0.1
   share: ^0.6.3
   hive: ^1.1.1
@@ -36,13 +36,11 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
 
-
 # For information on the generic Dart part of this file, see the
 # following page: https://www.dartlang.org/tools/pub/pubspec
 
 # The following section is specific to Flutter.
 flutter:
-
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.

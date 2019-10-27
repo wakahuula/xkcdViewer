@@ -7,11 +7,14 @@ class HivePersistenceService implements PersistenceService {
   final Box box;
 
   @override
-  dynamic getValue(String key) => box.get(key);
+  dynamic getValue(dynamic key) => box.get(key);
 
   @override
-  Future<void> setValue(String key, value) => box.put(key, value);
+  Future<void> setValue(dynamic key, value) => box.put(key, value);
 
   @override
-  Future<void> removeValue(String key) => box.delete(key);
+  Future<void> removeValue(dynamic key) => box.delete(key);
+
+  @override
+  List<dynamic> getKeys() => box.keys.toList();
 }
