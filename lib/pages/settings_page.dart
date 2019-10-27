@@ -2,12 +2,14 @@ import 'package:dynamic_theme/dynamic_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_material_color_picker/flutter_material_color_picker.dart';
 import 'package:outline_material_icons/outline_material_icons.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:xkcd/pages/contributors_page.dart';
+import 'package:xkcd/services/persistence_service.dart';
 import 'package:xkcd/utils/app_colors.dart';
 import 'package:xkcd/utils/app_localizations.dart';
 import 'package:xkcd/utils/constants.dart';
-import 'package:xkcd/utils/preferences.dart';
+import 'package:xkcd/utils/service_locator.dart';
+
+import '../utils/constants.dart';
 
 class SettingsPage extends StatefulWidget {
   static final String pageRoute = '/settings-page';
@@ -19,7 +21,7 @@ class SettingsPage extends StatefulWidget {
 class SettingsPageState extends State<SettingsPage> {
   GlobalKey<ScaffoldState> _settingsScaffoldKey = GlobalKey();
   final GlobalKey _menuKey = new GlobalKey();
-  final SharedPreferences _prefs = Preferences.prefs;
+  final PersistenceService prefs = sl<PersistenceService>();
 
   @override
   void initState() {
@@ -71,7 +73,7 @@ class SettingsPageState extends State<SettingsPage> {
           circleSize: 24,
         ),
         onTap: () async {
-          int color = await showDialog(
+          final int color = await showDialog(
             context: context,
             barrierDismissible: true,
             builder: (context) {
@@ -90,10 +92,8 @@ class SettingsPageState extends State<SettingsPage> {
               );
             },
           );
-          setState(() {
-            Preferences.prefs.setInt('accentColor', color);
-            DynamicTheme.of(context).setState(() {});
-          });
+          await prefs.setValue('accentColor', color);
+          DynamicTheme.of(context).setState(() {});
         });
   }
 
@@ -108,7 +108,8 @@ class SettingsPageState extends State<SettingsPage> {
       trailing: PopupMenuButton<int>(
         key: _menuKey,
         icon: Icon(OMIcons.arrowDropDown),
-        initialValue: DynamicTheme.of(context).brightness == Brightness.light ? 0 : 1,
+        initialValue:
+            DynamicTheme.of(context).brightness == Brightness.light ? 0 : 1,
         itemBuilder: (context) => [
           PopupMenuItem(
             value: 0,
@@ -144,14 +145,14 @@ class SettingsPageState extends State<SettingsPage> {
         ListTile(
           leading: Icon(OMIcons.permDataSetting),
           title: Text(AppLocalizations.of(context).get('data_saver')),
-          subtitle: Text(AppLocalizations.of(context).get('data_saver_explain')),
+          subtitle:
+              Text(AppLocalizations.of(context).get('data_saver_explain')),
           trailing: Checkbox(
             tristate: false,
-            value: _prefs.getBool('data_saver') ?? false,
-            onChanged: (checked) {
-              setState(() {
-                _prefs.setBool('data_saver', checked);
-              });
+            value: prefs.getValue(Constants.dataSaver) ?? false,
+            onChanged: (checked) async {
+              await prefs.setValue(Constants.dataSaver, checked);
+              setState(() {});
             },
           ),
         ),
@@ -182,12 +183,14 @@ class SettingsPageState extends State<SettingsPage> {
       leading: Icon(OMIcons.favoriteBorder),
       title: Text(AppLocalizations.of(context).get('clear_favorites')),
       onTap: () async {
-        final SharedPreferences prefs = Preferences.prefs;
-        final List<String> favorites = prefs.getStringList(Constants.favorites);
+        final PersistenceService prefs = sl<PersistenceService>();
+        final List<String> favorites = prefs.getValue(Constants.favorites);
         if (favorites != null && favorites.isNotEmpty) {
-          prefs.remove(Constants.favorites);
+          prefs.removeValue(Constants.favorites);
           _settingsScaffoldKey.currentState.showSnackBar(
-            SnackBar(content: Text(AppLocalizations.of(context).get('favorites_cleared'))),
+            SnackBar(
+                content: Text(
+                    AppLocalizations.of(context).get('favorites_cleared'))),
           );
         }
       },
@@ -221,16 +224,18 @@ class SettingsPageState extends State<SettingsPage> {
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: <Widget>[
                             FlatButton(
-                              child: Text(AppLocalizations.of(context).get('contributors')),
+                              child: Text(AppLocalizations.of(context)
+                                  .get('contributors')),
                               onPressed: () {
                                 Navigator.of(context).pop();
-                                Navigator.of(context).pushNamed(ContributorsPage.pageRoute);
+                                Navigator.of(context)
+                                    .pushNamed(ContributorsPage.pageRoute);
                               },
                             ),
                             FlatButton(
                               padding: const EdgeInsets.only(right: 0),
-                              child:
-                                  Text(MaterialLocalizations.of(context).viewLicensesButtonLabel),
+                              child: Text(MaterialLocalizations.of(context)
+                                  .viewLicensesButtonLabel),
                               onPressed: () {
                                 Navigator.of(context).push(
                                   MaterialPageRoute(
