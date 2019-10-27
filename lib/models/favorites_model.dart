@@ -30,4 +30,6 @@ class FavoritesModel extends Model {
   }
 
   bool isFavorite(int id) => _favoritesService.isFavorite(id);
+
+  Future<void> clearFavorites() => _favoritesService.clearFavorites();
 }

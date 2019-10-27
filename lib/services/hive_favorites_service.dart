@@ -23,4 +23,7 @@ class HiveFavoritesService implements FavoritesService {
 
   @override
   bool isFavorite(int id) => box.containsKey(id);
+
+  @override
+  Future<void> clearFavorites() => box.clear();
 }

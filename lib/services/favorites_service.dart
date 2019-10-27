@@ -5,4 +5,5 @@ abstract class FavoritesService {
   List<Comic> getFavoriteComics();
   Future<void> addToFavorites(Comic comic);
   Future<void> removeFromFavorites(int id);
+  Future<void> clearFavorites();
 }
