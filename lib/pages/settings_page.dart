@@ -1,17 +1,11 @@
-import 'package:dynamic_theme/dynamic_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_material_color_picker/flutter_material_color_picker.dart';
 import 'package:outline_material_icons/outline_material_icons.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:xkcd/models/favorites_model.dart';
+import 'package:xkcd/models/preferences_model.dart';
 import 'package:xkcd/pages/contributors_page.dart';
-import 'package:xkcd/services/persistence_service.dart';
-import 'package:xkcd/utils/app_colors.dart';
 import 'package:xkcd/utils/app_localizations.dart';
-import 'package:xkcd/utils/constants.dart';
-import 'package:xkcd/utils/service_locator.dart';
-
-import '../utils/constants.dart';
 
 class SettingsPage extends StatefulWidget {
   static final String pageRoute = '/settings-page';
@@ -21,14 +15,8 @@ class SettingsPage extends StatefulWidget {
 }
 
 class SettingsPageState extends State<SettingsPage> {
-  GlobalKey<ScaffoldState> _settingsScaffoldKey = GlobalKey();
-  final GlobalKey _menuKey = new GlobalKey();
-  final PersistenceService prefs = sl<PersistenceService>();
-
-  @override
-  void initState() {
-    super.initState();
-  }
+  final GlobalKey<ScaffoldState> _settingsScaffoldKey = GlobalKey();
+  final GlobalKey _menuKey = GlobalKey();
 
   @override
   Widget build(BuildContext context) {
@@ -36,15 +24,14 @@ class SettingsPageState extends State<SettingsPage> {
       key: _settingsScaffoldKey,
       appBar: AppBar(
         titleSpacing: 0,
-        elevation: 0,
         title: Text(AppLocalizations.of(context).get('settings')),
       ),
       body: Container(
         padding: const EdgeInsets.all(8),
         child: ListView(
           children: <Widget>[
-            _buildThemeButton(context),
             _buildAccentColorButton(context),
+            _buildThemeButton(context),
             _buildTitleWidget(AppLocalizations.of(context).get('images')),
             _buildImagesOptions(context),
             _buildTitleWidget(AppLocalizations.of(context).get('favorites')),
@@ -65,78 +52,80 @@ class SettingsPageState extends State<SettingsPage> {
   }
 
   Widget _buildAccentColorButton(BuildContext context) {
-    var accentColor = AppColors.getAccentColor(context);
     var accentColorText = AppLocalizations.of(context).get('accent_color');
-    return ListTile(
-        leading: Icon(OMIcons.colorLens),
-        title: Text(accentColorText),
-        trailing: CircleColor(
-          color: accentColor,
-          circleSize: 24,
-        ),
-        onTap: () async {
-          final int color = await showDialog(
-            context: context,
-            barrierDismissible: true,
-            builder: (context) {
-              return SimpleDialog(
-                title: Text(accentColorText),
-                children: <Widget>[
-                  MaterialColorPicker(
-                    shrinkWrap: true,
-                    allowShades: false,
-                    selectedColor: accentColor,
-                    onMainColorChange: (color) {
-                      Navigator.of(context).pop(color.value);
-                    },
-                  )
-                ],
-              );
-            },
-          );
-          await prefs.setValue('accentColor', color);
-          DynamicTheme.of(context).setState(() {});
-        });
+    return ScopedModelDescendant<PreferencesModel>(
+      builder: (BuildContext context, Widget child, PreferencesModel model) {
+        return ListTile(
+          leading: Icon(OMIcons.colorLens),
+          title: Text(accentColorText),
+          trailing: CircleColor(color: model.accentColor, circleSize: 24),
+          onTap: () async {
+            final Color color = await showDialog<Color>(
+              context: context,
+              barrierDismissible: true,
+              builder: (context) {
+                return SimpleDialog(
+                  title: Text(accentColorText),
+                  children: <Widget>[
+                    MaterialColorPicker(
+                      shrinkWrap: true,
+                      allowShades: false,
+                      selectedColor: model.accentColor,
+                      onMainColorChange: (ColorSwatch swatch) =>
+                          Navigator.pop(context, Color(swatch.value)),
+                    )
+                  ],
+                );
+              },
+            );
+            if (color != null) model.accentColor = color;
+          },
+        );
+      },
+    );
   }
 
   Widget _buildThemeButton(BuildContext context) {
-    return ListTile(
-      leading: Icon(OMIcons.colorize),
-      title: Text(AppLocalizations.of(context).get('theme')),
-      onTap: () {
-        dynamic popUpMenustate = _menuKey.currentState;
-        popUpMenustate.showButtonMenu();
+    String themeToString(ThemeMode themeMode) {
+      String theme;
+      switch (themeMode) {
+        case ThemeMode.light:
+          theme = 'Light';
+          break;
+        case ThemeMode.dark:
+          theme = 'Dark';
+          break;
+        case ThemeMode.system:
+          theme = 'System';
+          break;
+      }
+      return theme;
+    }
+
+    return ScopedModelDescendant<PreferencesModel>(
+      builder: (context, child, model) {
+        return ListTile(
+          leading: Icon(OMIcons.colorize),
+          title: Text(AppLocalizations.of(context).get('theme')),
+          onTap: () {
+            dynamic popUpMenustate = _menuKey.currentState;
+            popUpMenustate.showButtonMenu();
+          },
+          trailing: PopupMenuButton<ThemeMode>(
+            key: _menuKey,
+            // icon: Icon(OMIcons.arrowDropDown),
+            child: Text(themeToString(model.themeMode)),
+            initialValue: model.themeMode,
+            onSelected: (ThemeMode theme) => model.themeMode = theme,
+            itemBuilder: (context) => [
+              // TODO use localized strings here
+              PopupMenuItem(value: ThemeMode.light, child: Text('Light')),
+              PopupMenuItem(value: ThemeMode.dark, child: Text('Dark')),
+              PopupMenuItem(value: ThemeMode.system, child: Text('System')),
+            ],
+          ),
+        );
       },
-      trailing: PopupMenuButton<int>(
-        key: _menuKey,
-        icon: Icon(OMIcons.arrowDropDown),
-        initialValue:
-            DynamicTheme.of(context).brightness == Brightness.light ? 0 : 1,
-        itemBuilder: (context) => [
-          PopupMenuItem(
-            value: 0,
-            child: ListTile(
-              title: Text('Light'),
-            ),
-          ),
-          PopupMenuItem(
-            value: 1,
-            child: ListTile(
-              title: Text('Dark'),
-            ),
-          ),
-        ],
-        onSelected: (val) {
-          switch (val) {
-            case 0:
-              DynamicTheme.of(context).setBrightness(Brightness.light);
-              break;
-            case 1:
-              DynamicTheme.of(context).setBrightness(Brightness.dark);
-              break;
-          }
-        },
-      ),
     );
   }
 
@@ -144,19 +133,23 @@ class SettingsPageState extends State<SettingsPage> {
     return Column(
       children: <Widget>[
         // data saver
-        ListTile(
-          leading: Icon(OMIcons.permDataSetting),
-          title: Text(AppLocalizations.of(context).get('data_saver')),
-          subtitle:
-              Text(AppLocalizations.of(context).get('data_saver_explain')),
-          trailing: Checkbox(
-            tristate: false,
-            value: prefs.getValue(Constants.dataSaver) ?? false,
-            onChanged: (checked) async {
-              await prefs.setValue(Constants.dataSaver, checked);
-              setState(() {});
-            },
-          ),
+        ScopedModelDescendant<PreferencesModel>(
+          builder: (
+            BuildContext context,
+            Widget child,
+            PreferencesModel model,
+          ) {
+            return CheckboxListTile(
+              secondary: Icon(OMIcons.permDataSetting),
+              title: Text(AppLocalizations.of(context).get('data_saver')),
+              subtitle: Text(
+                AppLocalizations.of(context).get('data_saver_explain'),
+              ),
+              value: model.dataSaver,
+              activeColor: Theme.of(context).accentColor,
+              onChanged: (bool checked) => model.dataSaver = checked,
+            );
+          },
         ),
         // clear cache
         ListTile(
