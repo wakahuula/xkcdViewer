@@ -64,13 +64,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.1.3"
-  dynamic_theme:
-    dependency: "direct main"
-    description:
-      name: dynamic_theme
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.0.1"
   flutter:
     dependency: "direct main"
     description: flutter
@@ -270,13 +263,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.6.3"
-  shared_preferences:
-    dependency: transitive
-    description:
-      name: shared_preferences
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.5.4+1"
   sky_engine:
     dependency: transitive
     description: flutter

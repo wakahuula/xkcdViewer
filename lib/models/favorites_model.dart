@@ -31,5 +31,9 @@ class FavoritesModel extends Model {
 
   bool isFavorite(int id) => _favoritesService.isFavorite(id);
 
-  Future<void> clearFavorites() => _favoritesService.clearFavorites();
+  Future<void> clearFavorites() async {
+    await _favoritesService.clearFavorites();
+    _updateList();
+    notifyListeners();
+  }
 }
