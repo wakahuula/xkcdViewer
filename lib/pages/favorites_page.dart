@@ -11,15 +11,12 @@ class FavoritesPage extends StatelessWidget {
   static final String pageRoute = '/favorites-page';
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        appBar: AppBar(
-          titleSpacing: 0,
-          elevation: 0,
-          title: Text(AppLocalizations.of(context).get('favorites')),
-        ),
-        body: _FavouritesList(),
+    return Scaffold(
+      appBar: AppBar(
+        titleSpacing: 0,
+        title: Text(AppLocalizations.of(context).get('favorites')),
       ),
+      body: _FavouritesList(),
     );
   }
 }
