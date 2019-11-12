@@ -86,15 +86,22 @@ class _XkcdViewerState extends State<XkcdViewer> {
             supportedLocales: _supportedLocales,
             localizationsDelegates: _localizationsDelegates,
             localeResolutionCallback: localeResolutionCallback,
+            color: model.accentColor,
             routes: _pageRoutes,
             home: HomePage(),
             builder: (BuildContext context, Widget child) {
-              // switchSystemChromeTheme(Theme.of(context).brightness);
+              /* switchSystemChromeTheme(
+                model.themeMode == ThemeMode.system
+                    ? MediaQuery.platformBrightnessOf(context)
+                    : model.themeMode == ThemeMode.dark
+                        ? Brightness.dark
+                        : Brightness.light,
+              ); */
               // Scoped Models inside the material app as they don't affect the
               // app's configuration unlike the PreferencesModel
-              return ScopedModel(
+              return ScopedModel<ComicModel>(
                 model: comicModel,
-                child: ScopedModel(
+                child: ScopedModel<FavoritesModel>(
                   model: _favoritesModel,
                   child: child,
                 ),
