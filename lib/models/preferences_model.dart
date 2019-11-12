@@ -22,9 +22,10 @@ class PreferencesModel extends Model {
   Color get accentColor =>
       _accentColor ??
       Color(_persistenceService.getValue('accent') ?? Colors.deepPurple.value);
+
   set accentColor(Color color) {
     print('Changing accent color to ${color.toString()}');
-    accentColor = color;
+    _accentColor = color;
     notifyListeners();
     _persistenceService.setValue('accent', _accentColor.value);
   }
