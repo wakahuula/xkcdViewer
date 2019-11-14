@@ -1,6 +1,6 @@
 # xkcdViewer
 
-![Build Status](https://api.codemagic.io/apps/5c07aa8ab7a79b000dd8ac99/5c07aa8ab7a79b000dd8ac98/status_badge.svg)
+[![Codemagic build status](https://api.codemagic.io/apps/5c07aa8ab7a79b000dd8ac99/5c07aa8ab7a79b000dd8ac98/status_badge.svg)](https://codemagic.io/apps/5c07aa8ab7a79b000dd8ac99/5c07aa8ab7a79b000dd8ac98/latest_build)
 [![Stargazers](https://img.shields.io/github/stars/wakahuula/xkcdViewer.svg?branch=master)](https://github.com/wakahuula/xkcdViewer/stargazers)
 [![Forks](https://img.shields.io/github/forks/wakahuula/xkcdViewer.svg?branch=master)](https://github.com/wakahuula/xkcdViewer/network)
 [![Issues](https://img.shields.io/github/issues/wakahuula/xkcdViewer.svg?branch=master)](https://github.com/wakahuula/xkcdViewer/issues)
