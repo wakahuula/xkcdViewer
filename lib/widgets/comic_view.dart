@@ -73,8 +73,9 @@ class _ComicViewState extends State<ComicView>
                     backgroundDecoration: BoxDecoration(
                       color: Color(Theme.of(context).primaryColor.value),
                     ),
-                    loadingChild: Container(
-                        child: Center(child: CircularProgressIndicator())),
+                    loadingBuilder: (context, event) {
+                      return Center(child: CircularProgressIndicator());
+                    },
                     imageProvider: CachedNetworkImageProvider(_getImageUrl()),
                   ),
                 ),

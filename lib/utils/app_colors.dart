@@ -7,12 +7,6 @@ class AppColors {
     return ThemeData(
       brightness: brightness,
       fontFamily: 'FiraMono',
-      pageTransitionsTheme: const PageTransitionsTheme(
-        builders: <TargetPlatform, PageTransitionsBuilder>{
-          TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
-          TargetPlatform.android: OpenUpwardsPageTransitionsBuilder(),
-        },
-      ),
       canvasColor: surfaceColor,
       primaryColor: surfaceColor,
       primaryColorLight: surfaceColor,

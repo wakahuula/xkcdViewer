@@ -5,9 +5,9 @@ import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image/image.dart' as img;
 import 'package:path_provider/path_provider.dart';
+import 'package:permission/permission.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:share/share.dart';
-import 'package:permission/permission.dart';
 import 'package:xkcd/api/comic_api_client.dart';
 import 'package:xkcd/data/comic.dart';
 import 'package:xkcd/services/persistence_service.dart';
@@ -66,16 +66,25 @@ class ComicModel extends Model {
   }
 
   Future<void> saveComic({comic}) async {
-    var permissionStatus =
-        await Permission.getSinglePermissionStatus(PermissionName.Storage);
-    if (permissionStatus == PermissionStatus.deny ||
-        permissionStatus == PermissionStatus.notDecided) {
-      var permission =
-          await Permission.requestSinglePermission(PermissionName.Storage);
-      if (permission != PermissionStatus.allow) {
-        return;
-      }
+    var permissionsStatus =
+        await Permission.getPermissionsStatus([PermissionName.Storage]);
+    var storagePermission = permissionsStatus[0];
+    if (storagePermission.permissionStatus != PermissionStatus.allow) {
+      permissionsStatus =
+          await Permission.requestPermissions([PermissionName.Storage]);
+      if (storagePermission.permissionStatus != PermissionStatus.allow) return;
     }
+
+//    var permissionStatus =
+//        await Permission.getSinglePermissionStatus(PermissionName.Storage);
+//    if (permissionStatus == PermissionStatus.deny ||
+//        permissionStatus == PermissionStatus.notDecided) {
+//      var permission =
+//          await Permission.requestSinglePermission(PermissionName.Storage);
+//      if (permission != PermissionStatus.allow) {
+//        return;
+//      }
+//    }
     var comicToSave = comic ?? this.comic;
     if (comicToSave.img == null) {
       return;
@@ -83,8 +92,8 @@ class ComicModel extends Model {
     final image = await getImageFromNetwork(comicToSave.img);
     var path = await _appDir;
     img.Image dImage = img.decodeImage(image.readAsBytesSync());
-    // todo iOS: needs to be adapted due to no external storage
-    var file = File('$path/Download/${comicToSave.id}.png');
+    var dir = await getApplicationDocumentsDirectory();
+    var file = File(dir.path);
     file..writeAsBytesSync(img.encodePng(dImage));
     Fluttertoast.showToast(
       msg: '${comicToSave.id}: ${comicToSave.title} saved',

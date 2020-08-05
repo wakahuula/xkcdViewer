@@ -49,7 +49,6 @@ class _XkcdViewerState extends State<XkcdViewer> {
   static const List<LocalizationsDelegate> _localizationsDelegates = [
     AppLocalizationsDelegate(),
     GlobalMaterialLocalizations.delegate,
-    GlobalMaterialLocalizations.delegate,
   ];
 
   @override
