@@ -32,7 +32,7 @@ class ComicApiClient {
     if (response.statusCode == 200) {
       var comic = Comic.fromJson(json.decode(response.body));
       if (_latestComicNum < 0) {
-        _latestComicNum = comic.id;
+        _latestComicNum = comic.num;
       }
       _currentComicNum = _latestComicNum;
       _cachedComics.putIfAbsent(_latestComicNum, () => comic);
@@ -46,12 +46,10 @@ class ComicApiClient {
   Future<Comic> fetchNextComic(int incrementValue) async {
     // todo: add bounce animation or toast(?) for nonexistent comics
     var nextComicNum = _currentComicNum + incrementValue;
-    nextComicNum =
-        nextComicNum > _latestComicNum ? _latestComicNum : nextComicNum;
+    nextComicNum = nextComicNum > _latestComicNum ? _latestComicNum : nextComicNum;
 
     if (nextComicNum > 0) {
-      String nextComicUrl =
-          _subApiUrl.replaceAll('{0}', nextComicNum.toString());
+      String nextComicUrl = _subApiUrl.replaceAll('{0}', nextComicNum.toString());
 
       final response = await http.get(nextComicUrl);
       if (response.statusCode == 200) {
@@ -68,8 +66,7 @@ class ComicApiClient {
 
   Future<Comic> fetchComic(int num) async {
     if (num < 0 || num > _latestComicNum) {
-      HomePage.scaffoldKey.currentState
-          .showSnackBar(SnackBar(content: Text('NOPE')));
+      HomePage.scaffoldKey.currentState.showSnackBar(SnackBar(content: Text('NOPE')));
       return _cachedComics[num];
     }
 
@@ -100,7 +97,7 @@ class ComicApiClient {
       final response = await http.get(randomUrl);
       if (response.statusCode == 200) {
         var comic = Comic.fromJson(json.decode(response.body));
-        _currentComicNum = comic.id;
+        _currentComicNum = comic.num;
         _cachedComics.putIfAbsent(_currentComicNum, () => comic);
         return comic;
       } else {
@@ -111,15 +108,14 @@ class ComicApiClient {
   }
 
   void selectComic(Comic comic) {
-    _currentComicNum = comic.id;
+    _currentComicNum = comic.num;
     _cachedComics.putIfAbsent(_currentComicNum, () => comic);
   }
 
   void explainCurrentComic() async {
     final String explainUrl = _explainXkcdUrl + _currentComicNum.toString();
     if (await canLaunch(explainUrl)) {
-      FlutterWebBrowser.openWebPage(
-          url: explainUrl, androidToolbarColor: Colors.white);
+      FlutterWebBrowser.openWebPage(url: explainUrl, androidToolbarColor: Colors.white);
     }
   }
 

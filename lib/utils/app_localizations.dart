@@ -18,8 +18,7 @@ class AppLocalizations {
   Future<bool> load() async {
     String data;
     try {
-      data = await rootBundle.loadString(
-          'assets/locale/${this.locale.languageCode}-${this.locale.countryCode}.json');
+      data = await rootBundle.loadString('assets/locale/${this.locale.languageCode}-${this.locale.countryCode}.json');
     } catch (e) {
       data = await rootBundle.loadString('assets/locale/en-US.json');
     }

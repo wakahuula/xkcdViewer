@@ -1,25 +1,53 @@
 import 'package:flutter/material.dart';
+import 'package:xkcd/utils/preferences.dart';
 
 class AppColors {
-  static ThemeData theme({@required Color accent, @required bool dark}) {
-    final Brightness brightness = dark ? Brightness.dark : Brightness.light;
-    final Color surfaceColor = dark ? const Color(0xFF121212) : Colors.white;
+  static const Color backgroundColor = Color(0xFFECEFF1);
+
+  static Color getBottomSeparatorColor(BuildContext context) =>
+      Theme.of(context).brightness == Brightness.light ? Colors.black12 : Color(0xFF2E2E31);
+
+  static Color getAccentColor(BuildContext context) =>
+      Color(Preferences.prefs.getInt('accentColor') ?? Theme.of(context).accentColor.value);
+
+  static ThemeData getDarkTheme(BuildContext context) {
+    print(Preferences.prefs.getInt('accentColor'));
     return ThemeData(
-      brightness: brightness,
+      brightness: Brightness.dark,
       fontFamily: 'FiraMono',
-      canvasColor: surfaceColor,
-      primaryColor: surfaceColor,
-      primaryColorLight: surfaceColor,
-      primaryColorDark: surfaceColor,
-      bottomAppBarColor: surfaceColor,
-      primarySwatch: Colors.deepPurple,
-      accentColor: accent,
-      dividerColor: dark ? Color(0xFF2E2E31) : Colors.black12,
-      appBarTheme: AppBarTheme(
-        brightness: brightness,
-        elevation: 0,
-        color: surfaceColor,
+      pageTransitionsTheme: const PageTransitionsTheme(
+        builders: <TargetPlatform, PageTransitionsBuilder>{
+          TargetPlatform.iOS: const CupertinoPageTransitionsBuilder(),
+          TargetPlatform.android: const OpenUpwardsPageTransitionsBuilder(),
+        },
       ),
+      canvasColor: const Color(0xFF121212),
+      primaryColor: const Color(0xFF121212),
+      primaryColorLight: const Color(0xFF121212),
+      primaryColorDark: const Color(0xFF121212),
+      bottomAppBarColor: const Color(0xFF121212),
+      primarySwatch: Colors.deepPurple,
+      accentColor: getAccentColor(context),
+    );
+  }
+
+  static ThemeData getLightTheme(BuildContext context) {
+    return ThemeData(
+      brightness: Brightness.light,
+      fontFamily: 'FiraMono',
+      pageTransitionsTheme: const PageTransitionsTheme(
+        builders: <TargetPlatform, PageTransitionsBuilder>{
+          TargetPlatform.iOS: const CupertinoPageTransitionsBuilder(),
+          TargetPlatform.android: const OpenUpwardsPageTransitionsBuilder(),
+        },
+      ),
+      canvasColor: Colors.white,
+      primaryColor: Colors.white,
+      primaryColorLight: Colors.white,
+      primaryColorDark: Colors.white,
+      bottomAppBarColor: Colors.white,
+      primarySwatch: Colors.deepPurple,
+      accentColor: getAccentColor(context),
     );
   }
 }
