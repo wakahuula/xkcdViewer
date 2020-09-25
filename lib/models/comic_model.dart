@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image/image.dart' as img;
+import 'package:image_downloader/image_downloader.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission/permission.dart';
 import 'package:scoped_model/scoped_model.dart';
@@ -84,23 +85,11 @@ class ComicModel extends Model {
   }
 
   Future<void> saveComic({comic}) async {
-    var permissionsStatus = await Permission.getPermissionsStatus([PermissionName.Storage]);
-    var storagePermission = permissionsStatus[0];
-    if (storagePermission.permissionStatus != PermissionStatus.allow) {
-      permissionsStatus = await Permission.requestPermissions([PermissionName.Storage]);
-      if (storagePermission.permissionStatus != PermissionStatus.allow) return;
-    }
-
     var comicToSave = comic ?? this.comic;
     if (comicToSave.img == null) {
       return;
     }
-    final image = await getImageFromNetwork(comicToSave.img);
-    img.Image dImage = img.decodeImage(image.readAsBytesSync());
-
-    var dir = await getApplicationDocumentsDirectory();
-    var file = File(dir.path);
-    file..writeAsBytesSync(img.encodePng(dImage));
+    await ImageDownloader.downloadImage(comicToSave.img);
 
     Fluttertoast.showToast(
       msg: '${comicToSave.num}: ${comicToSave.title} saved',
