@@ -89,6 +89,7 @@ class ComicModel extends Model {
     if (comicToSave.img == null) {
       return;
     }
+    print(comicToSave.img);
     await ImageDownloader.downloadImage(comicToSave.img);
 
     Fluttertoast.showToast(
