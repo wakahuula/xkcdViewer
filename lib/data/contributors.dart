@@ -5,7 +5,7 @@ class Contributors {
 
   Contributors.fromJson(Map<String, dynamic> json) {
     if (json['contributors'] != null) {
-      contributors = List<Contributor>();
+      contributors = [];
       json['contributors'].forEach((v) {
         contributors.add(Contributor.fromJson(v));
       });

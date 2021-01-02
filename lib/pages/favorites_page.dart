@@ -146,7 +146,7 @@ class _FavoritesPageState extends State<FavoritesPage> {
     }
     prefs.setStringList(Constants.favorites, favorites);
 
-    Scaffold.of(context).showSnackBar(
+    ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text.rich(TextSpan(children: [
           TextSpan(

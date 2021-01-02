@@ -3,10 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:image/image.dart' as img;
 import 'package:image_downloader/image_downloader.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:permission/permission.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:share/share.dart';
 import 'package:xkcd/api/comic_api_client.dart';
@@ -46,8 +43,8 @@ class ComicModel extends Model {
     setLoading(false);
   }
 
-  Future<Comic> fetchComic(String num) async {
-    return await apiClient.fetchComic(int.parse(num));
+  Future<Comic> fetchComic(BuildContext context, String num) async {
+    return await apiClient.fetchComic(context, int.parse(num));
   }
 
   void selectComic(Comic comic) {

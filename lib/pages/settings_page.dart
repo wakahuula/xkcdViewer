@@ -186,7 +186,7 @@ class SettingsPageState extends State<SettingsPage> {
         final List<String> favorites = prefs.getStringList(Constants.favorites);
         if (favorites != null && favorites.isNotEmpty) {
           prefs.remove(Constants.favorites);
-          _settingsScaffoldKey.currentState.showSnackBar(
+          ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text(AppLocalizations.of(context).get('favorites_cleared'))),
           );
         }
@@ -229,9 +229,7 @@ class SettingsPageState extends State<SettingsPage> {
                             ),
                             FlatButton(
                               padding: const EdgeInsets.only(right: 0),
-                              child: Text(MaterialLocalizations
-                                  .of(context)
-                                  .viewLicensesButtonLabel),
+                              child: Text(MaterialLocalizations.of(context).viewLicensesButtonLabel),
                               onPressed: () {
                                 Navigator.of(context).push(
                                   MaterialPageRoute(

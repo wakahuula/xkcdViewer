@@ -9,7 +9,6 @@ import 'package:flutter_web_browser/flutter_web_browser.dart';
 import 'package:http/http.dart' as http;
 import 'package:url_launcher/url_launcher.dart';
 import 'package:xkcd/data/comic.dart';
-import 'package:xkcd/pages/home_page.dart';
 
 class ComicApiClient {
   static final baseUrl = 'https://www.xkcd.com/';
@@ -64,9 +63,9 @@ class ComicApiClient {
     return fetchRandomComic();
   }
 
-  Future<Comic> fetchComic(int num) async {
+  Future<Comic> fetchComic(BuildContext context, int num) async {
     if (num < 0 || num > _latestComicNum) {
-      HomePage.scaffoldKey.currentState.showSnackBar(SnackBar(content: Text('NOPE')));
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('NOPE')));
       return _cachedComics[num];
     }
 

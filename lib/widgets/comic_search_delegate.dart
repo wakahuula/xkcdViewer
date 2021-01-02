@@ -31,7 +31,7 @@ class ComicSearchDelegate extends SearchDelegate<int> {
   @override
   Widget buildResults(BuildContext context) {
     return FutureBuilder<Comic>(
-      future: ScopedModel.of<ComicModel>(context).fetchComic(query),
+      future: ScopedModel.of<ComicModel>(context).fetchComic(context, query),
       builder: (context, snapshot) {
         if (snapshot.error != null || snapshot.hasError) {
           return Center(

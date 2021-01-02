@@ -57,10 +57,10 @@ class Comic {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-          other is Comic &&
-              runtimeType == other.runtimeType &&
-              num == other.num &&
-              title == other.title &&
+      other is Comic &&
+          runtimeType == other.runtimeType &&
+          num == other.num &&
+          title == other.title &&
           img == other.img;
 
   @override
