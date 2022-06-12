@@ -5,6 +5,7 @@
 [![Forks](https://img.shields.io/github/forks/wakahuula/xkcdViewer.svg?branch=master)](https://github.com/wakahuula/xkcdViewer/network)
 [![Issues](https://img.shields.io/github/issues/wakahuula/xkcdViewer.svg?branch=master)](https://github.com/wakahuula/xkcdViewer/issues)
 [![License](https://img.shields.io/github/license/wakahuula/xkcdViewer.svg?branch=master)](https://github.com/wakahuula/xkcdViewer/blob/master/LICENSE)
+<img src="https://img.shields.io/endpoint?url=https://apt.izzysoft.de/fdroid/api/v1/shield/de.stoupas.xkcd&label=IzzyOnDroid&cacheSeconds=86400">
 
 xkcdViewer is a simple comic viewer for the infamous xkcd webcomic built with [Flutter 🐦](https://flutter.io/) and [ScopedModel](https://pub.dartlang.org/packages/scoped_model) for state management.
 
@@ -25,9 +26,17 @@ xkcdViewer is a simple comic viewer for the infamous xkcd webcomic built with [F
 
 📶 Data saver option
 
-<a href='https://play.google.com/store/apps/details?id=de.stoupas.xkcd&pcampaignid=MKT-Other-global-all-co-prtnr-py-PartBadge-Mar2515-1'><img alt='Get it on Google Play' src='https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png' height=90px/></a>
+[<img src="https://gitlab.com/IzzyOnDroid/repo/-/raw/master/assets/IzzyOnDroid.png"
+     alt="Get it on IzzyOnDroid"
+     height="80">](https://apt.izzysoft.de/fdroid/index/apk/de.stoupas.xkcd)
+
+<!--
+[<img src="https://play.google.com/intl/en_us/badges/images/generic/en-play-badge.png"
+     alt="Get it on Google Play"
+     height="80">](https://play.google.com/store/apps/details?id=de.stoupas.xkcd)
 
 Google Play and the Google Play logo are trademarks of Google LLC.
+-->
 
 The comics displayed in this app are licensed under a Creative Commons Attribution-NonCommercial 2.5 License. Visit [xkcd](https://xkcd.com) for additional information.
 
