@@ -2,7 +2,7 @@
 
 ## Status und Ziel
 
-Der Benutzer hat den folgenden Architekturrahmen im Gespräch freigegeben. Dieses Dokument konkretisiert ihn und benötigt vor der Implementierungsplanung eine eigene Freigabe.
+Der Benutzer hat den Architekturrahmen und dieses Dokument am 2026-10-03 im Gespräch freigegeben. Als nächster Schritt ist die Implementierungsplanung erlaubt, noch nicht die Umsetzung.
 
 Flutter wird im bestehenden Repository durch Kotlin Multiplatform mit Compose Multiplatform ersetzt. Zunächst wird nur Android als ausführbare App fertiggestellt. Die Oberfläche und die fachliche Logik werden gemeinsam implementiert, damit später iOS ohne zweite Oberfläche ergänzt werden kann.
 
@@ -177,7 +177,7 @@ Diese Punkte sind keine offenen Produktentscheidungen, sondern verbindliche Prü
 - [x] Ziel und Erhaltungsregeln abstimmen.
 - [x] Architekturrahmen für Android zuerst und gemeinsame UI freigeben lassen.
 - [x] Migrationsspezifikation schreiben und intern auf Widersprüche prüfen.
-- [ ] Benutzer prüft und bestätigt dieses Dokument.
+- [x] Benutzer prüft und bestätigt dieses Dokument.
 - [ ] Implementierungsplan mit konkreten Versionen, Arbeitspaketen und Prüfkommandos erstellen.
 - [ ] Benutzer prüft den Plan und entscheidet über die Ausführung.
 - [ ] Migration implementieren und Abnahmekriterien nachweisen.
