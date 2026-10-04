@@ -43,6 +43,12 @@ dependencies {
     implementation(project(":shared"))
     implementation(libs.activity.compose)
     implementation(libs.browser)
+    implementation(libs.coroutines.core)
+    implementation(libs.compose.runtime)
+    implementation(libs.compose.foundation)
+    implementation(libs.compose.material3)
+    implementation(libs.compose.resources)
     androidTestImplementation(libs.android.test.runner)
     androidTestImplementation(libs.android.test.junit)
+    androidTestImplementation(libs.coroutines.test)
 }
