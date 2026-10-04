@@ -59,6 +59,10 @@ unlinked.ds
 unlinked_spec.ds
 
 # Android related
+/.gradle/
+/.kotlin/
+/local.properties
+*.keystore
 **/android/**/gradle-wrapper.jar
 **/android/.gradle
 **/android/captures/
