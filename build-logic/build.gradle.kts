@@ -19,6 +19,10 @@ tasks.test {
 
 gradlePlugin {
     plugins {
+        create("releaseGuard") {
+            id = "xkcd.release-guard"
+            implementationClass = "de.stoupas.xkcd.build.ReleaseGuardPlugin"
+        }
         create("legacyResources") {
             id = "xkcd.legacy-resources"
             implementationClass = "de.stoupas.xkcd.build.LegacyResourcesPlugin"

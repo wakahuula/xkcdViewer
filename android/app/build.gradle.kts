@@ -1,7 +1,23 @@
+import java.util.Properties
+import de.stoupas.xkcd.build.ReleaseGuardExtension
+
 plugins {
+    id("xkcd.release-guard")
     alias(libs.plugins.aboutlibraries.android)
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.compose)
+}
+
+val signingProperties = Properties().apply {
+    val source = rootProject.file("android/key.properties")
+    if (source.isFile) source.inputStream().use(::load)
+}
+val confirmedVersionCode = providers.gradleProperty("xkcd.releaseVersionCode").map(String::toInt).orElse(13)
+val confirmedVersionName = providers.gradleProperty("xkcd.releaseVersionName").orElse("1.4.6-kmp-dev")
+configure<ReleaseGuardExtension> {
+    versionCode.set(confirmedVersionCode)
+    versionName.set(confirmedVersionName)
+    previousVersionCode.set(providers.gradleProperty("xkcd.previousVersionCode").map(String::toInt))
 }
 
 android {
@@ -14,12 +30,28 @@ android {
         minSdk = 23
         targetSdk = 37
         // Development baseline only. Published version and signing need verification.
-        versionCode = 13
-        versionName = "1.4.6-kmp-dev"
+        versionCode = confirmedVersionCode.get()
+        versionName = confirmedVersionName.get()
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildFeatures.compose = true
+    signingConfigs {
+        create("originalRelease") {
+            signingProperties.getProperty("storeFile")?.let { storeFile = rootProject.file("android").resolve(it) }
+            storePassword = signingProperties.getProperty("storePassword")
+            keyAlias = signingProperties.getProperty("keyAlias")
+            keyPassword = signingProperties.getProperty("keyPassword")
+        }
+    }
+    buildTypes {
+        release {
+            signingConfig = signingConfigs.getByName("originalRelease")
+            isMinifyEnabled = true
+            isShrinkResources = true
+            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"))
+        }
+    }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
@@ -28,16 +60,6 @@ android {
 
 kotlin {
     jvmToolchain(21)
-}
-
-// No unsigned or debug-signed release during the foundation phase.
-val verifyReleaseConfiguration by tasks.registering {
-    doLast {
-        throw GradleException("Release is not enabled yet. Verify the published version and original signing configuration first.")
-    }
-}
-tasks.matching { it.name == "preReleaseBuild" }.configureEach {
-    dependsOn(verifyReleaseConfiguration)
 }
 
 dependencies {
