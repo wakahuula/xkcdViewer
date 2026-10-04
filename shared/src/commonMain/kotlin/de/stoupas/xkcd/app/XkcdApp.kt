@@ -30,23 +30,6 @@ import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.getString
 
 @Composable
-fun XkcdApp() {
-    MaterialTheme {
-        Surface(modifier = Modifier.fillMaxSize()) {
-            Box(
-                modifier = Modifier.fillMaxSize().safeDrawingPadding(),
-                contentAlignment = Alignment.Center,
-            ) {
-                Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    Text(APP_NAME, style = MaterialTheme.typography.headlineSmall)
-                    Text(stringResource(Res.string.foundation_status))
-                }
-            }
-        }
-    }
-}
-
-@Composable
 fun XkcdApp(dependencies: AppDependencies) {
     val settings by dependencies.settings.state.collectAsStateWithLifecycle()
     val nav = rememberNavController()

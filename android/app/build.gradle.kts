@@ -1,4 +1,5 @@
 plugins {
+    alias(libs.plugins.aboutlibraries.android)
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.compose)
 }
@@ -51,6 +52,8 @@ dependencies {
     implementation(libs.coil.compose)
     implementation(libs.lifecycle.viewmodel.compose)
     implementation(libs.lifecycle.runtime.compose)
+    implementation(libs.ktor.core)
+    implementation(libs.ktor.okhttp)
     androidTestImplementation(libs.android.test.runner)
     androidTestImplementation(libs.android.test.junit)
     androidTestImplementation(libs.coroutines.test)
@@ -58,5 +61,6 @@ dependencies {
     androidTestImplementation(libs.coil.compose)
     androidTestImplementation(libs.coil.ktor)
     androidTestImplementation(libs.ktor.mock)
+    androidTestImplementation(libs.aboutlibraries.core)
     debugImplementation(libs.compose.ui.test.manifest)
 }

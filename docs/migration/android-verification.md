@@ -69,3 +69,17 @@ Android-Plattformdienste und der Wechsel vom Starter zur echten App werden direk
 - API-23-/API-37-Geräteprüfungen.
 - Veröffentlichte Altversion, Distributionsweg, passende Signatur und echter Update-Nachweis.
 - Unabhängige Review benötigt ausdrückliche Freigabe gemäß Plan.
+
+## Aufgabe 8, Android-Plattformdienste
+
+2026-10-04: 35 JVM-Tests, Debug-APK und Lint erfolgreich. 22 Android-Testfälle auf API 36 erfolgreich. Derselbe Testbestand auf API 23 erfolgreich, der echte MediaStore-Test wird dort absichtlich übersprungen. Der Gradle-Reporter zählt den Skip zusätzlich und meldet 23 Ergebnisse.
+
+Geprüft sind Share-Chooser/Payload, HTTP(S)-URL-Filter, fehlender Browserhandler, Bildformat aus tatsächlichen Bytes statt Dateiendung/HTTP-Header, Cleanup nach Insert-/Schreibfehler, Veröffentlichung erst nach vollständigem Schreiben, Nutzerabbruch ohne Erfolg, echte MediaStore-PNG mit IS_PENDING=0, generierte Lizenzmetadaten für Coil/ZoomImage/Ktor/Kotlin und Theme-gerechte Statusleisten.
+
+Der App-Einstieg verwendet nun die echten Services und gemeinsamen Screens. Import/HTTP-Client bleiben im Activity-ViewModel über Rotation erhalten. Der Dokumentexport registriert ActivityResult vor STARTED, wartet auf den Callback und benötigt keine Speicherberechtigung. App-MIT- und Fira-OFL-Volltexte sind enthalten; bestehende Comic-/Icon-Credits bleiben erhalten.
+
+Praktischer API-23-Test mit aktueller öffentlicher xkcd-API: Comic 3306 geladen, Download ausgewählt, ACTION_CREATE_DOCUMENT zeigt `xkcd_3306.png`, Downloads gewählt und Speichern bestätigt. Datei `/sdcard/Download/xkcd_3306.png`, 41703 Byte, per adb kopiert und als lesbares Comicbild geöffnet. System-Share-Chooser mit Gmail/Messaging sichtbar. Der externe alte Browser meldet beim Erklärungslink einen Zertifikatsfehler. Nicht umgangen; erfolgreiche Webdarstellung dort nicht nachgewiesen.
+
+API 37 wurde installiert und gestartet, Testlauf aber durch Systemabstürze blockiert. `surfaceflinger`/`RegionSampling` bricht mit `Assertion failed: !rcEnc->featureInfo()->hasReadColorBufferDma` im Emulator-Mapper ab. Emulator 37.1.11.0, Image android-37.0/google_apis/x86_64 Revision 6. Wiederholung mit `-no-snapshot -gpu swiftshader` hat dieselbe Systemexception; anschließender APK-Install scheitert wegen Neustart des Paketdienstes. Dies ist kein bestandener API-37-Nachweis. Der dedizierte API-37-Emulator wurde danach beendet.
+
+Offen bleiben API-37-Abnahme, echte Exportdialog-Abbruch-/Rotationsprüfung und finale Release-/Update-Nachweise. Flutter-Reste werden deshalb noch nicht entfernt.

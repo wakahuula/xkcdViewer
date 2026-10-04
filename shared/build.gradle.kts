@@ -51,6 +51,7 @@ kotlin {
         }
         androidMain.dependencies {
             implementation(libs.ktor.okhttp)
+            implementation(libs.browser)
         }
         jvmTest.dependencies {
             implementation(kotlin("test-junit"))
@@ -66,6 +67,10 @@ kotlin {
 val prepareAppResources by tasks.registering(Sync::class) {
     from(tasks.named<GenerateLegacyResources>("generateLegacyResources").flatMap { it.outputDirectory })
     from(layout.projectDirectory.dir("src/commonMain/composeResources"))
+    from(rootProject.file("LICENSE")) {
+        into("files")
+        rename { "app_license.txt" }
+    }
     into(layout.buildDirectory.dir("generated/appComposeResources"))
     duplicatesStrategy = DuplicatesStrategy.FAIL
 }

@@ -16,11 +16,17 @@ import org.jetbrains.compose.resources.stringResource
 @Composable
 fun LicensesScreen(source: LicenseSource, onBack: () -> Unit) {
     var libraries by remember { mutableStateOf<Libs?>(null) }
+    var bundled by remember { mutableStateOf<List<Pair<String, String>>>(emptyList()) }
     var failed by remember { mutableStateOf(false) }
     var attempt by remember { mutableIntStateOf(0) }
     LaunchedEffect(source, attempt) {
         failed = false
-        try { libraries = Libs.Builder().withJson(source.readJson()).build() }
+        try {
+            bundled = listOf("xkcdViewer" to "app_license.txt", "Fira Mono" to "fira_mono_license.txt").map { (name, file) ->
+                name to Res.readBytes("files/$file").decodeToString()
+            }
+            libraries = Libs.Builder().withJson(source.readJson()).build()
+        }
         catch (cancelled: kotlinx.coroutines.CancellationException) { throw cancelled }
         catch (_: Exception) { failed = true }
     }
@@ -28,6 +34,10 @@ fun LicensesScreen(source: LicenseSource, onBack: () -> Unit) {
         LazyColumn(Modifier.fillMaxSize().padding(padding).consumeWindowInsets(padding), contentPadding = PaddingValues(20.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
             if (failed) item { Button(onClick = { attempt++ }) { Text(stringResource(Res.string.retry)) } }
             else if (libraries == null) item { CircularProgressIndicator() }
+            items(bundled, key = { it.first }) { (name, license) ->
+                Text(name, style = MaterialTheme.typography.titleMedium)
+                Text(license, style = MaterialTheme.typography.bodySmall)
+            }
             items(libraries?.libraries.orEmpty(), key = { it.uniqueId }) { library ->
                 Column {
                     Text(library.name, style = MaterialTheme.typography.titleMedium)
