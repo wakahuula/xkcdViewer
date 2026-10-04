@@ -2,7 +2,7 @@
 
 ## Status und Ziel
 
-Der Benutzer hat den Architekturrahmen und dieses Dokument am 2026-10-03 im Gespräch freigegeben. Als nächster Schritt ist die Implementierungsplanung erlaubt, noch nicht die Umsetzung.
+Der Benutzer hat den Architekturrahmen und dieses Dokument am 2026-10-03 im Gespräch freigegeben. Am 2026-10-04 hat er den Beginn der ersten Implementierungsstufen und einen eigenen Branch beauftragt. Aufgaben 1 und 2 werden auf `migration/kmp-android-foundation` umgesetzt.
 
 Flutter wird im bestehenden Repository durch Kotlin Multiplatform mit Compose Multiplatform ersetzt. Zunächst wird nur Android als ausführbare App fertiggestellt. Die Oberfläche und die fachliche Logik werden gemeinsam implementiert, damit später iOS ohne zweite Oberfläche ergänzt werden kann.
 
@@ -21,7 +21,9 @@ Die Android-Version übernimmt die bestehenden Funktionen:
 - Bildcache anzeigen und löschen.
 - Informationen zur App, Mitwirkende und Lizenzhinweise anzeigen.
 
-Nicht zum Umfang gehören ein größeres Redesign, neue Produktfunktionen, ein vollständiger Offline-Katalog, Synchronisierung, Desktop, Web und eine ausführbare iOS-Version. Vorhandene Übersetzungsschlüssel für nicht implementierte Funktionen bedeuten keine Erweiterung des Umfangs.
+Nicht zum Umfang gehören neue Produktfunktionen, ein vollständiger Offline-Katalog, Synchronisierung, Desktop, Web und eine ausführbare iOS-Version. Vorhandene Übersetzungsschlüssel für nicht implementierte Funktionen bedeuten keine Erweiterung des Umfangs.
+
+Ergänzung vom 2026-10-04: Der Benutzer möchte die alte UI ausdrücklich nicht nachbauen. Die PNGs im Repository dienen als Referenz für Inhalte und Funktionen. Die späteren Screens erhalten eine neue, für einen Comic-Viewer passende Material-3-Oberfläche. Die aktuellen Stufen 1 und 2 betreffen weiterhin nur Build und Ressourcen.
 
 ## Erhaltung und Update-Kompatibilität
 
@@ -120,7 +122,7 @@ Android implementiert diese Funktionen in `androidMain` beziehungsweise im App-M
 
 ## UI und Verhalten
 
-Die bestehenden Seiten und Bedienabläufe bleiben erkennbar. Material-3-Komponenten ersetzen Flutter-Komponenten; pixelgenaue Nachbildung ist kein Abnahmekriterium. Schrift, Credits und vorhandene Texte bleiben erhalten. Systemleisten, Insets und große Schriftgrößen werden berücksichtigt.
+Die vorhandenen Funktionen bleiben erreichbar, die alte Seitenaufteilung und Bedienstruktur müssen nicht nachgebildet werden. Der Comic steht in einer neuen Material-3-Oberfläche im Mittelpunkt; Layout und Typografie werden dafür neu gestaltet. Vorhandene Font-Dateien, Credits und Texte bleiben erhalten, FiraMono muss nicht die Standardschrift aller neuen Screens sein. Systemleisten, Insets und große Schriftgrößen werden berücksichtigt.
 
 Die Comic-Ansicht trennt Zoom/Verschieben von der Geste für den Alt-Text. Der Alt-Text ist auch ohne präzise Wischgeste zugänglich. Breite und sehr hohe Bilder müssen benutzbar bleiben. Für Zoom wird eine KMP-fähige Lösung gewählt und früh auf Android überprüft, bevor die übrige UI darauf aufbaut.
 

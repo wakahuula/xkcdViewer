@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="foundation_status">KMP foundation. Comic browsing is not available yet.</string>
+    <string name="retry">Try again</string>
+    <string name="network_error">Could not load the comic. Check your connection and try again.</string>
+    <string name="invalid_comic_number">Enter a valid comic number.</string>
+    <string name="comic_not_found">This comic could not be found.</string>
+    <string name="image_saved">Image saved</string>
+    <string name="image_save_failed">Could not save the image.</string>
+    <string name="show_alt_text">Show alt text</string>
+    <string name="hide_alt_text">Hide alt text</string>
+    <string name="library_licenses">Open-source licenses</string>
+    <string name="previous_comic">Previous comic</string>
+    <string name="next_comic">Next comic</string>
+    <string name="add_favorite">Add to favorites</string>
+    <string name="remove_favorite">Remove from favorites</string>
+</resources>

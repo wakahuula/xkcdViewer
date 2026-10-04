@@ -61,6 +61,9 @@ unlinked_spec.ds
 # Android related
 /.gradle/
 /.kotlin/
+/build-logic/.gradle/
+/build-logic/.kotlin/
+!/build-logic/src/*/kotlin/de/stoupas/xkcd/build/
 /local.properties
 *.keystore
 **/android/**/gradle-wrapper.jar
