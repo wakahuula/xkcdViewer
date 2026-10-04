@@ -48,7 +48,13 @@ dependencies {
     implementation(libs.compose.foundation)
     implementation(libs.compose.material3)
     implementation(libs.compose.resources)
+    implementation(libs.coil.compose)
     androidTestImplementation(libs.android.test.runner)
     androidTestImplementation(libs.android.test.junit)
     androidTestImplementation(libs.coroutines.test)
+    androidTestImplementation(libs.compose.ui.test)
+    androidTestImplementation(libs.coil.compose)
+    androidTestImplementation(libs.coil.ktor)
+    androidTestImplementation(libs.ktor.mock)
+    debugImplementation(libs.compose.ui.test.manifest)
 }

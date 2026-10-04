@@ -35,9 +35,19 @@ Der App-Kaltstart wartet auf den Import. Ein Fehlschlag zeigt einen Wiederholung
 
 Geprüft mit Ktor MockEngine und kontrollierten API-Fakes, ohne öffentlichen Netzwerkzugriff: Endpunkte, unbekannte JSON-Felder, HTTP 404/500, ungültige Pflichtfelder, Cancellation, Eingabevalidierung vor dem Request, Cache-Wiederverwendung, echte Latest-Aktualisierung, 128-Einträge-LRU-Grenze, Zufall ohne Nummer 0/404 und Navigation an Grenzen. Timeout ist auf 15 Sekunden begrenzt.
 
+## Aufgabe 5, Zoom-Viewer und Bildcache
+
+2026-10-04: `:shared:jvmTest :app:assembleDebug :app:lintDebug :app:connectedDebugAndroidTest` erfolgreich. 27 JVM-Tests und acht Android-Tests auf API 36, keine Fehler.
+
+Neue Viewer-Tests prüfen breite/hohe lokale PNG-Fixtures, `_2x`-Fehler mit genau einem Originalfallback, Fehler beider Varianten mit Wiederholen, Alt-Text-Schaltfläche, echtes Pinch-Zoom über einen zugänglichen Skalierungswert und anschließendes Pan ohne Alt-Text-Fehlauslösung. Speicher- und Diskcache werden befüllt und gemeinsam gelöscht; Statistik danach jeweils null Byte.
+
+UI-Tests haben voneinander isolierte Caches. Ein erster Testlauf zeigte, dass der Coil-Standarddiskcache eine vorherige erfolgreiche Originalantwort in den Fehlerpfadtest übernahm; der Testaufbau wurde isoliert. Der echte Cache-Test verwendet weiterhin den produktiven Cache-Service.
+
+ZoomImage wird per Comic und Datensparmodus neu gehalten. Bei Comic-Wechsel werden alte Image-Callbacks verworfen. Alt-Text ist zusätzlich unabhängig von Gesten zugänglich und scrollbar. Noch kein vollständiger App-Viewer-Screen oder API-23-/API-37-Nachweis.
+
 ## Noch offen
 
-- Aufgaben 5 bis 10, eigentlicher Viewer und neue Material-3-Screens.
+- Aufgaben 6 bis 10 und die vollständigen Material-3-Screens.
 - API-23-/API-37-Geräteprüfungen.
 - Veröffentlichte Altversion, Distributionsweg, passende Signatur und echter Update-Nachweis.
 - Unabhängige Review benötigt ausdrückliche Freigabe gemäß Plan.

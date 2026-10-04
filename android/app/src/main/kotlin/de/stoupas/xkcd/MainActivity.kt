@@ -22,6 +22,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        coil3.SingletonImageLoader.setSafe { de.stoupas.xkcd.platform.createAndroidImageLoader(it) }
         val settings = SettingsRepository(AndroidSettingsStorage(applicationContext))
         setContent {
             var attempt by remember { mutableIntStateOf(0) }

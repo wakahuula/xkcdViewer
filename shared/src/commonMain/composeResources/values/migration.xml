@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="image_load_failed">Could not load the image.</string>
     <string name="settings_import_failed">Could not import your settings. Your existing data is unchanged. Try again before continuing.</string>
     <string name="foundation_status">KMP foundation. Comic browsing is not available yet.</string>
     <string name="retry">Try again</string>
