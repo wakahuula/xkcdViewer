@@ -45,9 +45,17 @@ UI-Tests haben voneinander isolierte Caches. Ein erster Testlauf zeigte, dass de
 
 ZoomImage wird per Comic und Datensparmodus neu gehalten. Bei Comic-Wechsel werden alte Image-Callbacks verworfen. Alt-Text ist zusätzlich unabhängig von Gesten zugänglich und scrollbar. Noch kein vollständiger App-Viewer-Screen oder API-23-/API-37-Nachweis.
 
+## Aufgabe 6, Comic-Hauptseite und Zustandslogik
+
+2026-10-04: `:shared:jvmTest :app:assembleDebug :app:lintDebug :app:connectedDebugAndroidTest` erfolgreich. 31 JVM-Tests und zehn Android-Tests auf API 36.
+
+Geprüft: Antwort 25 bleibt sichtbar, wenn die ältere Antwort 12 später trotz ignorierter Cancellation eintrifft; Fehler/Wiederholen; Bild-URL wird bei Comic-/Datensparmoduswechsel verworfen; Cancellation wird nicht als Netzwerkfehler dargestellt; Favoriten werden persistiert. Android prüft ungültige leere Suche ohne Request, gültige bestätigte Suche, Favoriten nach Screen-Neuerstellung und sichtbaren Fehler mit erfolgreichem Wiederholen. UI-Integrationstests wurden nach dem ersten Screenentwurf ergänzt; die ViewModel-Tests vor ihrer Implementierung. Lint fand einen nicht beobachteten StateFlow-Zugriff im Testaufbau, der durch `collectAsState` ersetzt wurde.
+
+Die neue Oberfläche verwendet Material 3, Systemtypografie, einen großen Comic-Lesebereich, Nummer/Datum/Titel als Orientierung und getrennte Kern-/Menüaktionen. Keine Nachbildung der Flutter-Seitenaufteilung. Verdrahtung der finalen App-Navigation folgt in Aufgabe 7.
+
 ## Noch offen
 
-- Aufgaben 6 bis 10 und die vollständigen Material-3-Screens.
+- Aufgaben 7 bis 10 und die finale App-Verdrahtung.
 - API-23-/API-37-Geräteprüfungen.
 - Veröffentlichte Altversion, Distributionsweg, passende Signatur und echter Update-Nachweis.
 - Unabhängige Review benötigt ausdrückliche Freigabe gemäß Plan.

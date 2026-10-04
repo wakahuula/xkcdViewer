@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="find_comic">Find a comic</string>
+    <string name="comic_number">Comic number</string>
+    <string name="open_comic">Open comic</string>
+    <string name="cancel">Cancel</string>
+    <string name="more_actions">More actions</string>
+    <string name="settings_write_failed">Could not save your settings. Your last saved settings are unchanged.</string>
     <string name="image_load_failed">Could not load the image.</string>
     <string name="settings_import_failed">Could not import your settings. Your existing data is unchanged. Try again before continuing.</string>
     <string name="foundation_status">KMP foundation. Comic browsing is not available yet.</string>

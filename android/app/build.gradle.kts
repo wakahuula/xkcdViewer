@@ -49,6 +49,8 @@ dependencies {
     implementation(libs.compose.material3)
     implementation(libs.compose.resources)
     implementation(libs.coil.compose)
+    implementation(libs.lifecycle.viewmodel.compose)
+    implementation(libs.lifecycle.runtime.compose)
     androidTestImplementation(libs.android.test.runner)
     androidTestImplementation(libs.android.test.junit)
     androidTestImplementation(libs.coroutines.test)
