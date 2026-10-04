@@ -1,6 +1,7 @@
 package de.stoupas.xkcd.comic
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import de.stoupas.xkcd.settings.SettingsRepository
 import kotlinx.coroutines.CancellationException
@@ -14,6 +15,8 @@ import kotlin.random.Random
 class ComicViewModel(
     private val comics: ComicRepository,
     private val settings: SettingsRepository,
+    private val savedState: SavedStateHandle? = null,
+    initialComicId: Int? = null,
 ) : ViewModel() {
     private val mutableState = MutableStateFlow(ComicUiState())
     val state = mutableState.asStateFlow()
@@ -31,7 +34,8 @@ class ComicViewModel(
                 }
             }
         }
-        loadLatest()
+        val restored = savedState?.get<Int>("comic_id") ?: initialComicId
+        if (restored != null) select(restored) else loadLatest()
     }
 
     fun loadLatest() = request { comics.latest() }
@@ -74,7 +78,10 @@ class ComicViewModel(
                 val result = load()
                 if (identity != generation) return@launch
                 result.fold(
-                    onSuccess = { comic -> mutableState.value = ComicUiState(comic = comic, loading = false) },
+                    onSuccess = { comic ->
+                        savedState?.set("comic_id", comic.num)
+                        mutableState.value = ComicUiState(comic = comic, loading = false)
+                    },
                     onFailure = { error -> mutableState.update { it.copy(loading = false, failure = error as? ComicFailure ?: ComicFailure.Network()) } },
                 )
             } catch (cancelled: CancellationException) {

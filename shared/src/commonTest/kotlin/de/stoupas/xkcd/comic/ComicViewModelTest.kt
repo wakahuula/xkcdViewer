@@ -8,6 +8,23 @@ import kotlin.test.*
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class ComicViewModelTest {
+    @Test
+    fun restoredOrDetailIdLoadsWithoutReplacingItWithLatest() = runTest {
+        Dispatchers.setMain(StandardTestDispatcher(testScheduler))
+        val handle = androidx.lifecycle.SavedStateHandle(mapOf("comic_id" to 25))
+        val api = object : ComicApi {
+            override suspend fun latest(): Result<Comic> = error("Must preserve restored selection")
+            override suspend fun byId(id: Int) = Result.success(comic(id))
+        }
+        val vm = ComicViewModel(ComicRepository(api), settings(), savedState = handle, initialComicId = 12)
+        try {
+            runCurrent()
+            assertEquals(25, vm.state.value.comic?.num)
+            vm.select(30); runCurrent()
+            assertEquals(30, handle.get<Int>("comic_id"))
+        } finally { vm.viewModelScope.cancel(); Dispatchers.resetMain() }
+    }
+
     private suspend fun settings(): SettingsRepository = SettingsRepository(object : SettingsStorage {
         var json: String? = null
         override fun read() = json

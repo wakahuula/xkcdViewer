@@ -53,9 +53,19 @@ Geprüft: Antwort 25 bleibt sichtbar, wenn die ältere Antwort 12 später trotz 
 
 Die neue Oberfläche verwendet Material 3, Systemtypografie, einen großen Comic-Lesebereich, Nummer/Datum/Titel als Orientierung und getrennte Kern-/Menüaktionen. Keine Nachbildung der Flutter-Seitenaufteilung. Verdrahtung der finalen App-Navigation folgt in Aufgabe 7.
 
+## Aufgabe 7, Navigation und ergänzende Screens
+
+2026-10-04: `:shared:jvmTest :app:assembleDebug :app:lintDebug :app:connectedDebugAndroidTest` erfolgreich. 35 JVM-Tests und 14 Android-Tests auf API 36.
+
+Neue Nachweise: Favoriten mit partiellen Fehlern und maximal vier parallelen Requests; Entfernen ohne vollständigen Neuabruf; kontrastfähige Material-3-Akzentfarben für extreme Farben; Wiederherstellung der Comic-ID über SavedStateHandle; Favoritendetail und Zurück ohne Änderung des Hauptcomics; gespeicherter Nav-Backstack; Abbruch des Akzentdialogs ohne Schreibzugriff; Theme/Datensparmodus nach Speicherneueröffnung; Contributor-Profil erreichbar; alle neun Sprachen sowie `de-AT` und unbekannte Sprache auf Android.
+
+Der Test mit 200 % Schrift und simuliertem 640×320-dp-Fenster fand zunächst einen verdeckten Alt-Text-Button. Der Screen verwendet bei geringer Höhe einen kompakten Header; danach sind Suche, Favorit und Alt-Text erreichbar, die Comic-Auswahl bleibt beim Fensterwechsel erhalten. StateRestorationTester prüft Compose-Saved-State, kein vollständiger OS-Prozessneustart.
+
+Android-Plattformdienste und der Wechsel vom Starter zur echten App werden direkt anschließend in Aufgabe 8 verdrahtet. Die Navigationstests verwenden kontrollierte Services und Bilder, keinen öffentlichen Netzwerkzugriff.
+
 ## Noch offen
 
-- Aufgaben 7 bis 10 und die finale App-Verdrahtung.
+- Aufgaben 8 bis 10 und die finale Android-Plattformverdrahtung.
 - API-23-/API-37-Geräteprüfungen.
 - Veröffentlichte Altversion, Distributionsweg, passende Signatur und echter Update-Nachweis.
 - Unabhängige Review benötigt ausdrückliche Freigabe gemäß Plan.

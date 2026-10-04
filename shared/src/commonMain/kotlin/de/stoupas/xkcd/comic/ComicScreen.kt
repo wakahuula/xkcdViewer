@@ -25,6 +25,7 @@ fun ComicScreen(
     onShare: (Comic) -> Unit,
     onSave: (Comic, String) -> Unit,
     onExplain: (Comic) -> Unit,
+    onBack: (() -> Unit)? = null,
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     var search by remember { mutableStateOf(false) }
@@ -35,6 +36,11 @@ fun ComicScreen(
         topBar = {
             TopAppBar(
                 title = { Text(APP_NAME, style = MaterialTheme.typography.titleLarge) },
+                navigationIcon = {
+                    if (onBack != null) IconButton(onClick = onBack, modifier = Modifier.testTag("navigate_back")) {
+                        Icon(AppIcons.Previous, stringResource(Res.string.back))
+                    }
+                },
                 actions = {
                     IconButton(onClick = { search = true }, modifier = Modifier.testTag("open_comic_search")) {
                         Icon(AppIcons.Search, stringResource(Res.string.find_comic))
@@ -83,11 +89,13 @@ fun ComicScreen(
             }
         },
     ) { padding ->
-        Column(Modifier.fillMaxSize().padding(padding).consumeWindowInsets(padding)) {
+        BoxWithConstraints(Modifier.fillMaxSize().padding(padding).consumeWindowInsets(padding)) {
+        val compact = maxHeight < 280.dp
+        Column(Modifier.fillMaxSize()) {
             if (comic != null) {
-                Column(Modifier.fillMaxWidth().padding(horizontal = 20.dp, vertical = 8.dp)) {
-                    Text("#${comic.num} · ${comic.year}-${comic.month.padStart(2, '0')}-${comic.day.padStart(2, '0')}", style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
-                    Text(comic.title, style = MaterialTheme.typography.headlineSmall, maxLines = 2, overflow = TextOverflow.Ellipsis)
+                Column(Modifier.fillMaxWidth().padding(horizontal = 20.dp, vertical = if (compact) 2.dp else 8.dp)) {
+                    if (!compact) Text("#${comic.num} · ${comic.year}-${comic.month.padStart(2, '0')}-${comic.day.padStart(2, '0')}", style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    Text(comic.title, style = if (compact) MaterialTheme.typography.titleMedium else MaterialTheme.typography.headlineSmall, maxLines = if (compact) 1 else 2, overflow = TextOverflow.Ellipsis)
                 }
             }
             if (state.loading) LinearProgressIndicator(modifier = Modifier.fillMaxWidth().testTag("comic_loading"))
@@ -110,6 +118,7 @@ fun ComicScreen(
             } else if (state.loading) {
                 Box(Modifier.weight(1f).fillMaxWidth(), contentAlignment = Alignment.Center) { CircularProgressIndicator() }
             }
+        }
         }
     }
     if (search) ComicSearchDialog(onDismiss = { search = false }, onSelect = viewModel::select)

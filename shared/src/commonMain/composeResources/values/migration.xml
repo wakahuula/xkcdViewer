@@ -1,5 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="platform_action_failed">Could not open this action. Try again.</string>
+    <string name="back">Back</string>
+    <string name="appearance">Appearance</string>
+    <string name="dark_theme">Dark theme</string>
+    <string name="apply">Apply</string>
+    <string name="cache_unknown">Cache usage unavailable</string>
+    <string name="cache_usage">Memory: %1$d KB · Disk: %2$d KB</string>
+    <string name="clear_favorites_confirmation">Remove all saved favorites?</string>
+    <string name="app_license_notice">App source: MIT License. Copyright © 2018 Konstantinos Stoupas.</string>
+    <string name="font_license_notice">Fira Mono: SIL Open Font License 1.1.</string>
     <string name="find_comic">Find a comic</string>
     <string name="comic_number">Comic number</string>
     <string name="open_comic">Open comic</string>
