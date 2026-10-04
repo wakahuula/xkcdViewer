@@ -29,9 +29,15 @@ Entscheidung: Statt Java-Deserialisierung mit Klassenfreigabeliste wird ausschli
 
 Der App-Kaltstart wartet auf den Import. Ein Fehlschlag zeigt einen Wiederholungszustand und gibt die normale App nicht frei. Die alten Daten werden nicht gelöscht.
 
+## Aufgabe 4, Comic-API und Navigation
+
+2026-10-04: `:shared:jvmTest :app:assembleDebug` erfolgreich. 24 gemeinsame/JVM-Tests, keine Fehler. Die zehn neuen API-/Repository-/Navigationstests wurden vor der Implementierung mit fehlenden Symbolen ausgeführt.
+
+Geprüft mit Ktor MockEngine und kontrollierten API-Fakes, ohne öffentlichen Netzwerkzugriff: Endpunkte, unbekannte JSON-Felder, HTTP 404/500, ungültige Pflichtfelder, Cancellation, Eingabevalidierung vor dem Request, Cache-Wiederverwendung, echte Latest-Aktualisierung, 128-Einträge-LRU-Grenze, Zufall ohne Nummer 0/404 und Navigation an Grenzen. Timeout ist auf 15 Sekunden begrenzt.
+
 ## Noch offen
 
-- Aufgaben 4 bis 10, eigentlicher Viewer und neue Material-3-Screens.
+- Aufgaben 5 bis 10, eigentlicher Viewer und neue Material-3-Screens.
 - API-23-/API-37-Geräteprüfungen.
 - Veröffentlichte Altversion, Distributionsweg, passende Signatur und echter Update-Nachweis.
 - Unabhängige Review benötigt ausdrückliche Freigabe gemäß Plan.
