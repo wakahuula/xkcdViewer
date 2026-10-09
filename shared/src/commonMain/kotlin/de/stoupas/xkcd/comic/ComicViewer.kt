@@ -12,9 +12,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.PointerEventPass
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.stateDescription
+import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.dp
 import coil3.ImageLoader
 import coil3.SingletonImageLoader
@@ -41,20 +43,23 @@ fun ComicViewer(
         var failed by remember { mutableStateOf(false) }
         var loading by remember { mutableStateOf(true) }
         var altVisible by remember { mutableStateOf(false) }
+        var imageAspectRatio by remember { mutableStateOf<Float?>(null) }
         val onResolved by rememberUpdatedState(onResolvedImage)
         val density = LocalDensity.current.density
-        Column(modifier.fillMaxSize()) {
-            key(attempt) {
-                val zoom = rememberCoilZoomState()
-                var active by remember { mutableStateOf(true) }
-                DisposableEffect(Unit) { onDispose { active = false } }
-                val url = candidates[candidate]
-                Box(Modifier.weight(1f).fillMaxWidth(), contentAlignment = Alignment.Center) {
+        key(attempt) {
+            val zoom = rememberCoilZoomState()
+            var active by remember { mutableStateOf(true) }
+            DisposableEffect(Unit) { onDispose { active = false } }
+            val url = candidates[candidate]
+            val zoomed = zoom.zoomable.transform.scaleX > zoom.zoomable.minScale + 0.01f
+            Layout(modifier = modifier.fillMaxSize(), content = {
+                Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                     CoilZoomAsyncImage(
                         model = url,
                         imageLoader = loader,
                         contentDescription = comic.title,
                         zoomState = zoom,
+                        alignment = Alignment.TopCenter,
                         modifier = Modifier.fillMaxSize().testTag("comic_image").semantics {
                             val base = zoom.zoomable.minScale.coerceAtLeast(0.001f)
                             stateDescription = "${(zoom.zoomable.transform.scaleX / base * 100).toInt()}%"
@@ -75,8 +80,10 @@ fun ComicViewer(
                             }
                         },
                         onLoading = { if (active) loading = true },
-                        onSuccess = {
+                        onSuccess = { result ->
                             if (active && url == candidates[candidate]) {
+                                val image = result.result.image
+                                if (image.width > 0 && image.height > 0) imageAspectRatio = image.width.toFloat() / image.height
                                 loading = false
                                 failed = false
                                 onResolved(url)
@@ -98,9 +105,22 @@ fun ComicViewer(
                         }
                     }
                 }
-            }
-            TextButton(onClick = { altVisible = true }, modifier = Modifier.align(Alignment.CenterHorizontally).testTag("alt_text_button")) {
-                Text(stringResource(Res.string.show_alt_text))
+                TextButton(onClick = { altVisible = true }, modifier = Modifier.testTag("alt_text_button")) {
+                    Text(stringResource(Res.string.show_alt_text))
+                }
+            }) { measurables, constraints ->
+                // Measure the label first, unconstrained by the image, including large fonts.
+                val button = measurables[1].measure(constraints.copy(minWidth = 0, minHeight = 0))
+                val viewportHeight = (constraints.maxHeight - button.height).coerceAtLeast(0)
+                val image = measurables[0].measure(Constraints.fixed(constraints.maxWidth, viewportHeight))
+                val ratio = imageAspectRatio
+                val buttonY = if (ratio == null || zoomed || failed) viewportHeight
+                    else minOf((constraints.maxWidth / ratio).toInt(), viewportHeight)
+                layout(constraints.maxWidth, constraints.maxHeight) {
+                    // Keep the zoom container stable throughout gestures and animations.
+                    image.placeRelative(0, 0)
+                    button.placeRelative((constraints.maxWidth - button.width) / 2, buttonY)
+                }
             }
         }
         if (altVisible) {

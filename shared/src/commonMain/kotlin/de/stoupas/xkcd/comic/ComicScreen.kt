@@ -35,26 +35,28 @@ fun ComicScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(APP_NAME, style = MaterialTheme.typography.titleLarge) },
+                title = { Text(APP_NAME, style = MaterialTheme.typography.titleLarge, maxLines = 1, overflow = TextOverflow.Ellipsis) },
                 navigationIcon = {
                     if (onBack != null) IconButton(onClick = onBack, modifier = Modifier.testTag("navigate_back")) {
                         Icon(AppIcons.Previous, stringResource(Res.string.back))
                     }
                 },
                 actions = {
+                    IconButton(onClick = onFavorites, modifier = Modifier.testTag("open_favorites")) {
+                        Icon(AppIcons.Favorites, stringResource(Res.string.my_favorites))
+                    }
                     IconButton(onClick = { search = true }, modifier = Modifier.testTag("open_comic_search")) {
                         Icon(AppIcons.Search, stringResource(Res.string.find_comic))
                     }
                     Box {
                         IconButton(onClick = { menu = true }, modifier = Modifier.testTag("comic_menu")) {
-                            Icon(AppIcons.Menu, stringResource(Res.string.more_actions))
+                            Icon(AppIcons.More, stringResource(Res.string.more_actions))
                         }
                         DropdownMenu(expanded = menu, onDismissRequest = { menu = false }) {
                             @Composable fun item(label: String, enabled: Boolean = true, tag: String = label, action: () -> Unit) {
                                 DropdownMenuItem(text = { Text(label) }, enabled = enabled, modifier = Modifier.testTag(tag), onClick = { menu = false; action() })
                             }
                             item(stringResource(Res.string.latest_comic)) { viewModel.loadLatest() }
-                            item(stringResource(Res.string.my_favorites)) { onFavorites() }
                             item(stringResource(Res.string.settings)) { onSettings() }
                             HorizontalDivider()
                             item(stringResource(Res.string.explain_current), available) { comic?.let(onExplain) }
@@ -69,19 +71,15 @@ fun ComicScreen(
             )
         },
         bottomBar = {
-            Surface(tonalElevation = 2.dp) {
+            Surface(color = MaterialTheme.colorScheme.surfaceContainer) {
                 Row(
-                    Modifier.fillMaxWidth().navigationBarsPadding().padding(horizontal = 16.dp, vertical = 8.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically,
+                    Modifier.fillMaxWidth().navigationBarsPadding().padding(horizontal = 16.dp, vertical = 4.dp),
+                    horizontalArrangement = Arrangement.spacedBy(24.dp, Alignment.CenterHorizontally), verticalAlignment = Alignment.CenterVertically,
                 ) {
                     IconButton(onClick = { viewModel.loadAdjacent(-1) }, enabled = available && comic.num > 1) {
                         Icon(AppIcons.Previous, stringResource(Res.string.previous_comic))
                     }
-                    FilledTonalButton(onClick = { viewModel.loadRandom() }, enabled = !state.loading) { Text(stringResource(Res.string.random)) }
-                    IconButton(onClick = { viewModel.toggleFavorite() }, enabled = available, modifier = Modifier.testTag("toggle_favorite")) {
-                        val favorite = comic?.num in settings.favorites
-                        Icon(AppIcons.Heart, stringResource(if (favorite) Res.string.remove_favorite else Res.string.add_favorite), tint = if (favorite) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface)
-                    }
+                    TextButton(onClick = { viewModel.loadRandom() }, enabled = !state.loading) { Text(stringResource(Res.string.random)) }
                     IconButton(onClick = { viewModel.loadAdjacent(1) }, enabled = available) {
                         Icon(AppIcons.Next, stringResource(Res.string.next_comic))
                     }
@@ -91,11 +89,17 @@ fun ComicScreen(
     ) { padding ->
         BoxWithConstraints(Modifier.fillMaxSize().padding(padding).consumeWindowInsets(padding)) {
         val compact = maxHeight < 280.dp
-        Column(Modifier.fillMaxSize()) {
+        Column(Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
             if (comic != null) {
-                Column(Modifier.fillMaxWidth().padding(horizontal = 20.dp, vertical = if (compact) 2.dp else 8.dp)) {
-                    if (!compact) Text("#${comic.num} · ${comic.year}-${comic.month.padStart(2, '0')}-${comic.day.padStart(2, '0')}", style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
-                    Text(comic.title, style = if (compact) MaterialTheme.typography.titleMedium else MaterialTheme.typography.headlineSmall, maxLines = if (compact) 1 else 2, overflow = TextOverflow.Ellipsis)
+                Row(Modifier.widthIn(max = 840.dp).fillMaxWidth().padding(start = 20.dp, end = 8.dp, top = if (compact) 0.dp else 4.dp, bottom = if (compact) 0.dp else 8.dp), verticalAlignment = Alignment.CenterVertically) {
+                    Column(Modifier.weight(1f)) {
+                        if (!compact) Text("#${comic.num} · ${comic.year}-${comic.month.padStart(2, '0')}-${comic.day.padStart(2, '0')}", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                        Text(comic.title, style = if (compact) MaterialTheme.typography.titleMedium else MaterialTheme.typography.titleLarge, maxLines = if (compact) 1 else 2, overflow = TextOverflow.Ellipsis)
+                    }
+                    val favorite = comic.num in settings.favorites
+                    IconToggleButton(checked = favorite, onCheckedChange = { viewModel.toggleFavorite() }, enabled = available, modifier = Modifier.testTag("toggle_favorite")) {
+                        Icon(if (favorite) AppIcons.HeartFilled else AppIcons.Heart, stringResource(if (favorite) Res.string.remove_favorite else Res.string.add_favorite))
+                    }
                 }
             }
             if (state.loading) LinearProgressIndicator(modifier = Modifier.fillMaxWidth().testTag("comic_loading"))
@@ -112,7 +116,7 @@ fun ComicScreen(
             }
             if (state.settingsWriteFailed) Text(stringResource(Res.string.settings_write_failed), modifier = Modifier.padding(16.dp), color = MaterialTheme.colorScheme.error)
             if (comic != null) {
-                Surface(color = MaterialTheme.colorScheme.surfaceContainerLowest, modifier = Modifier.weight(1f).fillMaxWidth()) {
+                Surface(color = MaterialTheme.colorScheme.surface, modifier = Modifier.weight(1f).widthIn(max = 840.dp).fillMaxWidth()) {
                     ComicViewer(comic, settings.dataSaver, viewModel::resolvedImage)
                 }
             } else if (state.loading) {

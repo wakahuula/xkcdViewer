@@ -4,6 +4,8 @@ Aktuelle Fortsetzung mit erneutem API-37-Test und Export-Lifecycle-Befund: [Andr
 
 Der Export-Rotationsfehler wurde anschließend korrigiert. Jetzt bestehen 26 Android-Tests auf API 37 sowie 25 auf API 23 mit einem erwarteten Skip. Details: [Export-Rotationsfix vom 2026-10-09](android-export-rotation-2026-10-09.md).
 
+Der anschließend beauftragte Material-3-Feinschliff ist separat dokumentiert: [Reader und Einstellungen vom 2026-10-09](material3-polish-2026-10-09.md).
+
 Fortsetzung auf `migration/kmp-android-foundation`, vom Benutzer am 2026-10-04 beauftragt. Kein Push und kein Merge. [Grundlage](foundation-verification.md), [Plan](../superpowers/plans/2026-10-03-kmp-migration.md), [Spezifikation](../superpowers/specs/2026-10-03-kmp-migration-design.md).
 
 ## Aufgabe 3, Einstellungen und Legacy-Import

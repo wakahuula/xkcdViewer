@@ -33,6 +33,8 @@ class MainActivity : ComponentActivity() {
         setContent {
             val startup by model.startup.collectAsStateWithLifecycle()
             val settings by model.settings.state.collectAsStateWithLifecycle()
+            // Read the theme in composition so changes invalidate this SideEffect.
+            val darkTheme = settings.darkTheme
             val saveNotice by model.saveNotice.collectAsStateWithLifecycle()
             LaunchedEffect(saveNotice) {
                 val notice = saveNotice ?: return@LaunchedEffect
@@ -44,7 +46,7 @@ class MainActivity : ComponentActivity() {
                 }
                 model.consumeSaveNotice()
             }
-            SideEffect { updateSystemBars(settings.darkTheme) }
+            SideEffect { updateSystemBars(darkTheme) }
             if (startup == StartupState.Ready) XkcdApp(dependencies)
             else MaterialTheme {
                 Column(Modifier.fillMaxSize().safeDrawingPadding().padding(24.dp)) {
@@ -60,7 +62,10 @@ class MainActivity : ComponentActivity() {
     internal fun updateSystemBars(dark: Boolean) {
         val style = if (dark) SystemBarStyle.dark(android.graphics.Color.TRANSPARENT)
         else SystemBarStyle.light(android.graphics.Color.TRANSPARENT, android.graphics.Color.TRANSPARENT)
-        enableEdgeToEdge(statusBarStyle = style, navigationBarStyle = style)
+        // Dark navigation icons are only available from API 26.
+        val navigationStyle = if (!dark && android.os.Build.VERSION.SDK_INT < 26)
+            SystemBarStyle.dark(android.graphics.Color.BLACK) else style
+        enableEdgeToEdge(statusBarStyle = style, navigationBarStyle = navigationStyle)
     }
 
 }

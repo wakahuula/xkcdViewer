@@ -2,6 +2,7 @@ package de.stoupas.xkcd.settings
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
@@ -10,6 +11,9 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.heading
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import de.stoupas.xkcd.app.AppPage
@@ -34,22 +38,22 @@ fun SettingsScreen(repository: SettingsRepository, cache: ImageCacheService, onB
     }
     AppPage(stringResource(Res.string.settings), onBack) { padding ->
         LazyColumn(Modifier.fillMaxSize().padding(padding).consumeWindowInsets(padding).testTag("settings_list"), contentPadding = PaddingValues(vertical = 12.dp)) {
-            item { Text(stringResource(Res.string.appearance), Modifier.padding(horizontal = 20.dp, vertical = 8.dp), style = MaterialTheme.typography.titleSmall, color = MaterialTheme.colorScheme.primary) }
-            item { ListItem(headlineContent = { Text(stringResource(Res.string.theme)) }, supportingContent = { Text(stringResource(Res.string.dark_theme)) }, trailingContent = {
-                Switch(settings.darkTheme, { scope.launch { if (repository.setTheme(it).isFailure) onError() } }, Modifier.testTag("dark_theme_switch"))
-            }) }
-            item { ListItem(headlineContent = { Text(stringResource(Res.string.accent_color)) }, trailingContent = { Box(Modifier.size(28.dp).background(Color(settings.accentArgb.toInt()), CircleShape)) }, modifier = Modifier.clickable { accentDialog = true }.testTag("accent_color")) }
-            item { HorizontalDivider(Modifier.padding(vertical = 12.dp)) }
-            item { Text(stringResource(Res.string.images), Modifier.padding(horizontal = 20.dp, vertical = 8.dp), style = MaterialTheme.typography.titleSmall, color = MaterialTheme.colorScheme.primary) }
+            item { Text(stringResource(Res.string.appearance), Modifier.padding(horizontal = 16.dp, vertical = 8.dp).semantics { heading() }, style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.primary) }
+            item { ListItem(headlineContent = { Text(stringResource(Res.string.dark_theme)) }, trailingContent = {
+                Switch(settings.darkTheme, null)
+            }, modifier = Modifier.toggleable(settings.darkTheme, role = Role.Switch) { scope.launch { if (repository.setTheme(it).isFailure) onError() } }.testTag("dark_theme_switch")) }
+            item { ListItem(headlineContent = { Text(stringResource(Res.string.accent_color)) }, trailingContent = { Box(Modifier.size(24.dp).background(Color(settings.accentArgb.toInt()), CircleShape)) }, modifier = Modifier.clickable { accentDialog = true }.testTag("accent_color")) }
+            item { Spacer(Modifier.height(16.dp)) }
+            item { Text(stringResource(Res.string.images), Modifier.padding(horizontal = 16.dp, vertical = 8.dp).semantics { heading() }, style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.primary) }
             item { ListItem(headlineContent = { Text(stringResource(Res.string.data_saver)) }, supportingContent = { Text(stringResource(Res.string.data_saver_explain)) }, trailingContent = {
-                Switch(settings.dataSaver, { scope.launch { if (repository.setDataSaver(it).isFailure) onError() } }, Modifier.testTag("data_saver_switch"))
-            }) }
+                Switch(settings.dataSaver, null)
+            }, modifier = Modifier.toggleable(settings.dataSaver, role = Role.Switch) { scope.launch { if (repository.setDataSaver(it).isFailure) onError() } }.testTag("data_saver_switch")) }
             item { ListItem(headlineContent = { Text(stringResource(Res.string.cache_images)) }, supportingContent = {
                 val stats = cacheStats
-                Text(if (stats == null) stringResource(Res.string.cache_unknown) else stringResource(Res.string.cache_usage, stats.memoryBytes / 1024, stats.diskBytes / 1024))
+                Text(if (stats == null) stringResource(Res.string.cache_unknown) else stringResource(Res.string.cache_usage, stats.memoryBytes / 1024, stats.diskBytes / 1024), style = MaterialTheme.typography.bodySmall)
             }) }
             item { TextButton(onClick = { clearing = true; scope.launch { try { if (cache.clear().isFailure) onError(); refresh++ } finally { clearing = false } } }, enabled = !clearing, modifier = Modifier.padding(horizontal = 8.dp)) { Text(stringResource(Res.string.clear_image_cache)) } }
-            item { HorizontalDivider(Modifier.padding(vertical = 12.dp)) }
+            item { HorizontalDivider(Modifier.padding(horizontal = 16.dp, vertical = 16.dp), color = MaterialTheme.colorScheme.outlineVariant) }
             item { ListItem(headlineContent = { Text(stringResource(Res.string.about_this_app)) }, modifier = Modifier.clickable(onClick = onAbout).testTag("open_about")) }
             item { ListItem(headlineContent = { Text(stringResource(Res.string.contributors_title)) }, modifier = Modifier.clickable(onClick = onContributors).testTag("open_contributors")) }
             item { ListItem(headlineContent = { Text(stringResource(Res.string.library_licenses)) }, modifier = Modifier.clickable(onClick = onLicenses).testTag("open_licenses")) }

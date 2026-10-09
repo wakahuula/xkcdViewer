@@ -28,6 +28,49 @@ class AppNavigationTest {
     private val preferenceName = "navigation_${System.nanoTime()}"
 
     @Test
+    fun favoritesOpenDirectlyFromReaderWithoutOverflowMenu() {
+        val deps = dependencies(settings())
+        val (loader, client) = loader()
+        try {
+            compose.setContent { CompositionLocalProvider(LocalComicImageLoader provides loader) { XkcdApp(deps) } }
+            compose.waitUntil(15_000) { compose.onAllNodesWithText("Comic 12").fetchSemanticsNodes().isNotEmpty() }
+            compose.onNodeWithContentDescription("Favorites").assertIsDisplayed().performClick()
+            compose.waitUntil(15_000) { compose.onAllNodesWithTag("favorite_25").fetchSemanticsNodes().isNotEmpty() }
+            compose.onNodeWithTag("favorite_25").assertIsDisplayed().performClick()
+            compose.waitUntil(15_000) { compose.onAllNodesWithText("Comic 25").fetchSemanticsNodes().isNotEmpty() }
+        } finally { loader.shutdown(); client.close() }
+    }
+
+    @Test
+    fun favoriteActionStaysWithComicHeaderNotReaderNavigation() {
+        val settings = settings()
+        val (loader, client) = loader()
+        try {
+            compose.setContent { CompositionLocalProvider(LocalComicImageLoader provides loader) { XkcdApp(dependencies(settings)) } }
+            compose.waitUntil(15_000) { compose.onAllNodesWithText("Comic 12").fetchSemanticsNodes().isNotEmpty() }
+            val image = compose.onNodeWithTag("comic_image").fetchSemanticsNode().boundsInRoot
+            val favorite = compose.onNodeWithTag("toggle_favorite").fetchSemanticsNode().boundsInRoot
+            assertTrue("Comic-level action must be above the image, not in the browsing toolbar", favorite.bottom <= image.top)
+            compose.onNodeWithTag("toggle_favorite").performClick()
+            compose.waitUntil(10_000) { 12 in settings.state.value.favorites }
+        } finally { loader.shutdown(); client.close() }
+    }
+
+    @Test
+    fun labeledThemeRowTogglesWithoutAimingForSmallSwitch() {
+        val settings = settings()
+        val (loader, client) = loader()
+        try {
+            compose.setContent { CompositionLocalProvider(LocalComicImageLoader provides loader) { XkcdApp(dependencies(settings)) } }
+            compose.waitUntil(15_000) { compose.onAllNodesWithTag("comic_menu").fetchSemanticsNodes().isNotEmpty() }
+            compose.onNodeWithTag("comic_menu").performClick()
+            compose.onNodeWithText("Settings").performClick()
+            compose.onNodeWithText("Dark theme").performClick()
+            compose.waitUntil(5_000) { !settings.state.value.darkTheme }
+        } finally { loader.shutdown(); client.close() }
+    }
+
+    @Test
     fun largeFontAndLandscapeKeepReaderActionsReachableWithoutLosingComic() {
         val settings = settings()
         val deps = dependencies(settings)
@@ -61,8 +104,7 @@ class AppNavigationTest {
             val restoration = StateRestorationTester(compose)
             restoration.setContent { CompositionLocalProvider(LocalComicImageLoader provides loader) { XkcdApp(deps) } }
             compose.waitUntil(15_000) { compose.onAllNodesWithText("Comic 12").fetchSemanticsNodes().isNotEmpty() }
-            compose.onNodeWithTag("comic_menu").performClick()
-            compose.onNodeWithText("Favorites").performClick()
+            compose.onNodeWithTag("open_favorites").performClick()
             compose.waitUntil(15_000) { compose.onAllNodesWithTag("favorite_25").fetchSemanticsNodes().isNotEmpty() }
             compose.onNodeWithTag("favorite_25").performClick()
             compose.waitUntil(15_000) { compose.onAllNodesWithText("Comic 25").fetchSemanticsNodes().isNotEmpty() }
