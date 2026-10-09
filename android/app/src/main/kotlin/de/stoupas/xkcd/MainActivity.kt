@@ -20,23 +20,30 @@ import de.stoupas.xkcd.resources.*
 import org.jetbrains.compose.resources.stringResource
 
 class MainActivity : ComponentActivity() {
-    private var imageSaver: AndroidImageSaveService? = null
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         SingletonImageLoader.setSafe { createAndroidImageLoader(it) }
         val model = ViewModelProvider(this)[AndroidAppModel::class.java]
-        val exporter = AndroidDocumentExporter(this)
-        val saver = AndroidImageSaveService(this, model.http, exportDocument = exporter::export)
-        imageSaver = saver
+        AndroidDocumentExporter(this)
         val dependencies = AppDependencies(
-            model.comics, model.settings, AndroidShareService(this), saver, AndroidBrowserService(this),
+            model.comics, model.settings, AndroidShareService(this), model.imageSaver, AndroidBrowserService(this),
             AndroidImageCacheService(SingletonImageLoader.get(this)), AndroidLicenseSource(this, R.raw.aboutlibraries),
         )
         setContent {
             val startup by model.startup.collectAsStateWithLifecycle()
             val settings by model.settings.state.collectAsStateWithLifecycle()
+            val saveNotice by model.saveNotice.collectAsStateWithLifecycle()
+            LaunchedEffect(saveNotice) {
+                val notice = saveNotice ?: return@LaunchedEffect
+                if (notice.exceptionOrNull() !is PlatformFailure.UserCancelled) {
+                    val message = org.jetbrains.compose.resources.getString(
+                        if (notice.isSuccess) Res.string.image_saved else Res.string.image_save_failed
+                    )
+                    android.widget.Toast.makeText(applicationContext, message, android.widget.Toast.LENGTH_SHORT).show()
+                }
+                model.consumeSaveNotice()
+            }
             SideEffect { updateSystemBars(settings.darkTheme) }
             if (startup == StartupState.Ready) XkcdApp(dependencies)
             else MaterialTheme {
@@ -56,8 +63,4 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge(statusBarStyle = style, navigationBarStyle = style)
     }
 
-    override fun onDestroy() {
-        imageSaver?.close()
-        super.onDestroy()
-    }
 }

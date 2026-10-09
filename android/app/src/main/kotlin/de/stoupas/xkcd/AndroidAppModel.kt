@@ -6,6 +6,8 @@ import androidx.lifecycle.viewModelScope
 import de.stoupas.xkcd.comic.ComicRepository
 import de.stoupas.xkcd.comic.KtorComicApi
 import de.stoupas.xkcd.settings.*
+import de.stoupas.xkcd.platform.AndroidImageSaveService
+import de.stoupas.xkcd.platform.ImageSaveService
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.okhttp.OkHttp
 import kotlinx.coroutines.*
@@ -19,6 +21,22 @@ class AndroidAppModel(application: Application) : AndroidViewModel(application) 
     private val api = KtorComicApi(http)
     val comics = ComicRepository(api)
     val settings = SettingsRepository(AndroidSettingsStorage(application))
+    val documents = AndroidDocumentExportState(application.contentResolver, viewModelScope)
+    private val saver = AndroidImageSaveService(application, http, exportDocument = documents::export)
+    private val mutableSaveNotice = MutableStateFlow<Result<Unit>?>(null)
+    val saveNotice = mutableSaveNotice.asStateFlow()
+    val imageSaver = object : ImageSaveService {
+        override suspend fun save(comic: de.stoupas.xkcd.comic.Comic, imageUrl: String): Result<Unit> {
+            // The UI may stop awaiting on rotation; the user-requested write must continue.
+            val operation = viewModelScope.async { saver.save(comic, imageUrl) }
+            return try { operation.await() }
+            catch (cancelled: CancellationException) {
+                viewModelScope.launch { mutableSaveNotice.value = operation.await() }
+                throw cancelled
+            }
+        }
+    }
+    fun consumeSaveNotice() { mutableSaveNotice.value = null }
     private val mutableStartup = MutableStateFlow(StartupState.Loading)
     val startup = mutableStartup.asStateFlow()
     private var initialization: Job? = null
@@ -38,5 +56,5 @@ class AndroidAppModel(application: Application) : AndroidViewModel(application) 
         }
     }
 
-    override fun onCleared() { api.close(); http.close() }
+    override fun onCleared() { saver.close(); api.close(); http.close() }
 }

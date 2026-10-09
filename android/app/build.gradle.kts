@@ -78,6 +78,8 @@ dependencies {
     implementation(libs.ktor.okhttp)
     androidTestImplementation(libs.android.test.runner)
     androidTestImplementation(libs.android.test.junit)
+    // Compose's older transitive Espresso uses InputManager.getInstance, removed on API 37.
+    androidTestImplementation(libs.espresso.core)
     androidTestImplementation(libs.coroutines.test)
     androidTestImplementation(libs.compose.ui.test)
     androidTestImplementation(libs.coil.compose)

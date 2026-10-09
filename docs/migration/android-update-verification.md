@@ -2,6 +2,8 @@
 
 Der Android-Debug-Viewer ist implementiert. Ein Update über eine tatsächlich veröffentlichte Flutter-App ist **nicht nachgewiesen**.
 
+Am 2026-10-09 wurde eine vom Benutzer bereitgestellte Alt-APK `1.3.0 / 7` mit gültiger Signatur analysiert. Sie bestätigt noch nicht die zuletzt veröffentlichte Version. Signing bleibt auf Benutzerwunsch zurückgestellt. API-37-Instrumentierung ist inzwischen bestanden; der API-23-Export bei Rotation wurde [korrigiert und erneut geprüft](android-export-rotation-2026-10-09.md). Details und Zertifikat-Fingerprint stehen im [aktuellen Abnahmebericht](android-acceptance-2026-10-09.md). Die folgenden Einträge beschreiben die früheren Release-Prüfungen.
+
 ## Release-Guard
 
 `android/key.properties` bleibt die lokale private Quelle für `storeFile`, `storePassword`, `keyAlias`, `keyPassword`. Relative Keystore-Pfade beziehen sich wie zuvor auf `android/`, nicht auf `android/app/`. Keine neuen Release-Keystores wurden erzeugt. Debug verwendet die normale lokale Debug-Signatur.
